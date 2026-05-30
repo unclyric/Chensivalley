@@ -1,0 +1,717 @@
+/* ============================================
+   沉思谷物鱼 - Main Game Scene
+   Meditation Valley Fish
+   ============================================ */
+
+import Phaser from 'phaser';
+import { useGameStore } from '../services/GameState';
+import { TILE_SIZE, MAP_WIDTH, MAP_HEIGHT, PALETTE, PLAYER_SPEED } from '../utils/constants';
+import { FishingLocation, Season, Weather, TimeOfDay } from '../utils/types';
+import { getTimeOfDay, formatTime, formatDate } from '../utils/helpers';
+import { getAvailableFish } from '../data/fish';
+
+// Map generation constants
+const WATER_LEVEL = 16; // tiles from top where water starts
+const SHORE_WIDTH = 6;
+
+export class GameScene extends Phaser.Scene {
+  private player!: Phaser.Physics.Arcade.Sprite;
+  private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
+  private wasd!: { W: Phaser.Input.Keyboard.Key; A: Phaser.Input.Keyboard.Key; S: Phaser.Input.Keyboard.Key; D: Phaser.Input.Keyboard.Key };
+  private actionKey!: Phaser.Input.Keyboard.Key;
+  private mapKey!: Phaser.Input.Keyboard.Key;
+  private inventoryKey!: Phaser.Input.Keyboard.Key;
+
+  private mapTiles: Phaser.GameObjects.Image[][] = [];
+  private collisionLayer: boolean[][] = [];
+  private npcSprites: Map<string, Phaser.GameObjects.Sprite> = new Map();
+  private fishingSpotMarkers: Phaser.GameObjects.Graphics[] = [];
+
+  private hudTexts!: {
+    time: Phaser.GameObjects.Text;
+    date: Phaser.GameObjects.Text;
+    season: Phaser.GameObjects.Text;
+    gold: Phaser.GameObjects.Text;
+    location: Phaser.GameObjects.Text;
+    weather: Phaser.GameObjects.Text;
+  };
+
+  private timeAccumulator = 0;
+  private currentMap: FishingLocation = FishingLocation.MeditationLake;
+  private edgeHintShown = false;
+
+  constructor() {
+    super({ key: 'GameScene' });
+  }
+
+  create(): void {
+    const store = useGameStore.getState();
+    this.currentMap = store.player.currentMap;
+
+    // Setup keyboard
+    this.cursors = this.input.keyboard!.createCursorKeys();
+    this.wasd = {
+      W: this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.W),
+      A: this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.A),
+      S: this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.S),
+      D: this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.D),
+    };
+
+    // Action keys
+    this.actionKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.E);
+    this.mapKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.M);
+    this.inventoryKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.I);
+
+    // Generate map
+    this.generateMap(this.currentMap);
+
+    // Create player
+    this.player = this.physics.add.sprite(
+      store.player.position.x * TILE_SIZE * 2,
+      store.player.position.y * TILE_SIZE * 2,
+      'player'
+    );
+    this.player.setScale(1);
+    this.player.setDepth(10);
+    this.player.setCollideWorldBounds(true);
+    this.physics.world.setBounds(0, 0, MAP_WIDTH * TILE_SIZE * 2, MAP_HEIGHT * TILE_SIZE * 2);
+
+    // Create HUD
+    this.createHUD();
+
+    // Spawn NPCs
+    this.spawnNPCs();
+
+    // Mark fishing spots
+    this.markFishingSpots();
+
+    // Random notification
+    this.time.delayedCall(2000, () => {
+      store.showNotification('欢迎来到大辟谷！用方向键或WASD移动，走到水边按E钓鱼。');
+    });
+
+    // Aggressive canvas focus for keyboard input
+    const canvas = this.game.canvas;
+    canvas.setAttribute('tabindex', '0');
+    canvas.style.outline = 'none';
+    canvas.focus();
+    // Focus on any interaction
+    this.input.on('pointerdown', () => canvas.focus());
+    this.input.on('pointermove', () => { if (!canvas.contains(document.activeElement)) canvas.focus(); });
+    // Also focus on keydown anywhere in document
+    document.addEventListener('keydown', () => {
+      if (store.gameStarted && store.currentPanel === 'none') {
+        canvas.focus();
+      }
+    });
+
+    // Keyboard event for UI
+    this.inventoryKey.on('down', () => {
+      const s = useGameStore.getState();
+      if (s.currentPanel === 'none') s.openPanel('backpack');
+      else if (s.currentPanel === 'backpack') s.closePanel();
+    });
+
+    this.mapKey.on('down', () => {
+      const s = useGameStore.getState();
+      if (s.currentPanel === 'none') s.openPanel('map');
+      else if (s.currentPanel === 'map') s.closePanel();
+    });
+
+    this.actionKey.on('down', () => {
+      this.tryFish();
+      this.tryTalkToNPC();
+    });
+
+    this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
+      if (pointer.rightButtonDown()) {
+        const s = useGameStore.getState();
+        if (s.currentPanel === 'none') s.openPanel('backpack');
+      }
+    });
+  }
+
+  // ─── Map Generation ─────────────────────────
+
+  private generateMap(location: FishingLocation): void {
+    // Clear existing
+    this.mapTiles.flat().forEach(t => t.destroy());
+    this.mapTiles = [];
+    this.collisionLayer = [];
+
+    // Initialize collision grid
+    for (let y = 0; y < MAP_HEIGHT; y++) {
+      this.collisionLayer[y] = [];
+      this.mapTiles[y] = [];
+      for (let x = 0; x < MAP_WIDTH; x++) {
+        this.collisionLayer[y][x] = false;
+      }
+    }
+
+    // Generate terrain based on location
+    switch (location) {
+      case FishingLocation.MeditationLake:
+        this.generateLakeMap();
+        break;
+      case FishingLocation.NanmingRiver:
+        this.generateRiverMap();
+        break;
+      case FishingLocation.WestLake:
+        this.generateWestLakeMap();
+        break;
+      case FishingLocation.YangyeMarsh:
+        this.generateMarshMap();
+        break;
+    }
+
+    // Render tiles
+    const S = TILE_SIZE * 2; // 2x scale for pixel art
+    for (let y = 0; y < MAP_HEIGHT; y++) {
+      for (let x = 0; x < MAP_WIDTH; x++) {
+        const tileType = this.getTileType(x, y);
+        if (tileType) {
+          const tile = this.add.image(x * S + S / 2, y * S + S / 2, tileType);
+          tile.setDisplaySize(S, S);
+          tile.setDepth(0);
+          this.mapTiles[y][x] = tile;
+        }
+      }
+    }
+  }
+
+  private generateLakeMap(): void {
+    // Large lake in the center with shores around
+    for (let y = 0; y < MAP_HEIGHT; y++) {
+      for (let x = 0; x < MAP_WIDTH; x++) {
+        if (y >= WATER_LEVEL && y < MAP_HEIGHT - 5 &&
+            x >= SHORE_WIDTH && x < MAP_WIDTH - SHORE_WIDTH) {
+          // Water
+          this.collisionLayer[y][x] = true; // can't walk on water
+        } else if (y >= WATER_LEVEL - 2 && y < MAP_HEIGHT - 3 &&
+                   x >= SHORE_WIDTH - 2 && x < MAP_WIDTH - SHORE_WIDTH + 2) {
+          // Shore/sand
+          this.collisionLayer[y][x] = false;
+        } else {
+          // Grass
+          this.collisionLayer[y][x] = false;
+        }
+      }
+    }
+
+    // Add some trees and decoration
+    this.placeDecorations([
+      { x: 5, y: 5 }, { x: 8, y: 3 }, { x: 50, y: 4 },
+      { x: 52, y: 6 }, { x: 3, y: 30 }, { x: 55, y: 32 },
+      { x: 10, y: 10 }, { x: 48, y: 12 },
+    ]);
+  }
+
+  private generateRiverMap(): void {
+    // River flowing from top-left to bottom-right
+    for (let y = 0; y < MAP_HEIGHT; y++) {
+      for (let x = 0; x < MAP_WIDTH; x++) {
+        const riverCenter = MAP_WIDTH * 0.3 + y * 0.4;
+        const distFromRiver = Math.abs(x - riverCenter);
+
+        if (distFromRiver < 3) {
+          this.collisionLayer[y][x] = true; // water
+        } else if (distFromRiver < 5) {
+          this.collisionLayer[y][x] = false; // shore
+        } else {
+          this.collisionLayer[y][x] = false; // grass
+        }
+      }
+    }
+
+    this.placeDecorations([
+      { x: 10, y: 5 }, { x: 15, y: 3 }, { x: 42, y: 8 },
+      { x: 35, y: 25 }, { x: 50, y: 30 }, { x: 5, y: 35 },
+    ]);
+  }
+
+  private generateWestLakeMap(): void {
+    // Larger, more open lake with islands
+    for (let y = 0; y < MAP_HEIGHT; y++) {
+      for (let x = 0; x < MAP_WIDTH; x++) {
+        if (y >= WATER_LEVEL - 2 && y < MAP_HEIGHT - 3 &&
+            x >= 3 && x < MAP_WIDTH - 3) {
+          // Check for islands
+          const isIsland1 = (x >= 20 && x <= 25 && y >= 22 && y <= 28);
+          const isIsland2 = (x >= 38 && x <= 42 && y >= 12 && y <= 17);
+          if (isIsland1 || isIsland2) {
+            this.collisionLayer[y][x] = false;
+          } else {
+            this.collisionLayer[y][x] = true; // deep water
+          }
+        } else {
+          this.collisionLayer[y][x] = false;
+        }
+      }
+    }
+
+    // Lighthouse area (top-right corner)
+    for (let y = 0; y < 8; y++) {
+      for (let x = MAP_WIDTH - 10; x < MAP_WIDTH; x++) {
+        this.collisionLayer[y][x] = false;
+      }
+    }
+
+    this.placeDecorations([
+      { x: 8, y: 8 }, { x: 55, y: 5 }, { x: 22, y: 24 }, // island trees
+      { x: 40, y: 14 },
+    ]);
+  }
+
+  private generateMarshMap(): void {
+    // Swampy terrain with scattered water patches
+    for (let y = 0; y < MAP_HEIGHT; y++) {
+      for (let x = 0; x < MAP_WIDTH; x++) {
+        const noise = Math.sin(x * 0.5) * Math.cos(y * 0.3) * 5;
+        if (y > 10 && y < MAP_HEIGHT - 5 &&
+            Math.abs(x - MAP_WIDTH / 2 + noise) < 8 + Math.random() * 3) {
+          this.collisionLayer[y][x] = true; // deep marsh water
+        } else {
+          this.collisionLayer[y][x] = false; // marshy ground
+        }
+      }
+    }
+
+    this.placeDecorations([
+      { x: 5, y: 8 }, { x: 50, y: 10 }, { x: 15, y: 30 },
+      { x: 45, y: 32 }, { x: 30, y: 5 },
+    ]);
+  }
+
+  private getTileType(x: number, y: number): string | null {
+    const isWater = this.collisionLayer[y]?.[x];
+
+    // Check neighbors for water edge
+    const isNearWater = !isWater && (
+      (y > 0 && this.collisionLayer[y - 1]?.[x]) ||
+      (y < MAP_HEIGHT - 1 && this.collisionLayer[y + 1]?.[x]) ||
+      (x > 0 && this.collisionLayer[y]?.[x - 1]) ||
+      (x < MAP_WIDTH - 1 && this.collisionLayer[y]?.[x + 1])
+    );
+
+    if (isWater) return 'tile_water';
+    if (isNearWater) return 'tile_water_edge';
+    if (this.hasDecoration(x, y)) return null; // decorations handled separately
+    return 'tile_grass';
+  }
+
+  private decorationPositions: { x: number; y: number }[] = [];
+
+  private placeDecorations(positions: { x: number; y: number }[]): void {
+    this.decorationPositions = positions;
+  }
+
+  private hasDecoration(x: number, y: number): boolean {
+    return this.decorationPositions.some(d => d.x === x && d.y === y);
+  }
+
+  // ─── Player Movement ────────────────────────
+
+  update(time: number, delta: number): void {
+    const store = useGameStore.getState();
+
+    // Only process game update if no panel is open
+    if (store.currentPanel !== 'none' && store.currentPanel !== 'npc_dialog') {
+      this.player.setVelocity(0, 0);
+      return;
+    }
+
+    // Movement
+    const speed = PLAYER_SPEED * 2; // scaled for 2x tiles
+    let vx = 0;
+    let vy = 0;
+
+    if (this.cursors.left.isDown || this.wasd.A.isDown) vx = -speed;
+    else if (this.cursors.right.isDown || this.wasd.D.isDown) vx = speed;
+
+    if (this.cursors.up.isDown || this.wasd.W.isDown) vy = -speed;
+    else if (this.cursors.down.isDown || this.wasd.S.isDown) vy = speed;
+
+    // Check water collision manually
+    const playerTileX = Math.floor(this.player.x / (TILE_SIZE * 2));
+    const playerTileY = Math.floor(this.player.y / (TILE_SIZE * 2));
+    const targetTileX = Math.floor((this.player.x + vx * (delta / 1000)) / (TILE_SIZE * 2));
+    const targetTileY = Math.floor((this.player.y + vy * (delta / 1000)) / (TILE_SIZE * 2));
+
+    // Allow movement off water tiles (safety: if stuck on water, let player move freely)
+    const playerOnWater = !this.isTileWalkable(playerTileX, playerTileY);
+
+    if (playerOnWater || this.isTileWalkable(targetTileX, playerTileY)) {
+      this.player.setVelocityX(vx);
+    } else {
+      this.player.setVelocityX(0);
+    }
+
+    if (playerOnWater || this.isTileWalkable(playerTileX, targetTileY)) {
+      this.player.setVelocityY(vy);
+    } else {
+      this.player.setVelocityY(0);
+    }
+
+    // Update store position
+    const newTileX = Math.floor(this.player.x / (TILE_SIZE * 2));
+    const newTileY = Math.floor(this.player.y / (TILE_SIZE * 2));
+    const currentStorePos = useGameStore.getState().player.position;
+    if (newTileX !== currentStorePos.x || newTileY !== currentStorePos.y) {
+      store.movePlayer(newTileX, newTileY);
+    }
+
+    // Edge-of-map transition: walk to border to travel between areas
+    const edgeThreshold = 2;
+    if (newTileX <= edgeThreshold || newTileX >= MAP_WIDTH - edgeThreshold - 1 ||
+        newTileY <= edgeThreshold || newTileY >= MAP_HEIGHT - edgeThreshold - 1) {
+      if (!this.edgeHintShown) {
+        this.edgeHintShown = true;
+        if (store.currentPanel === 'none') {
+          store.showNotification('📍 走到地图边缘了！按 M 打开地图前往其他区域');
+        }
+        this.time.delayedCall(3000, () => { this.edgeHintShown = false; });
+      }
+    }
+
+    // Time progression
+    this.timeAccumulator += delta;
+    while (this.timeAccumulator >= 1000) { // 1 real second = 1 game minute
+      this.timeAccumulator -= 1000;
+      store.advanceTime(1);
+    }
+
+    // Update HUD
+    this.updateHUD();
+  }
+
+  private isTileWalkable(tileX: number, tileY: number): boolean {
+    if (tileX < 0 || tileX >= MAP_WIDTH || tileY < 0 || tileY >= MAP_HEIGHT) return false;
+    return !this.collisionLayer[tileY]?.[tileX];
+  }
+
+  // ─── HUD ────────────────────────────────────
+
+  private createHUD(): void {
+    const style: Phaser.Types.GameObjects.Text.TextStyle = {
+      fontFamily: '"Press Start 2P", monospace',
+      fontSize: '10px',
+      color: '#e8d5c4',
+      stroke: '#000000',
+      strokeThickness: 2,
+    };
+
+    this.hudTexts = {
+      time: this.add.text(10, 10, '', style).setDepth(100).setScrollFactor(0),
+      date: this.add.text(10, 25, '', style).setDepth(100).setScrollFactor(0),
+      season: this.add.text(10, 40, '', style).setDepth(100).setScrollFactor(0),
+      gold: this.add.text(this.cameras.main.width - 10, 10, '', { ...style, color: '#d4a853' })
+        .setOrigin(1, 0).setDepth(100).setScrollFactor(0),
+      location: this.add.text(this.cameras.main.width / 2, 10, '', style)
+        .setOrigin(0.5, 0).setDepth(100).setScrollFactor(0),
+      weather: this.add.text(this.cameras.main.width - 10, 25, '', style)
+        .setOrigin(1, 0).setDepth(100).setScrollFactor(0),
+    };
+
+    // Map travel button (bottom right)
+    const mapBtn = this.add.text(this.cameras.main.width - 10, this.cameras.main.height - 10, '🗺️ 地图 [M]', {
+      ...style,
+      fontSize: '10px',
+      backgroundColor: '#3d2b3e',
+      padding: { x: 6, y: 4 },
+    })
+      .setOrigin(1, 1)
+      .setDepth(100)
+      .setScrollFactor(0)
+      .setInteractive({ useHandCursor: true });
+    mapBtn.on('pointerdown', () => {
+      const s = useGameStore.getState();
+      if (s.currentPanel === 'none') s.openPanel('map');
+    });
+  }
+
+  private updateHUD(): void {
+    const store = useGameStore.getState();
+    const t = store.time;
+    const w = store.weather;
+
+    this.hudTexts.time.setText(`🕐 ${formatTime(t)}`);
+    this.hudTexts.date.setText(`📅 ${formatDate(t)}`);
+    this.hudTexts.season.setText(this.getSeasonEmoji(t.season) + ' ' + this.getWeatherEmoji(w.current));
+    this.hudTexts.gold.setText(`💰 ${store.player.gold} G`);
+    this.hudTexts.weather.setText(`⚡ ${store.player.energy}/${store.player.maxEnergy}`);
+  }
+
+  private getSeasonEmoji(season: Season): string {
+    const map: Record<Season, string> = {
+      [Season.Spring]: '🌸', [Season.Summer]: '☀️',
+      [Season.Autumn]: '🍂', [Season.Winter]: '❄️',
+    };
+    return map[season];
+  }
+
+  private getWeatherEmoji(weather: Weather): string {
+    const map: Record<Weather, string> = {
+      [Weather.Sunny]: '☀️', [Weather.Cloudy]: '☁️',
+      [Weather.Rainy]: '🌧️', [Weather.Stormy]: '⛈️',
+    };
+    return map[weather];
+  }
+
+  // ─── NPCs ───────────────────────────────────
+
+  private spawnNPCs(): void {
+    // Place NPCs at scripted positions based on current time/map
+    const npcPositions = [
+      { id: 'old_fisherman', x: 18, y: 8 },
+      { id: 'traveling_merchant', x: 35, y: 10 },
+      { id: 'tea_house_owner', x: 28, y: 15 },
+      { id: 'young_angler', x: 14, y: 12 },
+      { id: 'wandering_painter', x: 20, y: 5 },
+    ];
+
+    npcPositions.forEach((npc, i) => {
+      const sprite = this.add.sprite(
+        npc.x * TILE_SIZE * 2,
+        npc.y * TILE_SIZE * 2,
+        `npc_${i}`
+      );
+      sprite.setDepth(5);
+      sprite.setInteractive({ useHandCursor: true });
+      sprite.on('pointerdown', () => this.interactWithNPC(npc.id));
+
+      // Add name label
+      const npcData = useGameStore.getState().npcData[npc.id];
+      if (npcData) {
+        const label = this.add.text(npc.x * TILE_SIZE * 2, npc.y * TILE_SIZE * 2 - 16, npcData.name, {
+          fontFamily: '"Press Start 2P", monospace',
+          fontSize: '8px',
+          color: '#ffffff',
+          stroke: '#000000',
+          strokeThickness: 2,
+        }).setOrigin(0.5, 1).setDepth(6);
+      }
+
+      this.npcSprites.set(npc.id, sprite);
+    });
+  }
+
+  private interactWithNPC(npcId: string): void {
+    const store = useGameStore.getState();
+    const npcData = store.npcData[npcId];
+    if (!npcData) return;
+
+    const hearts = store.getRelationship(npcId);
+    const heartLevel = Math.floor(hearts);
+    const key = heartLevel.toString();
+
+    // Get dialogues for current heart level
+    let dialogues = npcData.dialogues[key] || npcData.dialogues.default;
+
+    // Add relationship info
+    const heartDisplay = '❤️'.repeat(Math.floor(hearts / 2)) + '🤍'.repeat(5 - Math.floor(hearts / 2));
+    dialogues = [`${npcData.name} - ${npcData.title}`, `好感度: ${heartDisplay}`, ...dialogues];
+
+    // Track quest progress for "talk to NPC" objectives
+    store.checkQuestProgress('talk_to_npc', npcId, 1);
+
+    // Small relationship boost for talking (only once per session)
+    if (Math.random() < 0.3) {
+      store.changeRelationship(npcId, 0.05);
+    }
+
+    store.startDialog(npcId, dialogues);
+
+    // Show a small notification after dialog closes (via delayed call)
+    this.time.delayedCall(500, () => {
+      const currentStore = useGameStore.getState();
+      if (currentStore.currentPanel !== 'npc_dialog') {
+        // Dialog has closed, show feedback
+      }
+    });
+  }
+
+  // ─── Fishing ────────────────────────────────
+
+  private tryFish(): void {
+    const store = useGameStore.getState();
+    if (store.currentPanel !== 'none') return;
+
+    // Check if player is near water
+    const tileX = Math.floor(this.player.x / (TILE_SIZE * 2));
+    const tileY = Math.floor(this.player.y / (TILE_SIZE * 2));
+
+    // Check adjacent tiles for water
+    let nearWater = false;
+    for (let dy = -2; dy <= 2; dy++) {
+      for (let dx = -2; dx <= 2; dx++) {
+        const nx = tileX + dx;
+        const ny = tileY + dy;
+        if (nx >= 0 && nx < MAP_WIDTH && ny >= 0 && ny < MAP_HEIGHT) {
+          if (this.collisionLayer[ny]?.[nx]) {
+            nearWater = true;
+            break;
+          }
+        }
+      }
+      if (nearWater) break;
+    }
+
+    if (!nearWater) {
+      store.showNotification('你需要走到水边才能钓鱼！');
+      return;
+    }
+
+    // Check energy
+    if (store.player.energy < 10) {
+      store.showNotification('体力不足，无法钓鱼。休息一下吧。');
+      return;
+    }
+
+    // Get available fish for current conditions
+    const availableFish = getAvailableFish(
+      store.player.currentMap,
+      store.time.season,
+      store.time.hour,
+      store.weather.current,
+      0
+    );
+
+    if (availableFish.length === 0) {
+      store.showNotification('现在这里似乎没有鱼……换个时间再来吧。');
+      return;
+    }
+
+    // Pick a random fish weighted by rarity
+    const fish = this.pickRandomFish(availableFish, store.player.rodType, store.player.equippedBait);
+    if (!fish) return;
+
+    // Use energy
+    store.useEnergy(10);
+
+    // Show fishing notification
+    store.showNotification(`🐟 有鱼上钩了！`);
+
+    // Delay then start fishing minigame
+    this.time.delayedCall(1000, () => {
+      store.startFishing(fish);
+      store.openPanel('fishing_game');
+    });
+  }
+
+  private pickRandomFish(available: typeof import('../data/fish').ALL_FISH, rodType: string, baitType: string) {
+    // Weight by rarity
+    const rarityWeights: Record<string, number> = {
+      common: 60,
+      uncommon: 25,
+      rare: 10,
+      epic: 4,
+      legendary: 1,
+    };
+
+    // Adjust for rod and bait
+    const rodBonus: Record<string, number> = {
+      wooden: 0, copper: 5, iron: 10, silver: 15, gold: 25,
+    };
+    const baitBonus: Record<string, number> = {
+      none: 0, worm: 2, shrimp: 5, artificial: 8, special: 15,
+    };
+
+    const rareBonus = (rodBonus[rodType] || 0) + (baitBonus[baitType] || 0);
+
+    const weighted = available.map(fish => ({
+      fish,
+      weight: (rarityWeights[fish.rarity] || 10) + (fish.rarity !== 'common' ? rareBonus : 0),
+    }));
+
+    const totalWeight = weighted.reduce((sum, w) => sum + w.weight, 0);
+    let r = Math.random() * totalWeight;
+    for (const w of weighted) {
+      r -= w.weight;
+      if (r <= 0) return w.fish;
+    }
+    return weighted[weighted.length - 1]?.fish;
+  }
+
+  // ─── NPC Interaction ────────────────────────
+
+  private tryTalkToNPC(): void {
+    const tileX = Math.floor(this.player.x / (TILE_SIZE * 2));
+    const tileY = Math.floor(this.player.y / (TILE_SIZE * 2));
+
+    // Check nearby NPCs
+    this.npcSprites.forEach((sprite, npcId) => {
+      const npcTileX = Math.floor(sprite.x / (TILE_SIZE * 2));
+      const npcTileY = Math.floor(sprite.y / (TILE_SIZE * 2));
+      const dist = Math.abs(tileX - npcTileX) + Math.abs(tileY - npcTileY);
+      if (dist <= 2) {
+        this.interactWithNPC(npcId);
+      }
+    });
+  }
+
+  // ─── Fishing Spot Markers ───────────────────
+
+  private markFishingSpots(): void {
+    // Show ripple effects at water edges to indicate fishing spots
+    const store = useGameStore.getState();
+    const spots = this.findFishingSpots();
+
+    spots.forEach((pos, i) => {
+      const marker = this.add.graphics();
+      marker.setDepth(1);
+
+      this.tweens.add({
+        targets: marker,
+        alpha: { from: 0.6, to: 0.2 },
+        duration: 1500,
+        yoyo: true,
+        repeat: -1,
+        delay: i * 200,
+      });
+
+      marker.fillStyle(0xffffff, 0.3);
+      marker.fillCircle(pos.x * TILE_SIZE * 2, pos.y * TILE_SIZE * 2, 8);
+      this.fishingSpotMarkers.push(marker);
+    });
+  }
+
+  private findFishingSpots(): { x: number; y: number }[] {
+    const spots: { x: number; y: number }[] = [];
+    for (let y = 0; y < MAP_HEIGHT; y++) {
+      for (let x = 0; x < MAP_WIDTH; x++) {
+        if (this.collisionLayer[y]?.[x]) {
+          // Water tile next to walkable tile = fishing spot
+          const hasWalkableNeighbor = (
+            (y > 0 && !this.collisionLayer[y - 1]?.[x]) ||
+            (y < MAP_HEIGHT - 1 && !this.collisionLayer[y + 1]?.[x]) ||
+            (x > 0 && !this.collisionLayer[y]?.[x - 1]) ||
+            (x < MAP_WIDTH - 1 && !this.collisionLayer[y]?.[x + 1])
+          );
+          if (hasWalkableNeighbor) {
+            spots.push({ x, y });
+          }
+        }
+      }
+    }
+    // Return subset for performance
+    const step = Math.max(1, Math.floor(spots.length / 20));
+    return spots.filter((_, i) => i % step === 0);
+  }
+
+  // ─── Public API ─────────────────────────────
+
+  teleportPlayer(tileX: number, tileY: number): void {
+    this.player.setPosition(tileX * TILE_SIZE * 2, tileY * TILE_SIZE * 2);
+  }
+
+  changeMap(location: FishingLocation): void {
+    this.currentMap = location;
+    this.mapTiles.flat().forEach(t => t.destroy());
+    this.mapTiles = [];
+    this.fishingSpotMarkers.forEach(m => m.destroy());
+    this.fishingSpotMarkers = [];
+    this.generateMap(location);
+    this.markFishingSpots();
+    useGameStore.getState().changeMap(location);
+  }
+}

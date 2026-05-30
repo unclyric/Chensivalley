@@ -1,0 +1,172 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================
+   沉思谷物鱼 - Global Styles
+   Meditation Valley Fish
+   ============================================ */
+
+:root {
+  --color-bg: #2d1b2e;
+  --color-panel: #3d2b3e;
+  --color-border: #5a3d5c;
+  --color-text: #e8d5c4;
+  --color-accent: #7eb5a6;
+  --color-gold: #d4a853;
+  --color-heart: #e85d75;
+  --color-water: #4a8fbf;
+  --color-grass: #5a8f4a;
+  --color-wood: #8b6914;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #2d1b2e;
+  font-family: 'Press Start 2P', monospace;
+  color: #e8d5c4;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+/* 像素风格滚动条 */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #2d1b2e;
+}
+::-webkit-scrollbar-thumb {
+  background: #5a3d5c;
+  border: 2px solid #2d1b2e;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #7eb5a6;
+}
+
+/* 像素风格按钮 */
+.pixel-btn {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 12px;
+  padding: 8px 16px;
+  border: 3px solid #5a3d5c;
+  background: #3d2b3e;
+  color: #e8d5c4;
+  cursor: pointer;
+  transition: all 0.1s ease;
+  image-rendering: pixelated;
+}
+.pixel-btn:hover {
+  background: #5a3d5c;
+  border-color: #7eb5a6;
+  color: #fff;
+  transform: scale(1.02);
+}
+.pixel-btn:active {
+  transform: scale(0.98);
+}
+.pixel-btn.accent {
+  border-color: #7eb5a6;
+  background: #2d4a3e;
+}
+.pixel-btn.gold {
+  border-color: #d4a853;
+  background: #4a3d1e;
+}
+
+/* 像素风格面板 */
+.pixel-panel {
+  background: #3d2b3e;
+  border: 4px solid #5a3d5c;
+  padding: 16px;
+  box-shadow: inset 0 0 0 2px #2d1b2e, 0 4px 0 #1a0d1e;
+}
+
+/* 像素风格输入框 */
+.pixel-input {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 10px;
+  padding: 6px 10px;
+  border: 3px solid #5a3d5c;
+  background: #2d1b2e;
+  color: #e8d5c4;
+  outline: none;
+}
+.pixel-input:focus {
+  border-color: #7eb5a6;
+}
+
+/* 动画 */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+@keyframes slideIn {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.animate-float { animation: float 3s ease-in-out infinite; }
+.animate-pulse { animation: pulse 2s ease-in-out infinite; }
+.animate-slide-in { animation: slideIn 0.3s ease-out; }
+
+/* Phaser 游戏容器 */
+#game-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+#game-container canvas {
+  display: block;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+/* React UI 覆盖层 */
+#ui-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  pointer-events: none;
+}
+#ui-overlay > * {
+  pointer-events: auto;
+}
+
+/* 禁用文本选择 */
+.no-select {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* 工具提示 */
+.tooltip {
+  position: absolute;
+  background: #1a0d1e;
+  border: 2px solid #7eb5a6;
+  padding: 8px 12px;
+  font-size: 10px;
+  color: #e8d5c4;
+  pointer-events: none;
+  z-index: 100;
+  white-space: nowrap;
+}
