@@ -48,7 +48,7 @@ export const ShopPanel: React.FC = () => {
       <div className="pixel-panel w-[650px] max-h-[80vh] flex flex-col">
         {/* Header */}
         <div className="flex justify-between items-center mb-4">
-          <h2 className="font-pixel text-sm text-game-gold">🏪 智爸的杂货铺</h2>
+          <h2 className="font-pixel text-sm text-game-gold">🏪 爸爸的小摊</h2>
           <span className="font-pixel text-xs text-game-gold">💰 {formatGold(player.gold)}</span>
           <button onClick={closePanel} className="pixel-btn text-xs px-3 py-1">✕</button>
         </div>

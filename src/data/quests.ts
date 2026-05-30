@@ -31,8 +31,8 @@ export const ALL_QUESTS: QuestData[] = [
   },
   {
     id: 'main_meet_merchant',
-    name: '遇见旅行商人',
-    description: '华泽建议你去见见旅行商人智爸，他有些好东西可以帮你。',
+    name: '父亲的小摊',
+    description: '华泽说湖边有个摆摊的人一直在等你。去看看是谁吧。',
     type: QuestType.Main,
     prerequisites: ['main_first_catch'],
     objectives: [{ type: 'talk_to_npc', target: 'traveling_merchant', quantity: 1, progress: 0 }],
