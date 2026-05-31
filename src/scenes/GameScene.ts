@@ -39,6 +39,8 @@ export class GameScene extends Phaser.Scene {
   private timeAccumulator = 0;
   private currentMap: FishingLocation = FishingLocation.MeditationLake;
   private edgeHintShown = false;
+  private bgm!: Phaser.Sound.BaseSound;
+  private bgmMuted = false;
 
   constructor() {
     super({ key: 'GameScene' });
@@ -61,6 +63,23 @@ export class GameScene extends Phaser.Scene {
     this.actionKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.E);
     this.mapKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.M);
     this.inventoryKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.I);
+
+    // ── Background Music ──────────────────────
+    this.sound.volume = 0.25;
+    this.bgm = this.sound.add('bgm', { loop: true });
+    this.bgm.play();
+
+    // B key toggles mute
+    const muteKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.B);
+    muteKey.on('down', () => {
+      this.bgmMuted = !this.bgmMuted;
+      this.sound.mute = this.bgmMuted;
+      if (this.bgmMuted) {
+        useGameStore.getState().showNotification('🔇 背景音乐已关闭');
+      } else {
+        useGameStore.getState().showNotification('🔊 背景音乐已开启');
+      }
+    });
 
     // Generate map
     this.generateMap(this.currentMap);

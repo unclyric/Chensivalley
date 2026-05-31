@@ -15,6 +15,9 @@ export class BootScene extends Phaser.Scene {
       fontFamily: '"Press Start 2P", monospace',
       fontSize: '14px', color: '#e8d5c4',
     }).setOrigin(0.5);
+
+    // Load background music
+    this.load.audio('bgm', '/bgm.mp3');
   }
 
   create(): void {
