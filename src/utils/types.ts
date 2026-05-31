@@ -199,14 +199,30 @@ export interface NPCSchedule {
   };
 }
 
-export interface NPCDialogueTree {
+export interface NPCDialogueBase {
   default: string[];
-  [heartLevel: string]: string[]; // "0"-"10"
+  random: string[];            // randomly picked from on each interaction
   quest: string[];
   gift: string[];
   giftLoved: string[];
   giftLiked: string[];
   giftHated: string[];
+  // Contextual dialogues
+  morning?: string[];          // 5:00-12:00
+  afternoon?: string[];        // 12:00-17:00
+  evening?: string[];          // 17:00-20:00
+  night?: string[];            // 20:00-5:00
+  rainy?: string[];            // when raining
+  stormy?: string[];           // when stormy
+  sunny?: string[];            // when sunny
+  spring?: string[];           // spring season
+  summer?: string[];           // summer season
+  autumn?: string[];           // autumn season
+  winter?: string[];           // winter season
+}
+
+export interface NPCDialogueTree extends NPCDialogueBase {
+  [heartLevel: string]: string[] | undefined; // "0"-"10" heart-level specific
 }
 
 export interface QuestData {

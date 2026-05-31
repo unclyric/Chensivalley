@@ -503,31 +503,99 @@ export class GameScene extends Phaser.Scene {
     const hearts = store.getRelationship(npcId);
     const heartLevel = Math.floor(hearts);
     const key = heartLevel.toString();
+    const d = npcData.dialogues;
+    const t = store.time;
+    const w = store.weather;
 
-    // Get dialogues for current heart level
-    let dialogues = npcData.dialogues[key] || npcData.dialogues.default;
+    // ── Build a varied dialogue set ──────────
+    const selected: string[] = [];
 
-    // Add relationship info
+    // 1. Pick 2-3 random lines from the "random" pool
+    if (d.random && d.random.length > 0) {
+      const count = Math.min(3, d.random.length);
+      const picked = this.pickRandom(d.random, count);
+      selected.push(...picked);
+    }
+
+    // 2. Pick 1-2 contextual lines based on time of day
+    const tod = getTimeOfDay(t.hour);
+    const timeKey = tod === 'dawn' || tod === 'morning' ? 'morning'
+      : tod === 'afternoon' ? 'afternoon'
+      : tod === 'evening' ? 'evening'
+      : 'night';
+    const timeDialogues = d[timeKey as keyof typeof d] as string[] | undefined;
+    if (timeDialogues && timeDialogues.length > 0) {
+      selected.push(this.pickRandom(timeDialogues, 1)[0]);
+    }
+
+    // 3. Pick 1 contextual line based on weather
+    const weatherKey = w.current === 'rainy' ? 'rainy'
+      : w.current === 'stormy' ? 'stormy'
+      : w.current === 'sunny' ? 'sunny'
+      : null;
+    if (weatherKey) {
+      const weatherDialogues = d[weatherKey as keyof typeof d] as string[] | undefined;
+      if (weatherDialogues && weatherDialogues.length > 0) {
+        selected.push(this.pickRandom(weatherDialogues, 1)[0]);
+      }
+    }
+
+    // 4. Pick 1 contextual line based on season
+    const seasonKey = t.season as string;
+    const seasonDialogues = d[seasonKey as keyof typeof d] as string[] | undefined;
+    if (seasonDialogues && seasonDialogues.length > 0) {
+      selected.push(this.pickRandom(seasonDialogues, 1)[0]);
+    }
+
+    // 5. Pick 1-2 lines from the heart-level specific pool
+    const heartDialogues = d[key] || d.default;
+    if (heartDialogues && heartDialogues.length > 0) {
+      const count = Math.min(2, heartDialogues.length);
+      const picked = this.pickRandom(heartDialogues, count);
+      selected.push(...picked);
+    }
+
+    // 6. Fallback to default if nothing was selected
+    if (selected.length === 0) {
+      selected.push(...(d.default || ['……（沉默）']));
+    }
+
+    // 7. Shuffle for variety
+    this.shuffleArray(selected);
+
+    // ── Add relationship info header ──────────
     const heartDisplay = '❤️'.repeat(Math.floor(hearts / 2)) + '🤍'.repeat(5 - Math.floor(hearts / 2));
-    dialogues = [`${npcData.name} - ${npcData.title}`, `好感度: ${heartDisplay}`, ...dialogues];
+    const dialogues = [`${npcData.name} - ${npcData.title}`, `好感度: ${heartDisplay}`, ...selected];
 
     // Track quest progress for "talk to NPC" objectives
     store.checkQuestProgress('talk_to_npc', npcId, 1);
 
-    // Small relationship boost for talking (only once per session)
+    // Small relationship boost for talking
     if (Math.random() < 0.3) {
       store.changeRelationship(npcId, 0.05);
     }
 
     store.startDialog(npcId, dialogues);
+  }
 
-    // Show a small notification after dialog closes (via delayed call)
-    this.time.delayedCall(500, () => {
-      const currentStore = useGameStore.getState();
-      if (currentStore.currentPanel !== 'npc_dialog') {
-        // Dialog has closed, show feedback
-      }
-    });
+  /** Pick n random unique items from an array */
+  private pickRandom<T>(arr: T[], n: number): T[] {
+    if (n >= arr.length) return [...arr];
+    const copy = [...arr];
+    const result: T[] = [];
+    for (let i = 0; i < n; i++) {
+      const idx = Math.floor(Math.random() * copy.length);
+      result.push(copy.splice(idx, 1)[0]);
+    }
+    return result;
+  }
+
+  /** Fisher-Yates shuffle in place */
+  private shuffleArray<T>(arr: T[]): void {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
   }
 
   // ─── Fishing ────────────────────────────────
