@@ -41,6 +41,8 @@ export class GameScene extends Phaser.Scene {
   private edgeHintShown = false;
   private bgm!: Phaser.Sound.BaseSound;
   private bgmMuted = false;
+  private handItemText!: Phaser.GameObjects.Text;
+  private lastActionTime = 0;
 
   constructor() {
     super({ key: 'GameScene' });
@@ -69,8 +71,8 @@ export class GameScene extends Phaser.Scene {
     this.bgm = this.sound.add('bgm', { loop: true });
     this.bgm.play();
 
-    // B key toggles mute
-    const muteKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.B);
+    // N key toggles mute
+    const muteKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.N);
     muteKey.on('down', () => {
       this.bgmMuted = !this.bgmMuted;
       this.sound.mute = this.bgmMuted;
@@ -97,6 +99,15 @@ export class GameScene extends Phaser.Scene {
 
     // Create HUD
     this.createHUD();
+
+    // ── Hand item display ────────────────────
+    this.handItemText = this.add.text(0, 0, '', {
+      fontFamily: '"Press Start 2P", monospace',
+      fontSize: '20px',
+      color: '#ffffff',
+      stroke: '#000000',
+      strokeThickness: 3,
+    }).setOrigin(0.5).setDepth(15).setAlpha(0);
 
     // Spawn NPCs
     this.spawnNPCs();
@@ -402,6 +413,13 @@ export class GameScene extends Phaser.Scene {
       store.advanceTime(1);
     }
 
+    // ── Action effect watcher ────────────────
+    const effect = useGameStore.getState().actionEffect;
+    if (effect && effect.time > this.lastActionTime) {
+      this.lastActionTime = effect.time;
+      this.showActionEffect(effect.icon);
+    }
+
     // Update HUD
     this.updateHUD();
   }
@@ -687,8 +705,9 @@ export class GameScene extends Phaser.Scene {
     // Use energy
     store.useEnergy(10);
 
-    // Show fishing notification
+    // Show fishing notification + visual rod effect
     store.showNotification(`🐟 有鱼上钩了！`);
+    store.triggerActionEffect('fish', '🎣');
 
     // Delay then start fishing minigame
     this.time.delayedCall(1000, () => {
@@ -799,12 +818,30 @@ export class GameScene extends Phaser.Scene {
 
   // ─── Animations ────────────────────────────
 
+  private showActionEffect(icon: string): void {
+    // Show item icon above player, float up and fade
+    this.handItemText.setText(icon);
+    this.handItemText.setPosition(this.player.x, this.player.y - 20);
+    this.handItemText.setAlpha(1);
+    this.handItemText.setScale(1);
+
+    // Float up and fade out
+    this.tweens.add({
+      targets: this.handItemText,
+      y: this.handItemText.y - 30,
+      alpha: 0,
+      scale: 1.5,
+      duration: 1200,
+      ease: 'Quad.easeOut',
+    });
+  }
+
   private addAnimations(): void {
-    // 1. Player idle bob
+    // 1. Player idle breathing (scale only, no position conflict with physics)
     this.tweens.add({
       targets: this.player,
-      y: this.player.y - 2,
-      duration: 1200,
+      scaleY: { from: 1, to: 0.97 },
+      duration: 1500,
       yoyo: true,
       repeat: -1,
       ease: 'Sine.easeInOut',

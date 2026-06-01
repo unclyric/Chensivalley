@@ -51,6 +51,10 @@ export interface GameStateStore {
   // Global flags
   flags: Record<string, boolean>;
 
+  // Action effect for visual feedback
+  actionEffect: { type: string; icon: string; time: number } | null;
+  triggerActionEffect: (type: string, icon: string) => void;
+
   // ─── Actions ──────────────────────────────
 
   // Game flow
@@ -190,6 +194,7 @@ export const useGameStore = create<GameStateStore>((set, get) => ({
   activeQuests: [],
   fishingGame: { ...defaultFishingGame },
   flags: {},
+  actionEffect: null,
 
   // ─── Game Flow ─────────────────────────────
   startGame: () => set({
@@ -405,11 +410,11 @@ export const useGameStore = create<GameStateStore>((set, get) => ({
     if (!invItem || invItem.quantity <= 0) {
       return { success: false, message: '背包中没有这个物品' };
     }
-    // Restore energy based on item
+    // Restore energy based on item (handle both short and shop-prefixed IDs)
     const energyRestore: Record<string, number> = {
-      bento: 30,
-      tea: 50,
-      fish_rice: 80,
+      bento: 30, food_bento: 30,
+      tea: 50, food_tea: 50,
+      fish_rice: 80, food_fish_rice: 80,
     };
     const restore = energyRestore[itemId] || 20;
     const currentEnergy = state.player.energy;
@@ -419,11 +424,10 @@ export const useGameStore = create<GameStateStore>((set, get) => ({
 
     // Remove item from inventory
     get().removeItem(itemId, 1);
-    // Restore energy
-    const newEnergy = Math.min(state.player.maxEnergy, currentEnergy + restore);
-    set({
-      player: { ...get().player, energy: newEnergy },
-    });
+    // Restore energy (uses built-in cap)
+    get().restoreEnergy(restore);
+    // Show visual effect
+    get().triggerActionEffect('use_item', def.icon);
     return { success: true, message: `使用了${def.name}，恢复了${restore}点体力！` };
   },
 
@@ -824,6 +828,10 @@ export const useGameStore = create<GameStateStore>((set, get) => ({
 
   showNotification: (text: string) => set({ notification: text }),
   clearNotification: () => set({ notification: null }),
+
+  triggerActionEffect: (type: string, icon: string) => set({
+    actionEffect: { type, icon, time: Date.now() },
+  }),
 }));
 
 // ─── Helper ──────────────────────────────────

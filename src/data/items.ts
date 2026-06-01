@@ -228,6 +228,15 @@ export const ALL_SHOP_ITEMS: ShopItem[] = [
     stock: 5,
     restockInterval: 3,
   },
+  {
+    id: 'special_ghost_painting',
+    name: '鬼画符',
+    description: '没用处，纯卖。智爸进货时也不知道为什么会买这个。',
+    category: ItemCategory.Special,
+    price: 100,
+    stock: 99,
+    restockInterval: 1,
+  },
 ];
 
 // ─── Item definitions for inventory ──────────
@@ -268,13 +277,18 @@ export const ITEM_DEFINITIONS: Record<string, ItemDefinition> = {
   flower_pot: { id: 'flower_pot', name: '花盆', description: '装饰物', category: ItemCategory.Decoration, maxStack: 10, sellPrice: 20, icon: '🪴' },
   fish_statue: { id: 'fish_statue', name: '鱼雕像', description: '装饰物', category: ItemCategory.Decoration, maxStack: 5, sellPrice: 100, icon: '🗿' },
 
-  // Food
+  // Food (short IDs from quests)
   bento: { id: 'bento', name: '便当', description: '恢复30体力', category: ItemCategory.Food, maxStack: 20, sellPrice: 16, icon: '🍱' },
   tea: { id: 'tea', name: '沉思茶', description: '恢复50体力', category: ItemCategory.Food, maxStack: 20, sellPrice: 30, icon: '🍵' },
   fish_rice: { id: 'fish_rice', name: '鱼香饭', description: '恢复80体力', category: ItemCategory.Food, maxStack: 10, sellPrice: 40, icon: '🍚' },
+  // Food (shop IDs with food_ prefix)
+  food_bento: { id: 'food_bento', name: '便当', description: '恢复30体力', category: ItemCategory.Food, maxStack: 20, sellPrice: 16, icon: '🍱' },
+  food_tea: { id: 'food_tea', name: '沉思茶', description: '恢复50体力', category: ItemCategory.Food, maxStack: 20, sellPrice: 30, icon: '🍵' },
+  food_fish_rice: { id: 'food_fish_rice', name: '鱼香饭', description: '恢复80体力', category: ItemCategory.Food, maxStack: 10, sellPrice: 40, icon: '🍚' },
 
   // Special
   lucky_charm: { id: 'lucky_charm', name: '幸运符', description: '+5%稀有鱼概率', category: ItemCategory.Special, maxStack: 5, sellPrice: 60, icon: '🍀' },
   weather_charm: { id: 'weather_charm', name: '天气符', description: '改变天气', category: ItemCategory.Special, maxStack: 3, sellPrice: 100, icon: '🌤️' },
   time_charm: { id: 'time_charm', name: '时光符', description: '快进时间', category: ItemCategory.Special, maxStack: 5, sellPrice: 40, icon: '⏰' },
+  special_ghost_painting: { id: 'special_ghost_painting', name: '鬼画符', description: '没用处，纯卖', category: ItemCategory.Special, maxStack: 99, sellPrice: 5, icon: '👻' },
 };

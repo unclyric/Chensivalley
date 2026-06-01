@@ -83,7 +83,7 @@ export const QuestPanel: React.FC = () => {
                       className="font-pixel text-[8px] px-2 py-0.5 mr-2"
                       style={{ backgroundColor: typeColors[quest.type], color: '#fff' }}
                     >
-                      quest.type === QuestType.Main ? '主线' : quest.type === QuestType.Side ? '支线' : '每日'
+                      {quest.type === QuestType.Main ? '主线' : quest.type === QuestType.Side ? '支线' : '每日'}
                     </span>
                     <span className="font-pixel text-[11px] text-game-text">{quest.name}</span>
                   </div>
