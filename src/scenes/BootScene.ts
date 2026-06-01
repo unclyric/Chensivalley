@@ -122,69 +122,100 @@ export class BootScene extends Phaser.Scene {
     sG.lineBetween(8, 2, 12, 10); sG.lineBetween(12, 10, 10, 18);
     sG.generateTexture('tile_stone', S, S); sG.destroy();
 
-    // Tree - thick trunk, layered canopy, shadow
+    // Tree - 3D with thick trunk going into canopy, layered leaves, ground shadow
     const tG = this.make.graphics({ x: 0, y: 0 });
-    // Shadow
-    tG.fillStyle(0x000000, 0.15); tG.fillEllipse(S / 2, S - 2, S - 6, 8);
-    // Trunk
-    tG.fillStyle(0x5a3a1a); tG.fillRect(S / 2 - 4, 12, 8, S - 12);
-    tG.fillStyle(0x7a5030, 0.5); tG.fillRect(S / 2 - 2, 12, 4, S - 14);
-    tG.fillStyle(0x4a2a10, 0.3); tG.fillRect(S / 2 - 4, 12, 2, S - 12);
-    // Root bumps
-    tG.fillStyle(0x5a3a1a); tG.fillRect(S / 2 - 5, S - 4, 4, 4);
+    // Ground shadow (elongated ellipse for 3D feel)
+    tG.fillStyle(0x000000, 0.2); tG.fillEllipse(S / 2, S - 1, S - 8, 5);
+    tG.fillStyle(0x000000, 0.08); tG.fillEllipse(S / 2, S, S - 4, 3);
+    // Trunk - 3D with bark texture
+    tG.fillStyle(0x4a2a10); tG.fillRect(S / 2 - 4, 10, 8, S - 10);
+    tG.fillStyle(0x6a4a20); tG.fillRect(S / 2 - 2, 10, 5, S - 12);
+    tG.fillStyle(0x3a1a08, 0.4); tG.fillRect(S / 2 - 3, 10, 1.5, S - 10);
+    tG.fillRect(S / 2 + 2, 10, 1.5, S - 10);
+    // Root flares at base
+    tG.fillStyle(0x4a2a10); tG.fillRect(S / 2 - 5, S - 3, 4, 3);
     tG.fillRect(S / 2 + 1, S - 3, 4, 3);
-    // Canopy - dark green base
+    tG.fillStyle(0x6a4a20, 0.4); tG.fillRect(S / 2 - 4, S - 2, 3, 3);
+    tG.fillRect(S / 2 + 1, S - 2, 3, 3);
+    // Canopy shadow (dark green underside)
+    tG.fillStyle(0x0d3d0d); tG.fillCircle(S / 2, 9, 13);
+    tG.fillCircle(S / 2 - 8, 11, 8); tG.fillCircle(S / 2 + 8, 11, 8);
+    tG.fillCircle(S / 2, 13, 10);
+    // Mid-dark layer
     tG.fillStyle(0x1a5a1a); tG.fillCircle(S / 2, 7, 12);
     tG.fillCircle(S / 2 - 7, 9, 8); tG.fillCircle(S / 2 + 7, 9, 8);
-    // Mid green layer
+    tG.fillCircle(S / 2, 11, 10);
+    // Mid-green main body
     tG.fillStyle(0x2d7a2d); tG.fillCircle(S / 2, 5, 10);
     tG.fillCircle(S / 2 - 5, 7, 7); tG.fillCircle(S / 2 + 5, 7, 7);
-    tG.fillCircle(S / 2, 10, 9);
-    // Light green highlights
-    tG.fillStyle(0x4da64d, 0.6); tG.fillCircle(S / 2, 3, 7);
-    tG.fillCircle(S / 2 - 4, 5, 5); tG.fillCircle(S / 2 + 4, 5, 5);
-    // Leaf detail dots
-    tG.fillStyle(0x6ac06a, 0.4); tG.fillCircle(S / 2, 2, 3);
-    tG.fillCircle(S / 2 - 3, 4, 2); tG.fillCircle(S / 2 + 3, 4, 2);
+    tG.fillCircle(S / 2, 9, 9);
+    tG.fillCircle(S / 2 - 3, 10, 6); tG.fillCircle(S / 2 + 3, 10, 6);
+    // Light green top layer (sunlit)
+    tG.fillStyle(0x4da64d, 0.7); tG.fillCircle(S / 2, 3, 8);
+    tG.fillCircle(S / 2 - 4, 5, 6); tG.fillCircle(S / 2 + 4, 5, 6);
+    tG.fillCircle(S / 2, 7, 6);
+    // Bright highlights (topmost leaves catching sun)
+    tG.fillStyle(0x6ac06a, 0.5); tG.fillCircle(S / 2, 1, 5);
+    tG.fillCircle(S / 2 - 3, 3, 4); tG.fillCircle(S / 2 + 3, 3, 4);
+    tG.fillCircle(S / 2, 5, 3);
+    // Individual leaf texture dots
+    tG.fillStyle(0x80d880, 0.3);
+    tG.fillCircle(S / 2, 0, 2); tG.fillCircle(S / 2 - 4, 2, 2);
+    tG.fillCircle(S / 2 + 4, 2, 2); tG.fillCircle(S / 2 - 2, 3, 2);
     tG.generateTexture('tile_tree', S, S); tG.destroy();
 
-    // Bush - rounded, layered foliage
+    // Bush - rounded 3D with dark underside, layered midtones, light top
     const bG = this.make.graphics({ x: 0, y: 0 });
-    bG.fillStyle(0x000000, 0.12); bG.fillEllipse(S / 2, S - 1, S - 4, 6);
-    // Dark green base
-    bG.fillStyle(0x1e6e1e); bG.fillCircle(S / 2, S / 2 + 2, 9);
-    bG.fillCircle(S / 2 - 5, S / 2 + 1, 7);
-    bG.fillCircle(S / 2 + 5, S / 2 + 1, 7);
-    // Mid green
-    bG.fillStyle(0x3d8a3d); bG.fillCircle(S / 2, S / 2, 8);
-    bG.fillCircle(S / 2 - 4, S / 2, 6);
-    bG.fillCircle(S / 2 + 4, S / 2, 6);
-    // Light green highlights
-    bG.fillStyle(0x5aaa5a, 0.5); bG.fillCircle(S / 2, S / 2 - 2, 5);
-    bG.fillCircle(S / 2 - 3, S / 2 - 1, 4);
-    bG.fillCircle(S / 2 + 3, S / 2 - 1, 4);
-    // Leaf dots
-    bG.fillStyle(0x7ec87e, 0.3); bG.fillCircle(S / 2, S / 2 - 3, 2);
+    // Ground shadow
+    bG.fillStyle(0x000000, 0.15); bG.fillEllipse(S / 2, S - 1, S - 6, 5);
+    // Dark bottom (self-shadow)
+    bG.fillStyle(0x0d3d0d); bG.fillCircle(S / 2, S / 2 + 4, 9);
+    bG.fillCircle(S / 2 - 5, S / 2 + 3, 7); bG.fillCircle(S / 2 + 5, S / 2 + 3, 7);
+    // Dark green base layer
+    bG.fillStyle(0x1e6e1e); bG.fillCircle(S / 2, S / 2 + 3, 9);
+    bG.fillCircle(S / 2 - 5, S / 2 + 2, 7); bG.fillCircle(S / 2 + 5, S / 2 + 2, 7);
+    // Mid green body
+    bG.fillStyle(0x3d8a3d); bG.fillCircle(S / 2, S / 2 + 1, 8);
+    bG.fillCircle(S / 2 - 4, S / 2, 6); bG.fillCircle(S / 2 + 4, S / 2, 6);
+    // Light green upper layer
+    bG.fillStyle(0x5aaa5a, 0.6); bG.fillCircle(S / 2, S / 2 - 1, 6);
+    bG.fillCircle(S / 2 - 3, S / 2 - 1, 5); bG.fillCircle(S / 2 + 3, S / 2 - 1, 5);
+    // Highlight
+    bG.fillStyle(0x7ec87e, 0.4); bG.fillCircle(S / 2, S / 2 - 3, 3);
+    bG.fillCircle(S / 2 - 2, S / 2 - 2, 2); bG.fillCircle(S / 2 + 2, S / 2 - 2, 2);
     bG.generateTexture('tile_bush', S, S); bG.destroy();
 
-    // Flower - tall stem, layered petals
+    // Flower - tall, 3D with shadow, multi-bloom, leaves on stem
     const fG = this.make.graphics({ x: 0, y: 0 });
-    // Stem with leaf
-    fG.fillStyle(0x3a7a3a); fG.fillRect(S / 2 - 1, 8, 2, S - 6);
-    fG.fillStyle(0x5aaa5a, 0.5); fG.fillRect(S / 2, 8, 1, S - 8);
-    // Leaf
-    fG.fillStyle(0x4a9a4a); fG.fillEllipse(S / 2 + 4, 14, 6, 3);
-    // Petals (layered circles)
-    fG.fillStyle(0xd06080); fG.fillCircle(S / 2 - 3, 5, 4);
-    fG.fillCircle(S / 2 + 3, 5, 4);
-    fG.fillCircle(S / 2, 2, 4); fG.fillCircle(S / 2, 8, 4);
+    // Ground shadow
+    fG.fillStyle(0x000000, 0.1); fG.fillEllipse(S / 2, S - 1, 5, 3);
+    // Main stem with highlight
+    fG.fillStyle(0x2a5a2a); fG.fillRect(S / 2 - 1, 8, 2, S - 6);
+    fG.fillStyle(0x4a9a4a, 0.5); fG.fillRect(S / 2, 8, 1, S - 8);
+    // Side leaf
+    fG.fillStyle(0x3a7a3a); fG.fillEllipse(S / 2 - 5, 16, 8, 3);
+    fG.fillStyle(0x5aaa5a, 0.4); fG.fillEllipse(S / 2 - 4, 15, 6, 2);
+    // Second leaf
+    fG.fillStyle(0x3a7a3a); fG.fillEllipse(S / 2 + 5, 20, 7, 2.5);
+    // Petal shadows (dark edges)
+    fG.fillStyle(0xb04060, 0.5);
+    fG.fillCircle(S / 2 - 3, 6, 4); fG.fillCircle(S / 2 + 3, 6, 4);
+    fG.fillCircle(S / 2, 3, 4); fG.fillCircle(S / 2, 9, 4);
+    // Petals (vibrant)
+    fG.fillStyle(0xd06080);
+    fG.fillCircle(S / 2 - 3, 5, 4.5); fG.fillCircle(S / 2 + 3, 5, 4.5);
+    fG.fillCircle(S / 2, 2, 4.5); fG.fillCircle(S / 2, 8, 4.5);
     fG.fillCircle(S / 2 - 3, 8, 4); fG.fillCircle(S / 2 + 3, 8, 4);
-    // Inner petals lighter
+    // Inner petals (lighter)
     fG.fillStyle(0xf0a0c0);
-    fG.fillCircle(S / 2 - 2, 4, 3); fG.fillCircle(S / 2 + 2, 4, 3);
-    fG.fillCircle(S / 2, 3, 3); fG.fillCircle(S / 2, 7, 3);
-    // Center
-    fG.fillStyle(0xf4d03f); fG.fillCircle(S / 2, 5, 2);
+    fG.fillCircle(S / 2 - 2, 4, 3.5); fG.fillCircle(S / 2 + 2, 4, 3.5);
+    fG.fillCircle(S / 2, 3, 3.5); fG.fillCircle(S / 2, 7, 3.5);
+    // Center (yellow)
+    fG.fillStyle(0xf4d03f); fG.fillCircle(S / 2, 5, 2.5);
+    fG.fillStyle(0xf0c830, 0.6); fG.fillCircle(S / 2, 5, 1.5);
+    // Small bud on side
+    fG.fillStyle(0xd06080); fG.fillCircle(S / 2 + 6, 12, 3);
+    fG.fillStyle(0xf0a0c0, 0.5); fG.fillCircle(S / 2 + 6, 11, 2);
     fG.generateTexture('tile_flower', S, S); fG.destroy();
 
     // Dock - wooden planks with grain

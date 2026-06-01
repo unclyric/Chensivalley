@@ -45,6 +45,7 @@ export class GameScene extends Phaser.Scene {
   private handItemText!: Phaser.GameObjects.Text;
   private lastActionTime = 0;
   private lastBuildingsVersion = -1;
+  private uiKeys!: { I: Phaser.Input.Keyboard.Key; M: Phaser.Input.Keyboard.Key };
 
   constructor() {
     super({ key: 'GameScene' });
@@ -65,8 +66,10 @@ export class GameScene extends Phaser.Scene {
 
     // Action keys
     this.actionKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.E);
-    const inventoryKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.I);
-    const mapKey2 = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.M);
+    this.uiKeys = {
+      I: this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.I),
+      M: this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.M),
+    };
 
     // ── Background Music ──────────────────────
     this.sound.volume = 0.25;
@@ -147,20 +150,6 @@ export class GameScene extends Phaser.Scene {
     this.actionKey.on('down', () => {
       this.tryFish();
       this.tryTalkToNPC();
-    });
-
-    // I key for inventory
-    inventoryKey.on('down', () => {
-      const s = useGameStore.getState();
-      if (s.currentPanel === 'none') s.openPanel('backpack');
-      else if (s.currentPanel === 'backpack') s.closePanel();
-    });
-
-    // M key for map
-    mapKey2.on('down', () => {
-      const s = useGameStore.getState();
-      if (s.currentPanel === 'none') s.openPanel('map');
-      else if (s.currentPanel === 'map') s.closePanel();
     });
 
     this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
@@ -464,6 +453,16 @@ export class GameScene extends Phaser.Scene {
 
   update(time: number, delta: number): void {
     const store = useGameStore.getState();
+
+    // ── UI Key checks (JustDown = single press) ──
+    if (Phaser.Input.Keyboard.JustDown(this.uiKeys.I)) {
+      if (store.currentPanel === 'none') store.openPanel('backpack');
+      else if (store.currentPanel === 'backpack') store.closePanel();
+    }
+    if (Phaser.Input.Keyboard.JustDown(this.uiKeys.M)) {
+      if (store.currentPanel === 'none') store.openPanel('map');
+      else if (store.currentPanel === 'map') store.closePanel();
+    }
 
     // Only process game update if no panel is open
     if (store.currentPanel !== 'none' && store.currentPanel !== 'npc_dialog') {
