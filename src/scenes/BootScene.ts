@@ -217,110 +217,106 @@ export class BootScene extends Phaser.Scene {
     brG.generateTexture('tile_bridge', S, S); brG.destroy();
   }
 
-  // ─── PLAYER (detailed girl with fishing rod) ───
-
   private createPlayerTexture(): void {
     const sc = 2, total = 16 * sc, gfx = this.make.graphics({ x: 0, y: 0 });
 
     // Shadow
     gfx.fillStyle(0x000000, 0.1); gfx.fillEllipse(8 * sc, 15 * sc + 1, 9 * sc, 3);
 
-    // Long flowing hair (behind body)
-    gfx.fillStyle(0x3a1a10);
-    gfx.fillRect(2 * sc, 5 * sc, 3 * sc, 8 * sc);   // left side
-    gfx.fillRect(11 * sc, 5 * sc, 3 * sc, 8 * sc);  // right side
-    gfx.fillRect(3 * sc, 11 * sc, 2 * sc, 5 * sc);  // left bottom
-    gfx.fillRect(11 * sc, 11 * sc, 2 * sc, 5 * sc);  // right bottom
+    // ── Long flowing hair (behind body, reaches waist) ──
+    gfx.fillStyle(0x2a1010); // dark brown base
+    // Left side hair mass
+    gfx.fillRect(2 * sc, 5 * sc, 3 * sc, 8 * sc);
+    gfx.fillRect(2 * sc, 11 * sc, 2 * sc, 5 * sc);
+    // Right side hair mass
+    gfx.fillRect(11 * sc, 5 * sc, 3 * sc, 8 * sc);
+    gfx.fillRect(12 * sc, 11 * sc, 2 * sc, 5 * sc);
+    // Back hair flowing down
+    gfx.fillRect(4 * sc, 10 * sc, 8 * sc, 4 * sc);
+    // Hair ends (wavy tips)
+    gfx.fillRect(3 * sc, 13 * sc, 2 * sc, 2 * sc);
+    gfx.fillRect(11 * sc, 13 * sc, 2 * sc, 2 * sc);
     // Hair highlights
-    gfx.fillStyle(0x6a3a2a, 0.4);
-    gfx.fillRect(3 * sc, 5 * sc, 1, 6 * sc);
-    gfx.fillRect(11 * sc, 5 * sc, 1, 6 * sc);
+    gfx.fillStyle(0x5a3030, 0.4);
+    gfx.fillRect(3 * sc, 6 * sc, 1 * sc, 5 * sc);
+    gfx.fillRect(12 * sc, 6 * sc, 1 * sc, 5 * sc);
+    gfx.fillStyle(0x4a2020, 0.3);
+    gfx.fillRect(5 * sc, 10 * sc, 6 * sc, 2 * sc);
 
-    // Body - blue dress with folds
-    // Main dress
-    gfx.fillStyle(0x2858a0); gfx.fillRect(3 * sc, 7 * sc, 10 * sc, 7 * sc);
-    // Lighter panels
-    gfx.fillStyle(0x4078c0); gfx.fillRect(4 * sc, 7 * sc, 8 * sc, 4 * sc);
-    // Dress fold lines
-    gfx.fillStyle(0x1a4080, 0.4);
-    gfx.fillRect(5 * sc, 8 * sc, 1, 6 * sc);
-    gfx.fillRect(10 * sc, 8 * sc, 1, 6 * sc);
-    // Belt/sash
-    gfx.fillStyle(0xd4a853); gfx.fillRect(4 * sc, 10 * sc, 8 * sc, 1.5 * sc);
-    gfx.fillStyle(0xe8c878, 0.5); gfx.fillRect(5 * sc, 10 * sc, 6 * sc, 0.5 * sc);
-    // Skirt bottom hem
-    gfx.fillStyle(0xa0d0f0, 0.25); gfx.fillRect(3 * sc, 13 * sc, 10 * sc, 1);
-    // Dress highlight
-    gfx.fillStyle(0x6098e0, 0.3);
-    gfx.fillRect(7 * sc, 7 * sc, 2 * sc, 3 * sc);
+    // ── Body - blue dress ──
+    gfx.fillStyle(0x2858a0); gfx.fillRect(4 * sc, 7 * sc, 8 * sc, 6 * sc);
+    gfx.fillStyle(0x4078c0); gfx.fillRect(5 * sc, 7 * sc, 6 * sc, 3 * sc);
+    // Dress fold
+    gfx.fillStyle(0x1a4080, 0.4); gfx.fillRect(7 * sc, 8 * sc, 1, 4 * sc);
+    gfx.fillStyle(0x6098e0, 0.25); gfx.fillRect(9 * sc, 7 * sc, 2 * sc, 2 * sc);
+    // Belt
+    gfx.fillStyle(0xd4a853); gfx.fillRect(4 * sc, 9.5 * sc, 8 * sc, 1 * sc);
 
-    // Head
+    // ── SEPARATED LEGS ──
+    // Left leg
+    gfx.fillStyle(0x2858a0); gfx.fillRect(5 * sc, 12 * sc, 2.5 * sc, 2 * sc);
+    // Right leg (gap at 7.5-8.5 sc)
+    gfx.fillStyle(0x2858a0); gfx.fillRect(8.5 * sc, 12 * sc, 2.5 * sc, 2 * sc);
+    // Leg gap shadow
+    gfx.fillStyle(0x1a3060, 0.5); gfx.fillRect(7.5 * sc, 12 * sc, 1 * sc, 2 * sc);
+    // Left boot
+    gfx.fillStyle(0x5a3a2a); gfx.fillRect(4.5 * sc, 14 * sc, 3 * sc, 2 * sc);
+    gfx.fillStyle(0xf8f4f0); gfx.fillRect(4.5 * sc, 13 * sc, 3 * sc, 1.5 * sc);
+    // Right boot
+    gfx.fillStyle(0x5a3a2a); gfx.fillRect(8.5 * sc, 14 * sc, 3 * sc, 2 * sc);
+    gfx.fillStyle(0xf8f4f0); gfx.fillRect(8.5 * sc, 13 * sc, 3 * sc, 1.5 * sc);
+
+    // ── Head ──
     gfx.fillStyle(0xfce4c8); gfx.fillRect(5 * sc, 2 * sc, 6 * sc, 5 * sc);
-    // Face shading
     gfx.fillStyle(0xf0d0b0, 0.3); gfx.fillRect(6 * sc, 4 * sc, 4 * sc, 3 * sc);
 
-    // Hair top and bangs
-    gfx.fillStyle(0x3a1a10);
-    gfx.fillRect(4 * sc, 0, 8 * sc, 3 * sc);  // top
-    gfx.fillRect(4 * sc, 1 * sc, 2 * sc, 4 * sc);  // left side hair
-    gfx.fillRect(10 * sc, 1 * sc, 2 * sc, 4 * sc); // right side hair
-    // Bangs fringe
-    gfx.fillRect(5 * sc, 2 * sc, 6 * sc, 1);
-    gfx.fillRect(4 * sc, 3 * sc, 3 * sc, 1);
-    gfx.fillRect(9 * sc, 3 * sc, 3 * sc, 1);
+    // ── Hair top and bangs (more feminine) ──
+    gfx.fillStyle(0x2a1010);
+    gfx.fillRect(4 * sc, 0, 8 * sc, 3 * sc);  // top hair
+    gfx.fillRect(3 * sc, 1 * sc, 2 * sc, 4 * sc);  // left side
+    gfx.fillRect(11 * sc, 1 * sc, 2 * sc, 4 * sc); // right side
+    // Bangs fringe across forehead
+    gfx.fillRect(4 * sc, 2 * sc, 8 * sc, 1);
+    gfx.fillRect(3 * sc, 3 * sc, 4 * sc, 1);
+    gfx.fillRect(9 * sc, 3 * sc, 4 * sc, 1);
+    // Side strands framing face
+    gfx.fillRect(3 * sc, 4 * sc, 2 * sc, 3 * sc);
+    gfx.fillRect(11 * sc, 4 * sc, 2 * sc, 3 * sc);
     // Hair highlight
-    gfx.fillStyle(0x6a3a2a, 0.35); gfx.fillRect(6 * sc, 0, 3 * sc, 2 * sc);
+    gfx.fillStyle(0x5a3030, 0.35); gfx.fillRect(6 * sc, 0, 3 * sc, 2 * sc);
 
-    // Blue ribbon
+    // Blue ribbon (right side)
     gfx.fillStyle(0x5098e0); gfx.fillRect(10 * sc, -1, 4 * sc, 3 * sc);
     gfx.fillStyle(0x80c8ff, 0.5); gfx.fillRect(11 * sc, -1, 2 * sc, 2 * sc);
 
-    // Eyes - large and expressive
-    gfx.fillStyle(0xffffff); gfx.fillRect(6 * sc, 3 * sc, 3 * sc, 3 * sc);
-    gfx.fillRect(9 * sc, 3 * sc, 3 * sc, 3 * sc);
-    // Iris
-    gfx.fillStyle(0x2a5080); gfx.fillRect(7 * sc, 3 * sc, 2 * sc, 3 * sc);
-    gfx.fillRect(10 * sc, 3 * sc, 2 * sc, 3 * sc);
-    // Pupil
+    // ── Large expressive eyes ──
+    gfx.fillStyle(0xffffff); gfx.fillRect(6 * sc, 3.5 * sc, 2.5 * sc, 2.5 * sc);
+    gfx.fillRect(9 * sc, 3.5 * sc, 2.5 * sc, 2.5 * sc);
+    gfx.fillStyle(0x2a5080); gfx.fillRect(6.5 * sc, 3.5 * sc, 2 * sc, 2.5 * sc);
+    gfx.fillRect(9.5 * sc, 3.5 * sc, 2 * sc, 2.5 * sc);
     gfx.fillStyle(0x000000); gfx.fillRect(7 * sc, 4 * sc, 1.5 * sc, 2 * sc);
     gfx.fillRect(10 * sc, 4 * sc, 1.5 * sc, 2 * sc);
-    // Eye shine
-    gfx.fillStyle(0xffffff); gfx.fillRect(7 * sc, 3 * sc, 1, 1);
-    gfx.fillRect(10 * sc, 3 * sc, 1, 1);
+    gfx.fillStyle(0xffffff); gfx.fillRect(7 * sc, 3.5 * sc, 0.8 * sc, 0.8 * sc);
+    gfx.fillRect(10 * sc, 3.5 * sc, 0.8 * sc, 0.8 * sc);
     // Eyelashes
-    gfx.fillStyle(0x000000); gfx.fillRect(6 * sc, 3 * sc, 3 * sc, 0.5 * sc);
-    gfx.fillRect(9 * sc, 3 * sc, 3 * sc, 0.5 * sc);
-
-    // Blush
-    gfx.fillStyle(0xf0a0a0, 0.35); gfx.fillRect(5 * sc, 5 * sc, 2 * sc, 1);
+    gfx.fillStyle(0x000000); gfx.fillRect(6 * sc, 3.5 * sc, 2.5 * sc, 0.5 * sc);
+    gfx.fillRect(9 * sc, 3.5 * sc, 2.5 * sc, 0.5 * sc);
+    // Blush + mouth
+    gfx.fillStyle(0xf0a0a0, 0.3); gfx.fillRect(5 * sc, 5 * sc, 2 * sc, 1);
     gfx.fillRect(9 * sc, 5 * sc, 2 * sc, 1);
-    // Mouth
-    gfx.fillStyle(0xd06070); gfx.fillRect(8 * sc, 5.5 * sc, 1.5 * sc, 0.5 * sc);
+    gfx.fillStyle(0xd06070); gfx.fillRect(7.5 * sc, 5.5 * sc, 1.5 * sc, 0.5 * sc);
 
-    // Arms
-    gfx.fillStyle(0xfce4c8); gfx.fillRect(2 * sc, 8 * sc, 2.5 * sc, 4 * sc);
-    gfx.fillRect(11.5 * sc, 8 * sc, 2.5 * sc, 4 * sc);
-    // Hand detail
-    gfx.fillStyle(0xf8d8b8); gfx.fillRect(2 * sc, 11 * sc, 2 * sc, 1.5 * sc);
-    gfx.fillRect(12 * sc, 11 * sc, 2 * sc, 1.5 * sc);
+    // ── Arms ──
+    gfx.fillStyle(0xfce4c8); gfx.fillRect(2.5 * sc, 8 * sc, 2 * sc, 3.5 * sc);
+    gfx.fillRect(11.5 * sc, 8 * sc, 2 * sc, 3.5 * sc);
+    gfx.fillStyle(0xf8d8b8); gfx.fillRect(2.5 * sc, 10.5 * sc, 2 * sc, 1.5 * sc);
+    gfx.fillRect(11.5 * sc, 10.5 * sc, 2 * sc, 1.5 * sc);
 
-    // Boots
-    gfx.fillStyle(0x5a3a2a); gfx.fillRect(5 * sc, 14 * sc, 4 * sc, 2 * sc);
-    gfx.fillRect(9 * sc, 14 * sc, 4 * sc, 2 * sc);
-    // Boot tops
-    gfx.fillStyle(0xf8f4f0); gfx.fillRect(5 * sc, 13 * sc, 4 * sc, 1.5 * sc);
-    gfx.fillRect(9 * sc, 13 * sc, 4 * sc, 1.5 * sc);
-    // Boot detail
-    gfx.fillStyle(0x4a2a1a, 0.5); gfx.fillRect(5 * sc, 14 * sc, 4 * sc, 0.5 * sc);
-    gfx.fillRect(9 * sc, 14 * sc, 4 * sc, 0.5 * sc);
-
-    // Fishing rod (held at right side)
-    gfx.fillStyle(0x6a4a1a); gfx.fillRect(13 * sc, 1 * sc, 2 * sc, 14 * sc);
-    gfx.fillStyle(0x8a6a3a, 0.4); gfx.fillRect(13 * sc, 1 * sc, 1, 12 * sc);
-    // Rod tip
-    gfx.fillStyle(0xe8e8e8); gfx.fillRect(13 * sc, 0, 2 * sc, 2 * sc);
-    // Fishing line
-    gfx.lineStyle(0.6, 0xe8e8e8, 0.7); gfx.lineBetween(14 * sc, 16 * sc, 16 * sc, 16 * sc);
+    // ── Fishing rod ──
+    gfx.fillStyle(0x6a4a1a); gfx.fillRect(12.5 * sc, 1 * sc, 2 * sc, 14 * sc);
+    gfx.fillStyle(0x8a6a3a, 0.4); gfx.fillRect(12.5 * sc, 1 * sc, 1, 12 * sc);
+    gfx.fillStyle(0xe8e8e8); gfx.fillRect(12.5 * sc, 0, 2 * sc, 2 * sc);
+    gfx.lineStyle(0.6, 0xe8e8e8, 0.7); gfx.lineBetween(13.5 * sc, 16 * sc, 16 * sc, 16 * sc);
 
     gfx.generateTexture('player', total, total); gfx.destroy();
   }

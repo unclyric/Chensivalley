@@ -105,10 +105,12 @@ export const MainMenu: React.FC = () => {
           <div className="font-pixel text-[9px] text-game-text space-y-2 leading-relaxed">
             <p>🎮 <span className="text-game-accent">移动：</span>方向键 或 WASD</p>
             <p>🎣 <span className="text-game-accent">钓鱼：</span>走到水边按 E</p>
-            <p>💬 <span className="text-game-accent">对话：</span>靠近NPC按 E</p>
+            <p>💬 <span className="text-game-accent">对话：</span>靠近NPC按 E / 点击NPC</p>
             <p>📦 <span className="text-game-accent">背包：</span>按 I 键</p>
             <p>🗺️ <span className="text-game-accent">地图：</span>按 M 键</p>
+            <p>🏗️ <span className="text-game-accent">建造：</span>按 B 键</p>
             <p>📋 <span className="text-game-accent">任务：</span>按 J 键</p>
+            <p>🔊 <span className="text-game-accent">音乐开关：</span>按 N 键</p>
             <p>⚙️ <span className="text-game-accent">设置：</span>按 Esc</p>
             <hr className="border-game-border my-2" />
             <p>⏰ 时间自动流逝（1秒=1分钟）</p>

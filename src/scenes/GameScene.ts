@@ -67,6 +67,9 @@ export class GameScene extends Phaser.Scene {
     this.actionKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.E);
     this.mapKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.M);
     this.inventoryKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.I);
+    const buildKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.B);
+    const questKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.J);
+    const escKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
 
     // ── Background Music ──────────────────────
     this.sound.volume = 0.25;
@@ -94,7 +97,7 @@ export class GameScene extends Phaser.Scene {
       store.player.position.y * TILE_SIZE * 2,
       'player'
     );
-    this.player.setScale(1);
+    this.player.setScale(2.5); // bigger character on map
     this.player.setDepth(10);
     this.player.setCollideWorldBounds(true);
     this.physics.world.setBounds(0, 0, MAP_WIDTH * TILE_SIZE * 2, MAP_HEIGHT * TILE_SIZE * 2);
@@ -125,7 +128,7 @@ export class GameScene extends Phaser.Scene {
 
     // Random notification
     this.time.delayedCall(2000, () => {
-      store.showNotification('欢迎来到大辟谷！用方向键或WASD移动，走到水边按E钓鱼。');
+      store.showNotification('欢迎来到大辟谷！WASD移动 | E钓鱼/对话 | I背包 | M地图 | B建造 | N音乐 | ESC设置');
     });
 
     // Aggressive canvas focus for keyboard input
@@ -154,6 +157,25 @@ export class GameScene extends Phaser.Scene {
       const s = useGameStore.getState();
       if (s.currentPanel === 'none') s.openPanel('map');
       else if (s.currentPanel === 'map') s.closePanel();
+    });
+
+    buildKey.on('down', () => {
+      const s = useGameStore.getState();
+      if (s.currentPanel === 'none') s.openPanel('building');
+      else if (s.currentPanel === 'building') s.closePanel();
+    });
+
+    questKey.on('down', () => {
+      const s = useGameStore.getState();
+      if (s.currentPanel === 'none') s.openPanel('quests');
+      else if (s.currentPanel === 'quests') s.closePanel();
+    });
+
+    escKey.on('down', () => {
+      const s = useGameStore.getState();
+      if (s.currentPanel === 'none') s.openPanel('settings');
+      else if (s.currentPanel === 'settings') s.closePanel();
+      else s.closePanel(); // ESC closes any open panel
     });
 
     this.actionKey.on('down', () => {
@@ -697,6 +719,7 @@ export class GameScene extends Phaser.Scene {
         ny * TILE_SIZE * 2,
         `npc_${i}`
       );
+      sprite.setScale(2.2); // bigger NPCs
       sprite.setDepth(5);
       sprite.setInteractive({ useHandCursor: true });
       sprite.on('pointerdown', () => this.interactWithNPC(npc.id));
@@ -1025,7 +1048,7 @@ export class GameScene extends Phaser.Scene {
     this.npcSprites.forEach((sprite) => {
       this.tweens.add({
         targets: sprite,
-        y: sprite.y - 1.5,
+        y: sprite.y - 3,
         duration: 1800 + Math.random() * 600,
         yoyo: true,
         repeat: -1,
