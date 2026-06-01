@@ -27,7 +27,7 @@ export const SceneTransition: React.FC<SceneTransitionProps> = ({ location, onCo
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none"
-      style={{ backgroundColor: phase === 'exit' ? 'transparent' : 'rgba(0,0,0,0.85)' }}>
+      style={{ backgroundColor: phase === 'exit' ? 'transparent' : 'rgba(0,0,0,0.45)' }}>
       <div className={`text-center transition-all duration-700
         ${phase === 'enter' ? 'scale-150 opacity-0' : ''}
         ${phase === 'show' ? 'scale-100 opacity-100' : ''}

@@ -33,9 +33,9 @@ const App: React.FC = () => {
   const [sceneTransition, setSceneTransition] = useState<FishingLocation | null>(null);
   const prevMap = useRef(player.currentMap);
 
-  // Watch for map changes to show transition
+  // Show location name on game start and map changes
   useEffect(() => {
-    if (gameStarted && player.currentMap !== prevMap.current) {
+    if (gameStarted) {
       setSceneTransition(player.currentMap);
       prevMap.current = player.currentMap;
     }
