@@ -157,8 +157,8 @@ export const ALL_QUESTS: QuestData[] = [
   },
   {
     id: 'side_kids_dream',
-    name: '小鱼的愿望',
-    description: '小鱼想给妈妈一个惊喜，帮他钓一条虹鳟。',
+    name: '子恒的愿望',
+    description: '子恒想给妈妈一个惊喜，帮他钓一条虹鳟。',
     type: QuestType.Side,
     prerequisites: [],
     objectives: [{ type: 'catch_fish', target: 'rainbow_trout', quantity: 1, progress: 0 }],
