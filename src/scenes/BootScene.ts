@@ -5,6 +5,7 @@
 
 import Phaser from 'phaser';
 import { TILE_SIZE, PALETTE } from '../utils/constants';
+import { useGameStore } from '../services/GameState';
 
 export class BootScene extends Phaser.Scene {
   constructor() { super({ key: 'BootScene' }); }
@@ -23,6 +24,40 @@ export class BootScene extends Phaser.Scene {
 
   create(): void {
     this.generateTextures();
+
+    // ── Global keyboard shortcuts (capture phase = before Phaser) ──
+    document.addEventListener('keydown', (e: KeyboardEvent) => {
+      const tag = (e.target as HTMLElement)?.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+
+      const s = useGameStore.getState();
+      if (!s.gameStarted || s.currentPanel === 'fishing_game') return;
+
+      if (e.code === 'KeyI') {
+        e.preventDefault();
+        if (s.currentPanel === 'none') s.openPanel('backpack');
+        else if (s.currentPanel === 'backpack') s.closePanel();
+      }
+      if (e.code === 'KeyM') {
+        e.preventDefault();
+        if (s.currentPanel === 'none') s.openPanel('map');
+        else if (s.currentPanel === 'map') s.closePanel();
+      }
+      if (e.code === 'KeyB') {
+        if (s.currentPanel === 'none') s.openPanel('building');
+        else if (s.currentPanel === 'building') s.closePanel();
+      }
+      if (e.code === 'KeyJ') {
+        if (s.currentPanel === 'none') s.openPanel('quests');
+        else if (s.currentPanel === 'quests') s.closePanel();
+      }
+      if (e.code === 'Escape') {
+        e.preventDefault();
+        if (s.currentPanel !== 'none') s.closePanel();
+        else s.openPanel('settings');
+      }
+    }, true); // capture phase
+
     this.scene.start('GameScene');
   }
 
