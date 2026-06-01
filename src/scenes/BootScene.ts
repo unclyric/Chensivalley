@@ -1,5 +1,6 @@
 /* ============================================
    沉思谷物鱼 - Boot Scene (Safe Texture Gen)
+   Meditation Valley Fish
    ============================================ */
 
 import Phaser from 'phaser';
@@ -34,269 +35,584 @@ export class BootScene extends Phaser.Scene {
     this.createUITextures();
   }
 
-  // ─── TILES (safe fillStyle only) ──────────
+  // ─── TILES ─────────────────────────────────
 
   private createTileTextures(): void {
-    const S = TILE_SIZE * 2;
+    const S = TILE_SIZE * 2; // 32px
 
-    // Water - 3-layer blue
+    // Water - rich layered blues with ripple highlights
     const wG = this.make.graphics({ x: 0, y: 0 });
-    wG.fillStyle(0x1a5276); wG.fillRect(0, 0, S, S);
-    wG.fillStyle(0x2980b9, 0.6); wG.fillRect(0, 2, S, S - 4);
-    wG.fillStyle(0x3498db, 0.3); wG.fillRect(2, 4, S - 4, S - 8);
-    wG.fillStyle(0x85c1e9, 0.15); wG.fillRect(4, S / 2, 6, 1);
-    wG.fillStyle(0x85c1e9, 0.1); wG.fillRect(S - 10, S / 3, 6, 1);
+    wG.fillStyle(0x0d3b5e); wG.fillRect(0, 0, S, S);
+    wG.fillStyle(0x1a5276); wG.fillRect(0, 1, S, S - 2);
+    wG.fillStyle(0x2471a3, 0.6); wG.fillRect(1, 2, S - 2, S - 4);
+    wG.fillStyle(0x2980b9, 0.35); wG.fillRect(2, 3, S - 4, S - 6);
+    // Ripple lines
+    wG.fillStyle(0x85c1e9, 0.18);
+    wG.fillRect(3, 8, 10, 1); wG.fillRect(16, 14, 8, 1);
+    wG.fillRect(6, 20, 12, 1); wG.fillRect(18, 26, 6, 1);
+    wG.fillStyle(0xaed6f1, 0.12);
+    wG.fillRect(8, 10, 6, 1); wG.fillRect(20, 18, 4, 1);
+    wG.fillRect(4, 24, 8, 1); wG.fillRect(14, 30, 5, 1);
+    // Subtle shimmer dots
+    wG.fillStyle(0xffffff, 0.1);
+    wG.fillRect(10, 12, 2, 1); wG.fillRect(22, 20, 2, 1);
+    wG.fillRect(5, 28, 1, 2);
     wG.generateTexture('tile_water', S, S); wG.destroy();
 
-    // Water edge
+    // Water edge - sand meeting water
     const weG = this.make.graphics({ x: 0, y: 0 });
-    weG.fillStyle(0xf0d9b5); weG.fillRect(0, 0, S, S);
-    weG.fillStyle(0x2980b9, 0.8); weG.fillRect(0, S - 6, S, 6);
-    weG.fillStyle(0x3498db, 0.4); weG.fillRect(2, S - 3, S - 4, 3);
+    // Sand
+    weG.fillStyle(0xe8d5b0); weG.fillRect(0, 0, S, S);
+    weG.fillStyle(0xf0d9b5, 0.6); weG.fillRect(0, 0, S, S - 4);
+    // Pebbles on sand
+    weG.fillStyle(0xd4b896, 0.5); weG.fillRect(6, 4, 3, 2); weG.fillRect(18, 6, 2, 2);
+    weG.fillStyle(0xc4a882, 0.4); weG.fillRect(12, 3, 2, 1); weG.fillRect(24, 5, 3, 1);
+    // Water lapping at edge
+    weG.fillStyle(0x1a5276); weG.fillRect(0, S - 8, S, 2);
+    weG.fillStyle(0x2471a3, 0.7); weG.fillRect(0, S - 6, S, 3);
+    weG.fillStyle(0x3498db, 0.35); weG.fillRect(2, S - 3, S - 4, 3);
+    // Foam line
+    weG.fillStyle(0xffffff, 0.15); weG.fillRect(4, S - 9, 6, 1);
+    weG.fillRect(16, S - 8, 8, 1);
     weG.generateTexture('tile_water_edge', S, S); weG.destroy();
 
-    // Grass - layered greens
+    // Grass - rich green with texture patches
     const gG = this.make.graphics({ x: 0, y: 0 });
-    gG.fillStyle(0x1e8449); gG.fillRect(0, 0, S, S);
-    gG.fillStyle(0x52be80); gG.fillRect(0, 1, S, S - 2);
-    gG.fillStyle(0x7dcea0, 0.5);
-    for (let i = 0; i < 10; i++) {
-      gG.fillRect((i * 7 + 3) % S, (i * 5) % S, 2, 3);
+    gG.fillStyle(0x1a6e35); gG.fillRect(0, 0, S, S);
+    gG.fillStyle(0x228b3a); gG.fillRect(0, 1, S, S - 2);
+    gG.fillStyle(0x2d9d4e, 0.5); gG.fillRect(1, 1, S - 2, S - 3);
+    // Grass blade clusters
+    gG.fillStyle(0x35b058, 0.45);
+    for (let i = 0; i < 14; i++) {
+      const gx = (i * 13 + 5) % S, gy = (i * 7 + 2) % (S - 2);
+      gG.fillRect(gx, gy, 2, 4); gG.fillRect(gx + 1, gy - 1, 1, 2);
     }
-    gG.fillStyle(0x000000, 0.06); gG.fillRect(0, S - 2, S, 2);
+    // Darker patches
+    gG.fillStyle(0x1a6e35, 0.4);
+    gG.fillRect(4, 14, 5, 3); gG.fillRect(20, 22, 4, 3);
+    // Light highlights
+    gG.fillStyle(0x4eca6f, 0.2);
+    gG.fillRect(8, 6, 3, 2); gG.fillRect(22, 10, 2, 2);
+    // Bottom shadow
+    gG.fillStyle(0x000000, 0.08); gG.fillRect(0, S - 2, S, 2);
     gG.generateTexture('tile_grass', S, S); gG.destroy();
 
-    // Dirt
+    // Dirt path - warm earth tones
     const dG = this.make.graphics({ x: 0, y: 0 });
-    dG.fillStyle(0xaf7d4b); dG.fillRect(0, 0, S, S);
-    dG.fillStyle(0xc49a6c, 0.5);
-    for (let i = 0; i < 6; i++) dG.fillRect((i * 11 + 2) % S, (i * 7) % S, 3, 2);
+    dG.fillStyle(0x9b6b3d); dG.fillRect(0, 0, S, S);
+    dG.fillStyle(0xb8845a, 0.5); dG.fillRect(1, 1, S - 2, S - 2);
+    // Texture spots
+    dG.fillStyle(0x8a5a2e, 0.4);
+    for (let i = 0; i < 5; i++) dG.fillRect((i * 17 + 3) % S, (i * 9 + 2) % S, 3, 2);
+    dG.fillStyle(0xc49a6c, 0.3);
+    for (let i = 0; i < 4; i++) dG.fillRect((i * 11 + 6) % S, (i * 13 + 4) % S, 2, 2);
+    // Small stones
+    dG.fillStyle(0x808b96, 0.3); dG.fillRect(8, 10, 2, 2); dG.fillRect(22, 18, 3, 1);
     dG.generateTexture('tile_dirt', S, S); dG.destroy();
 
-    // Stone
+    // Stone tile
     const sG = this.make.graphics({ x: 0, y: 0 });
-    sG.fillStyle(0x808b96); sG.fillRect(0, 0, S, S);
-    sG.fillStyle(0x9aa5b0); sG.fillRect(3, 3, 7, 5);
-    sG.fillStyle(0x6a757e); sG.fillRect(12, 10, 5, 4);
+    sG.fillStyle(0x6a757e); sG.fillRect(0, 0, S, S);
+    sG.fillStyle(0x808b96); sG.fillRect(1, 1, S - 2, S - 2);
+    sG.fillStyle(0x9aa5b0, 0.4); sG.fillRect(3, 3, 8, 6);
+    sG.fillStyle(0x5a6570, 0.4); sG.fillRect(14, 10, 6, 5);
+    sG.fillStyle(0x909ba5, 0.3); sG.fillRect(10, 20, 5, 3);
+    // Crack lines
+    sG.lineStyle(1, 0x5a6570, 0.3);
+    sG.lineBetween(8, 2, 12, 10); sG.lineBetween(12, 10, 10, 18);
     sG.generateTexture('tile_stone', S, S); sG.destroy();
 
-    // Tree with shadow
+    // Tree - thick trunk, layered canopy, shadow
     const tG = this.make.graphics({ x: 0, y: 0 });
-    tG.fillStyle(0x000000, 0.12); tG.fillEllipse(S / 2, S - 2, S - 4, 6);
-    tG.fillStyle(0x6e4c1e); tG.fillRect(S / 2 - 3, 8, 6, S - 8);
-    tG.fillStyle(0x2d7a2d); tG.fillCircle(S / 2, 6, 9);
-    tG.fillCircle(S / 2 - 4, 7, 7);
-    tG.fillCircle(S / 2 + 4, 7, 7);
-    tG.fillStyle(0x4da64d, 0.6); tG.fillCircle(S / 2, 4, 6);
+    // Shadow
+    tG.fillStyle(0x000000, 0.15); tG.fillEllipse(S / 2, S - 2, S - 6, 8);
+    // Trunk
+    tG.fillStyle(0x5a3a1a); tG.fillRect(S / 2 - 4, 12, 8, S - 12);
+    tG.fillStyle(0x7a5030, 0.5); tG.fillRect(S / 2 - 2, 12, 4, S - 14);
+    tG.fillStyle(0x4a2a10, 0.3); tG.fillRect(S / 2 - 4, 12, 2, S - 12);
+    // Root bumps
+    tG.fillStyle(0x5a3a1a); tG.fillRect(S / 2 - 5, S - 4, 4, 4);
+    tG.fillRect(S / 2 + 1, S - 3, 4, 3);
+    // Canopy - dark green base
+    tG.fillStyle(0x1a5a1a); tG.fillCircle(S / 2, 7, 12);
+    tG.fillCircle(S / 2 - 7, 9, 8); tG.fillCircle(S / 2 + 7, 9, 8);
+    // Mid green layer
+    tG.fillStyle(0x2d7a2d); tG.fillCircle(S / 2, 5, 10);
+    tG.fillCircle(S / 2 - 5, 7, 7); tG.fillCircle(S / 2 + 5, 7, 7);
+    tG.fillCircle(S / 2, 10, 9);
+    // Light green highlights
+    tG.fillStyle(0x4da64d, 0.6); tG.fillCircle(S / 2, 3, 7);
+    tG.fillCircle(S / 2 - 4, 5, 5); tG.fillCircle(S / 2 + 4, 5, 5);
+    // Leaf detail dots
+    tG.fillStyle(0x6ac06a, 0.4); tG.fillCircle(S / 2, 2, 3);
+    tG.fillCircle(S / 2 - 3, 4, 2); tG.fillCircle(S / 2 + 3, 4, 2);
     tG.generateTexture('tile_tree', S, S); tG.destroy();
 
-    // Bush
+    // Bush - rounded, layered foliage
     const bG = this.make.graphics({ x: 0, y: 0 });
-    bG.fillStyle(0x000000, 0.1); bG.fillEllipse(S / 2, S - 1, S - 2, 4);
-    bG.fillStyle(0x3d7a3d); bG.fillCircle(S / 2, S / 2 + 2, 8);
-    bG.fillCircle(S / 2 - 4, S / 2 + 1, 6);
-    bG.fillCircle(S / 2 + 4, S / 2 + 1, 6);
-    bG.fillStyle(0x5a9a5a, 0.5); bG.fillCircle(S / 2, S / 2, 4);
+    bG.fillStyle(0x000000, 0.12); bG.fillEllipse(S / 2, S - 1, S - 4, 6);
+    // Dark green base
+    bG.fillStyle(0x1e6e1e); bG.fillCircle(S / 2, S / 2 + 2, 9);
+    bG.fillCircle(S / 2 - 5, S / 2 + 1, 7);
+    bG.fillCircle(S / 2 + 5, S / 2 + 1, 7);
+    // Mid green
+    bG.fillStyle(0x3d8a3d); bG.fillCircle(S / 2, S / 2, 8);
+    bG.fillCircle(S / 2 - 4, S / 2, 6);
+    bG.fillCircle(S / 2 + 4, S / 2, 6);
+    // Light green highlights
+    bG.fillStyle(0x5aaa5a, 0.5); bG.fillCircle(S / 2, S / 2 - 2, 5);
+    bG.fillCircle(S / 2 - 3, S / 2 - 1, 4);
+    bG.fillCircle(S / 2 + 3, S / 2 - 1, 4);
+    // Leaf dots
+    bG.fillStyle(0x7ec87e, 0.3); bG.fillCircle(S / 2, S / 2 - 3, 2);
     bG.generateTexture('tile_bush', S, S); bG.destroy();
 
-    // Flower
+    // Flower - tall stem, layered petals
     const fG = this.make.graphics({ x: 0, y: 0 });
-    fG.fillStyle(0x52be80); fG.fillRect(S / 2 - 1, 8, 2, S - 8);
-    fG.fillStyle(0xe8a0bf); fG.fillCircle(S / 2, 5, 5);
+    // Stem with leaf
+    fG.fillStyle(0x3a7a3a); fG.fillRect(S / 2 - 1, 8, 2, S - 6);
+    fG.fillStyle(0x5aaa5a, 0.5); fG.fillRect(S / 2, 8, 1, S - 8);
+    // Leaf
+    fG.fillStyle(0x4a9a4a); fG.fillEllipse(S / 2 + 4, 14, 6, 3);
+    // Petals (layered circles)
+    fG.fillStyle(0xd06080); fG.fillCircle(S / 2 - 3, 5, 4);
+    fG.fillCircle(S / 2 + 3, 5, 4);
+    fG.fillCircle(S / 2, 2, 4); fG.fillCircle(S / 2, 8, 4);
+    fG.fillCircle(S / 2 - 3, 8, 4); fG.fillCircle(S / 2 + 3, 8, 4);
+    // Inner petals lighter
+    fG.fillStyle(0xf0a0c0);
+    fG.fillCircle(S / 2 - 2, 4, 3); fG.fillCircle(S / 2 + 2, 4, 3);
+    fG.fillCircle(S / 2, 3, 3); fG.fillCircle(S / 2, 7, 3);
+    // Center
     fG.fillStyle(0xf4d03f); fG.fillCircle(S / 2, 5, 2);
     fG.generateTexture('tile_flower', S, S); fG.destroy();
 
-    // Dock
+    // Dock - wooden planks with grain
     const dkG = this.make.graphics({ x: 0, y: 0 });
-    dkG.fillStyle(0xc4a35a); dkG.fillRect(0, 0, S, S);
-    dkG.fillStyle(0x8b6914, 0.4);
-    for (let x = 0; x < S; x += 4) dkG.fillRect(x, 1, 2, S - 2);
-    dkG.fillStyle(0x000000, 0.1); dkG.fillRect(0, S - 2, S, 2);
+    dkG.fillStyle(0xb8956a); dkG.fillRect(0, 0, S, S);
+    dkG.fillStyle(0xc4a87c, 0.5); dkG.fillRect(0, 1, S, S - 2);
+    // Plank grain lines
+    dkG.fillStyle(0x8b6914, 0.3);
+    for (let x = 0; x < S; x += 4) dkG.fillRect(x, 1, 1, S - 2);
+    dkG.fillStyle(0x9b7930, 0.25);
+    for (let x = 2; x < S; x += 4) dkG.fillRect(x, 1, 2, S - 2);
+    // Shadow at bottom
+    dkG.fillStyle(0x000000, 0.12); dkG.fillRect(0, S - 3, S, 3);
     dkG.generateTexture('tile_dock', S, S); dkG.destroy();
 
-    // Bridge
+    // Bridge - wooden with railings
     const brG = this.make.graphics({ x: 0, y: 0 });
-    brG.fillStyle(0x8b6914); brG.fillRect(0, 6, S, 4);
-    for (let x = 0; x < S; x += 4) brG.fillRect(x, 6, 2, 4);
-    brG.fillStyle(0x000000, 0.1); brG.fillRect(0, 5, S, 1);
-    brG.fillRect(0, 10, S, 1);
+    brG.fillStyle(0x8b6914); brG.fillRect(0, 8, S, 5);
+    brG.fillStyle(0xa07820, 0.5); brG.fillRect(0, 8, S, 2);
+    // Planks
+    brG.fillStyle(0x6b5010, 0.4);
+    for (let x = 0; x < S; x += 4) brG.fillRect(x, 8, 2, 5);
+    // Railings
+    brG.fillStyle(0x5d4e37); brG.fillRect(2, 3, 2, 10);
+    brG.fillRect(S - 4, 3, 2, 10);
+    brG.fillStyle(0x7a6545); brG.fillRect(0, 3, S, 2);
+    // Shadows
+    brG.fillStyle(0x000000, 0.15); brG.fillRect(0, 5, S, 1);
+    brG.fillRect(0, 12, S, 1);
     brG.generateTexture('tile_bridge', S, S); brG.destroy();
   }
 
-  // ─── PLAYER (blue dress, feminine) ─────────
+  // ─── PLAYER (detailed girl with fishing rod) ───
 
   private createPlayerTexture(): void {
     const sc = 2, total = 16 * sc, gfx = this.make.graphics({ x: 0, y: 0 });
 
-    // Long hair behind
-    gfx.fillStyle(0x4a2a2a);
-    gfx.fillRect(2 * sc, 5 * sc, 3 * sc, 7 * sc);
-    gfx.fillRect(11 * sc, 5 * sc, 3 * sc, 7 * sc);
-    gfx.fillRect(3 * sc, 10 * sc, 2 * sc, 6 * sc);
-    gfx.fillRect(11 * sc, 10 * sc, 2 * sc, 6 * sc);
+    // Shadow
+    gfx.fillStyle(0x000000, 0.1); gfx.fillEllipse(8 * sc, 15 * sc + 1, 9 * sc, 3);
 
-    // Blue dress
-    gfx.fillStyle(0x3068a0); gfx.fillRect(3 * sc, 7 * sc, 10 * sc, 5 * sc);
-    gfx.fillStyle(0x5090c0); gfx.fillRect(4 * sc, 7 * sc, 8 * sc, 3 * sc);
-    gfx.fillStyle(0x5090c0); gfx.fillRect(3 * sc, 11 * sc, 10 * sc, 4 * sc);
-    gfx.fillStyle(0x70b0e0); gfx.fillRect(5 * sc, 7 * sc, 3 * sc, 2 * sc);
-    gfx.fillStyle(0xd4a853); gfx.fillRect(4 * sc, 10 * sc, 8 * sc, 1 * sc);
+    // Long flowing hair (behind body)
+    gfx.fillStyle(0x3a1a10);
+    gfx.fillRect(2 * sc, 5 * sc, 3 * sc, 8 * sc);   // left side
+    gfx.fillRect(11 * sc, 5 * sc, 3 * sc, 8 * sc);  // right side
+    gfx.fillRect(3 * sc, 11 * sc, 2 * sc, 5 * sc);  // left bottom
+    gfx.fillRect(11 * sc, 11 * sc, 2 * sc, 5 * sc);  // right bottom
+    // Hair highlights
+    gfx.fillStyle(0x6a3a2a, 0.4);
+    gfx.fillRect(3 * sc, 5 * sc, 1, 6 * sc);
+    gfx.fillRect(11 * sc, 5 * sc, 1, 6 * sc);
+
+    // Body - blue dress with folds
+    // Main dress
+    gfx.fillStyle(0x2858a0); gfx.fillRect(3 * sc, 7 * sc, 10 * sc, 7 * sc);
+    // Lighter panels
+    gfx.fillStyle(0x4078c0); gfx.fillRect(4 * sc, 7 * sc, 8 * sc, 4 * sc);
+    // Dress fold lines
+    gfx.fillStyle(0x1a4080, 0.4);
+    gfx.fillRect(5 * sc, 8 * sc, 1, 6 * sc);
+    gfx.fillRect(10 * sc, 8 * sc, 1, 6 * sc);
+    // Belt/sash
+    gfx.fillStyle(0xd4a853); gfx.fillRect(4 * sc, 10 * sc, 8 * sc, 1.5 * sc);
+    gfx.fillStyle(0xe8c878, 0.5); gfx.fillRect(5 * sc, 10 * sc, 6 * sc, 0.5 * sc);
+    // Skirt bottom hem
+    gfx.fillStyle(0xa0d0f0, 0.25); gfx.fillRect(3 * sc, 13 * sc, 10 * sc, 1);
+    // Dress highlight
+    gfx.fillStyle(0x6098e0, 0.3);
+    gfx.fillRect(7 * sc, 7 * sc, 2 * sc, 3 * sc);
 
     // Head
     gfx.fillStyle(0xfce4c8); gfx.fillRect(5 * sc, 2 * sc, 6 * sc, 5 * sc);
+    // Face shading
+    gfx.fillStyle(0xf0d0b0, 0.3); gfx.fillRect(6 * sc, 4 * sc, 4 * sc, 3 * sc);
 
-    // Hair bangs + ribbon
-    gfx.fillStyle(0x4a2a2a);
-    gfx.fillRect(5 * sc, 1 * sc, 6 * sc, 2 * sc);
-    gfx.fillRect(4 * sc, 2 * sc, 2 * sc, 3 * sc);
-    gfx.fillRect(10 * sc, 2 * sc, 2 * sc, 3 * sc);
-    gfx.fillStyle(0x80c0f0); gfx.fillRect(10 * sc, 0, 3 * sc, 2 * sc); // blue ribbon
+    // Hair top and bangs
+    gfx.fillStyle(0x3a1a10);
+    gfx.fillRect(4 * sc, 0, 8 * sc, 3 * sc);  // top
+    gfx.fillRect(4 * sc, 1 * sc, 2 * sc, 4 * sc);  // left side hair
+    gfx.fillRect(10 * sc, 1 * sc, 2 * sc, 4 * sc); // right side hair
+    // Bangs fringe
+    gfx.fillRect(5 * sc, 2 * sc, 6 * sc, 1);
+    gfx.fillRect(4 * sc, 3 * sc, 3 * sc, 1);
+    gfx.fillRect(9 * sc, 3 * sc, 3 * sc, 1);
+    // Hair highlight
+    gfx.fillStyle(0x6a3a2a, 0.35); gfx.fillRect(6 * sc, 0, 3 * sc, 2 * sc);
 
-    // Eyes + blush
+    // Blue ribbon
+    gfx.fillStyle(0x5098e0); gfx.fillRect(10 * sc, -1, 4 * sc, 3 * sc);
+    gfx.fillStyle(0x80c8ff, 0.5); gfx.fillRect(11 * sc, -1, 2 * sc, 2 * sc);
+
+    // Eyes - large and expressive
     gfx.fillStyle(0xffffff); gfx.fillRect(6 * sc, 3 * sc, 3 * sc, 3 * sc);
     gfx.fillRect(9 * sc, 3 * sc, 3 * sc, 3 * sc);
-    gfx.fillStyle(0x2a4060); gfx.fillRect(7 * sc, 3 * sc, 2 * sc, 3 * sc);
+    // Iris
+    gfx.fillStyle(0x2a5080); gfx.fillRect(7 * sc, 3 * sc, 2 * sc, 3 * sc);
     gfx.fillRect(10 * sc, 3 * sc, 2 * sc, 3 * sc);
-    gfx.fillStyle(0xffffff); gfx.fillRect(7 * sc, 3 * sc, 1 * sc, 1 * sc);
-    gfx.fillRect(10 * sc, 3 * sc, 1 * sc, 1 * sc);
-    gfx.fillStyle(0x000000); gfx.fillRect(6 * sc, 3 * sc, 3 * sc, 1 * sc);
-    gfx.fillRect(9 * sc, 3 * sc, 3 * sc, 1 * sc);
-    gfx.fillStyle(0xf0a0a0, 0.4); gfx.fillRect(5 * sc, 5 * sc, 2 * sc, 1 * sc);
-    gfx.fillRect(9 * sc, 5 * sc, 2 * sc, 1 * sc);
-    gfx.fillStyle(0x6a3040); gfx.fillRect(7 * sc, 5 * sc, 2 * sc, 1 * sc);
+    // Pupil
+    gfx.fillStyle(0x000000); gfx.fillRect(7 * sc, 4 * sc, 1.5 * sc, 2 * sc);
+    gfx.fillRect(10 * sc, 4 * sc, 1.5 * sc, 2 * sc);
+    // Eye shine
+    gfx.fillStyle(0xffffff); gfx.fillRect(7 * sc, 3 * sc, 1, 1);
+    gfx.fillRect(10 * sc, 3 * sc, 1, 1);
+    // Eyelashes
+    gfx.fillStyle(0x000000); gfx.fillRect(6 * sc, 3 * sc, 3 * sc, 0.5 * sc);
+    gfx.fillRect(9 * sc, 3 * sc, 3 * sc, 0.5 * sc);
+
+    // Blush
+    gfx.fillStyle(0xf0a0a0, 0.35); gfx.fillRect(5 * sc, 5 * sc, 2 * sc, 1);
+    gfx.fillRect(9 * sc, 5 * sc, 2 * sc, 1);
+    // Mouth
+    gfx.fillStyle(0xd06070); gfx.fillRect(8 * sc, 5.5 * sc, 1.5 * sc, 0.5 * sc);
 
     // Arms
-    gfx.fillStyle(0xfce4c8); gfx.fillRect(2 * sc, 8 * sc, 3 * sc, 4 * sc);
-    gfx.fillRect(11 * sc, 8 * sc, 3 * sc, 4 * sc);
+    gfx.fillStyle(0xfce4c8); gfx.fillRect(2 * sc, 8 * sc, 2.5 * sc, 4 * sc);
+    gfx.fillRect(11.5 * sc, 8 * sc, 2.5 * sc, 4 * sc);
+    // Hand detail
+    gfx.fillStyle(0xf8d8b8); gfx.fillRect(2 * sc, 11 * sc, 2 * sc, 1.5 * sc);
+    gfx.fillRect(12 * sc, 11 * sc, 2 * sc, 1.5 * sc);
 
     // Boots
-    gfx.fillStyle(0x6a4a3a); gfx.fillRect(5 * sc, 14 * sc, 4 * sc, 2 * sc);
+    gfx.fillStyle(0x5a3a2a); gfx.fillRect(5 * sc, 14 * sc, 4 * sc, 2 * sc);
     gfx.fillRect(9 * sc, 14 * sc, 4 * sc, 2 * sc);
-    gfx.fillStyle(0xf8f4f0); gfx.fillRect(5 * sc, 13 * sc, 4 * sc, 2 * sc);
-    gfx.fillRect(9 * sc, 13 * sc, 4 * sc, 2 * sc);
+    // Boot tops
+    gfx.fillStyle(0xf8f4f0); gfx.fillRect(5 * sc, 13 * sc, 4 * sc, 1.5 * sc);
+    gfx.fillRect(9 * sc, 13 * sc, 4 * sc, 1.5 * sc);
+    // Boot detail
+    gfx.fillStyle(0x4a2a1a, 0.5); gfx.fillRect(5 * sc, 14 * sc, 4 * sc, 0.5 * sc);
+    gfx.fillRect(9 * sc, 14 * sc, 4 * sc, 0.5 * sc);
 
-    // Rod
-    gfx.fillStyle(0x8b6914); gfx.fillRect(13 * sc, 2 * sc, 2 * sc, 13 * sc);
-    gfx.lineStyle(1, 0xe8e8e8); gfx.lineBetween(14 * sc, 15 * sc, 16 * sc, 16 * sc);
+    // Fishing rod (held at right side)
+    gfx.fillStyle(0x6a4a1a); gfx.fillRect(13 * sc, 1 * sc, 2 * sc, 14 * sc);
+    gfx.fillStyle(0x8a6a3a, 0.4); gfx.fillRect(13 * sc, 1 * sc, 1, 12 * sc);
+    // Rod tip
+    gfx.fillStyle(0xe8e8e8); gfx.fillRect(13 * sc, 0, 2 * sc, 2 * sc);
+    // Fishing line
+    gfx.lineStyle(0.6, 0xe8e8e8, 0.7); gfx.lineBetween(14 * sc, 16 * sc, 16 * sc, 16 * sc);
 
     gfx.generateTexture('player', total, total); gfx.destroy();
   }
 
-  // ─── NPCs (all detailed, unique) ───────────
+  // ─── NPCs (high detail, unique features) ─────
 
   private createNPCTextures(): void {
     const sc = 2, T = 16 * sc;
 
     const drawNPCs = [
-      // 0: 华泽 (wise, grey hair, brown robe)
+      // 0: 华泽 - wise old fisherman, grey flowing beard, straw hat, brown robe
       (g: Phaser.GameObjects.Graphics) => {
-        g.fillStyle(0x6a5a4a); g.fillRect(3 * sc, 7 * sc, 10 * sc, 5 * sc);
-        g.fillStyle(0x8a7a6a); g.fillRect(4 * sc, 7 * sc, 8 * sc, 2 * sc);
-        g.fillStyle(0xb0b0b0); g.fillRect(3 * sc, 0, 10 * sc, 4 * sc);
-        g.fillRect(2 * sc, 2 * sc, 3 * sc, 3 * sc); g.fillRect(11 * sc, 2 * sc, 3 * sc, 3 * sc);
+        // Shadow
+        g.fillStyle(0x000000, 0.1); g.fillEllipse(8 * sc, 15 * sc + 1, 8 * sc, 3);
+        // Robe
+        g.fillStyle(0x5a4a3a); g.fillRect(3 * sc, 7 * sc, 10 * sc, 6 * sc);
+        g.fillStyle(0x7a6a5a, 0.5); g.fillRect(4 * sc, 7 * sc, 8 * sc, 3 * sc);
+        // Robe fold
+        g.fillStyle(0x4a3a2a, 0.3); g.fillRect(6 * sc, 8 * sc, 1, 5 * sc);
+        g.fillRect(9 * sc, 8 * sc, 1, 5 * sc);
+        // Inner robe
+        g.fillStyle(0x8a7a6a, 0.3); g.fillRect(5 * sc, 8 * sc, 6 * sc, 2 * sc);
+        // Hat
+        g.fillStyle(0xd4b896); g.fillRect(2 * sc, 0, 12 * sc, 4 * sc);
+        g.fillStyle(0xc4a070, 0.4); g.fillRect(3 * sc, 1 * sc, 10 * sc, 2 * sc);
+        g.fillStyle(0x8b6914, 0.3); g.fillRect(5 * sc, 0, 6 * sc, 1);
+        // Face
         g.fillStyle(0xfce4c8); g.fillRect(5 * sc, 3 * sc, 6 * sc, 5 * sc);
-        g.fillStyle(0x000000); g.fillRect(6 * sc, 5 * sc, 2 * sc, 1 * sc);
-        g.fillRect(9 * sc, 5 * sc, 2 * sc, 1 * sc);
-        g.fillStyle(0xd0d0d0); g.fillRect(5 * sc, 7 * sc, 6 * sc, 3 * sc);
+        g.fillStyle(0xf0d0b0, 0.3); g.fillRect(5 * sc, 5 * sc, 6 * sc, 3 * sc);
+        // Grey hair
+        g.fillStyle(0xc0c0c0); g.fillRect(2 * sc, 2 * sc, 3 * sc, 3 * sc);
+        g.fillRect(11 * sc, 2 * sc, 3 * sc, 3 * sc);
+        // Grey beard
+        g.fillStyle(0xd8d8d8); g.fillRect(6 * sc, 7 * sc, 4 * sc, 4 * sc);
+        g.fillStyle(0xe8e8e8, 0.5); g.fillRect(7 * sc, 7 * sc, 2 * sc, 2 * sc);
+        // Kind eyes (wrinkled corners)
+        g.fillStyle(0x000000); g.fillRect(6 * sc, 5 * sc, 2 * sc, 1);
+        g.fillRect(9 * sc, 5 * sc, 2 * sc, 1);
+        g.fillStyle(0xf0a080, 0.3); g.fillRect(5 * sc, 5 * sc, 1, 1);
+        g.fillRect(10 * sc, 5 * sc, 1, 1);
+        // Sandals
+        g.fillStyle(0x5a3a1a); g.fillRect(6 * sc, 13 * sc, 3 * sc, 2 * sc);
+        g.fillRect(9 * sc, 13 * sc, 3 * sc, 2 * sc);
       },
-      // 1: 智爸 (merchant, hat, red coat)
+      // 1: 智爸 - traveling merchant, warm red coat, hat, kind face
       (g: Phaser.GameObjects.Graphics) => {
-        g.fillStyle(0xbf3030); g.fillRect(4 * sc, 6 * sc, 8 * sc, 5 * sc);
+        g.fillStyle(0x000000, 0.1); g.fillEllipse(8 * sc, 15 * sc + 1, 8 * sc, 3);
+        // Red merchant coat
+        g.fillStyle(0xa03030); g.fillRect(4 * sc, 6 * sc, 8 * sc, 6 * sc);
+        g.fillStyle(0xc04040, 0.5); g.fillRect(5 * sc, 6 * sc, 6 * sc, 3 * sc);
+        // Coat trim
+        g.fillStyle(0xd4a853); g.fillRect(4 * sc, 10 * sc, 8 * sc, 1);
+        // Coat buttons
+        g.fillStyle(0xd4a853); g.fillRect(8 * sc, 7 * sc, 1, 1);
+        g.fillRect(8 * sc, 9 * sc, 1, 1);
+        // Bag on side
         g.fillStyle(0x8a6a30); g.fillRect(2 * sc, 7 * sc, 3 * sc, 5 * sc);
+        g.fillStyle(0x9b7930, 0.4); g.fillRect(2 * sc, 7 * sc, 3 * sc, 2 * sc);
+        // Face
         g.fillStyle(0xe8c39e); g.fillRect(5 * sc, 2 * sc, 6 * sc, 5 * sc);
+        g.fillStyle(0xdcb088, 0.3); g.fillRect(5 * sc, 4 * sc, 6 * sc, 3 * sc);
+        // Leather hat
         g.fillStyle(0x5d3a1a); g.fillRect(2 * sc, 0, 12 * sc, 3 * sc);
-        g.fillStyle(0x000000); g.fillRect(7 * sc, 4 * sc, 1 * sc, 2 * sc);
-        g.fillRect(10 * sc, 4 * sc, 1 * sc, 2 * sc);
+        g.fillStyle(0x7a5030, 0.4); g.fillRect(4 * sc, 1 * sc, 8 * sc, 1);
+        // Warm eyes
+        g.fillStyle(0x000000); g.fillRect(7 * sc, 4 * sc, 1, 2 * sc);
+        g.fillRect(10 * sc, 4 * sc, 1, 2 * sc);
+        // Smile
+        g.fillStyle(0x8a5040, 0.4); g.fillRect(7 * sc, 5.5 * sc, 2 * sc, 0.5 * sc);
+        g.fillRect(9 * sc, 5.5 * sc, 2 * sc, 0.5 * sc);
+        // Boots
+        g.fillStyle(0x3a2010); g.fillRect(6 * sc, 12 * sc, 3 * sc, 2 * sc);
+        g.fillRect(9 * sc, 12 * sc, 3 * sc, 2 * sc);
       },
-      // 2: 鳞教授 (white coat, glasses, bun)
+      // 2: 吉格斯 - ichthyologist, white lab coat, glasses, hair bun
       (g: Phaser.GameObjects.Graphics) => {
-        g.fillStyle(0xf0f0f0); g.fillRect(3 * sc, 6 * sc, 10 * sc, 5 * sc);
+        g.fillStyle(0x000000, 0.1); g.fillEllipse(8 * sc, 15 * sc + 1, 8 * sc, 3);
+        // Lab coat
+        g.fillStyle(0xe8e8e8); g.fillRect(4 * sc, 7 * sc, 8 * sc, 6 * sc);
+        g.fillStyle(0xf8f8f8, 0.5); g.fillRect(5 * sc, 7 * sc, 6 * sc, 3 * sc);
+        // Coat pocket with pen
+        g.fillStyle(0xcccccc, 0.4); g.fillRect(9 * sc, 8 * sc, 3 * sc, 2 * sc);
+        g.fillStyle(0x3060c0); g.fillRect(11 * sc, 8 * sc, 0.5 * sc, 2 * sc);
+        // Face
         g.fillStyle(0xfce4c8); g.fillRect(5 * sc, 2 * sc, 6 * sc, 5 * sc);
-        g.fillStyle(0x3a2a1a); g.fillRect(5 * sc, 1 * sc, 6 * sc, 2 * sc);
-        g.fillRect(11 * sc, 2 * sc, 2 * sc, 3 * sc);
+        // Brown hair bun
+        g.fillStyle(0x3a2010); g.fillRect(4 * sc, 1 * sc, 8 * sc, 2 * sc);
+        g.fillStyle(0x3a2010); g.fillCircle(12 * sc, 2 * sc, 3 * sc);
+        // Glasses
         g.fillStyle(0x333333); g.fillRect(6 * sc, 3 * sc, 3 * sc, 2 * sc);
         g.fillRect(9 * sc, 3 * sc, 3 * sc, 2 * sc);
+        g.fillStyle(0x444444); g.fillRect(8.5 * sc, 3.5 * sc, 1, 0.5 * sc);
+        // Eyes behind glasses
+        g.fillStyle(0x000000); g.fillRect(7 * sc, 3.5 * sc, 1, 1);
+        g.fillRect(10 * sc, 3.5 * sc, 1, 1);
+        // Clipboard
+        g.fillStyle(0xf0e8d0); g.fillRect(1 * sc, 8 * sc, 3 * sc, 4 * sc);
+        g.fillStyle(0xddddd0, 0.4); g.fillRect(1.5 * sc, 8.5 * sc, 2, 3);
       },
-      // 3: 老聂 (navy coat, cap)
+      // 3: 老聂 - lighthouse keeper, navy uniform, cap, weather-beaten
       (g: Phaser.GameObjects.Graphics) => {
-        g.fillStyle(0x2a4a6a); g.fillRect(4 * sc, 6 * sc, 8 * sc, 5 * sc);
-        g.fillStyle(0xe8c39e); g.fillRect(5 * sc, 2 * sc, 6 * sc, 5 * sc);
-        g.fillStyle(0x1a3040); g.fillRect(4 * sc, 0, 8 * sc, 3 * sc);
-        g.fillStyle(0xd4a853); g.fillRect(5 * sc, 2 * sc, 6 * sc, 1 * sc);
-        g.fillStyle(0x000000); g.fillRect(7 * sc, 4 * sc, 1 * sc, 1 * sc);
-        g.fillRect(9 * sc, 4 * sc, 1 * sc, 1 * sc);
+        g.fillStyle(0x000000, 0.1); g.fillEllipse(8 * sc, 15 * sc + 1, 8 * sc, 3);
+        // Navy coat
+        g.fillStyle(0x1a3050); g.fillRect(4 * sc, 6 * sc, 8 * sc, 6 * sc);
+        g.fillStyle(0x2a4a6a, 0.5); g.fillRect(5 * sc, 6 * sc, 6 * sc, 3 * sc);
+        // Gold buttons
+        g.fillStyle(0xd4a853); g.fillRect(7.5 * sc, 7 * sc, 1, 1);
+        g.fillRect(7.5 * sc, 9 * sc, 1, 1);
+        // Epaulettes
+        g.fillStyle(0xd4a853, 0.6); g.fillRect(4 * sc, 6 * sc, 2 * sc, 1);
+        g.fillRect(10 * sc, 6 * sc, 2 * sc, 1);
+        // Face - weathered
+        g.fillStyle(0xe0b080); g.fillRect(5 * sc, 2 * sc, 6 * sc, 5 * sc);
+        g.fillStyle(0xd0a070, 0.4); g.fillRect(5 * sc, 4 * sc, 6 * sc, 3 * sc);
+        // Navy cap
+        g.fillStyle(0x1a3040); g.fillRect(3 * sc, 0, 10 * sc, 3 * sc);
+        g.fillStyle(0x2a4a6a, 0.4); g.fillRect(4 * sc, 1 * sc, 8 * sc, 1);
+        // Cap badge
+        g.fillStyle(0xd4a853, 0.7); g.fillRect(6 * sc, 1.5 * sc, 4 * sc, 0.5 * sc);
+        // Eyes
+        g.fillStyle(0x000000); g.fillRect(7 * sc, 4 * sc, 1, 1);
+        g.fillRect(9 * sc, 4 * sc, 1, 1);
+        // Stubble
+        g.fillStyle(0x909090, 0.2); g.fillRect(6 * sc, 6 * sc, 4 * sc, 1);
       },
-      // 4: 佳佳 (female painter, beret, green smock)
+      // 4: 佳佳 - painter, red beret, green smock, paint palette
       (g: Phaser.GameObjects.Graphics) => {
-        g.fillStyle(0x5a8a5a); g.fillRect(4 * sc, 6 * sc, 8 * sc, 5 * sc);
+        g.fillStyle(0x000000, 0.1); g.fillEllipse(8 * sc, 15 * sc + 1, 8 * sc, 3);
+        // Green artist smock
+        g.fillStyle(0x4a7a4a); g.fillRect(4 * sc, 6 * sc, 8 * sc, 6 * sc);
+        g.fillStyle(0x5a9a5a, 0.5); g.fillRect(5 * sc, 6 * sc, 6 * sc, 3 * sc);
+        // Paint stains on smock
+        g.fillStyle(0xe8a0bf, 0.5); g.fillRect(8 * sc, 8 * sc, 2, 2);
+        g.fillStyle(0xf4d03f, 0.5); g.fillRect(10 * sc, 9 * sc, 1.5, 1.5);
+        g.fillStyle(0x3060c0, 0.4); g.fillRect(5 * sc, 10 * sc, 1.5, 1.5);
+        // Face
         g.fillStyle(0xfce4c8); g.fillRect(5 * sc, 2 * sc, 6 * sc, 5 * sc);
-        g.fillStyle(0xc04040); g.fillCircle(8 * sc, 2 * sc, 5 * sc);
-        g.fillStyle(0x5d3a1a); g.fillRect(4 * sc, 3 * sc, 4 * sc, 3 * sc);
-        g.fillStyle(0x000000); g.fillRect(7 * sc, 4 * sc, 2 * sc, 2 * sc);
-        g.fillRect(10 * sc, 4 * sc, 2 * sc, 2 * sc);
-        g.fillStyle(0xffffff); g.fillRect(7 * sc, 4 * sc, 1 * sc, 1 * sc);
-        g.fillRect(10 * sc, 4 * sc, 1 * sc, 1 * sc);
-        g.fillStyle(0xf0a0a0, 0.3); g.fillRect(6 * sc, 5 * sc, 1 * sc, 1 * sc);
-        g.fillRect(9 * sc, 5 * sc, 1 * sc, 1 * sc);
-        // paint palette
-        g.fillStyle(0x8a6a4a); g.fillRect(1 * sc, 8 * sc, 3 * sc, 4 * sc);
+        // Red beret
+        g.fillStyle(0xc04040); g.fillCircle(8 * sc, 2 * sc, 6 * sc);
+        g.fillStyle(0xe06060, 0.4); g.fillCircle(7 * sc, 1 * sc, 3 * sc);
+        // Brown hair peeking out
+        g.fillStyle(0x5d3a1a); g.fillRect(4 * sc, 3 * sc, 5 * sc, 3 * sc);
+        // Eyes
+        g.fillStyle(0x000000); g.fillRect(7 * sc, 4 * sc, 2, 2);
+        g.fillRect(10 * sc, 4 * sc, 2, 2);
+        g.fillStyle(0xffffff); g.fillRect(7 * sc, 4 * sc, 1, 1);
+        g.fillRect(10 * sc, 4 * sc, 1, 1);
+        // Blush
+        g.fillStyle(0xf0a0a0, 0.3); g.fillRect(6 * sc, 5 * sc, 1, 1);
+        g.fillRect(9 * sc, 5 * sc, 1, 1);
+        // Paint palette in hand
+        g.fillStyle(0x8a6a4a); g.fillRect(0.5 * sc, 8 * sc, 4 * sc, 3 * sc);
+        g.fillStyle(0xe04040, 0.7); g.fillRect(1 * sc, 8.5 * sc, 1, 1);
+        g.fillStyle(0x4080e0, 0.7); g.fillRect(2.5 * sc, 8.5 * sc, 1, 1);
+        g.fillStyle(0xf0d040, 0.7); g.fillRect(1.5 * sc, 9.5 * sc, 1, 1);
       },
-      // 5: 淇爹 (male, tea house, qipao-style)
+      // 5: 淇爹 - tea house owner, elegant purple qipao, tea cup
       (g: Phaser.GameObjects.Graphics) => {
-        g.fillStyle(0x4a3050); g.fillRect(4 * sc, 6 * sc, 8 * sc, 5 * sc);
-        g.fillStyle(0x6a4a70); g.fillRect(5 * sc, 7 * sc, 6 * sc, 2 * sc);
+        g.fillStyle(0x000000, 0.1); g.fillEllipse(8 * sc, 15 * sc + 1, 8 * sc, 3);
+        // Purple qipao dress
+        g.fillStyle(0x3a2040); g.fillRect(4 * sc, 6 * sc, 8 * sc, 6 * sc);
+        g.fillStyle(0x5a3050, 0.5); g.fillRect(5 * sc, 6 * sc, 6 * sc, 3 * sc);
+        // Decorative pattern
+        g.fillStyle(0xd4a853, 0.35);
+        g.fillRect(5 * sc, 8 * sc, 6 * sc, 0.5 * sc);
+        g.fillRect(5 * sc, 10 * sc, 6 * sc, 0.5 * sc);
+        // Collar
+        g.fillStyle(0xd4a853, 0.5); g.fillRect(7 * sc, 6 * sc, 2 * sc, 1);
+        // Face
         g.fillStyle(0xe8c39e); g.fillRect(5 * sc, 2 * sc, 6 * sc, 5 * sc);
-        g.fillStyle(0x2a1a10); g.fillRect(5 * sc, 1 * sc, 6 * sc, 2 * sc);
-        g.fillStyle(0x000000); g.fillRect(7 * sc, 4 * sc, 1 * sc, 1 * sc);
-        g.fillRect(9 * sc, 4 * sc, 1 * sc, 1 * sc);
-        // subtle mustache
-        g.fillStyle(0x3a2a1a, 0.5); g.fillRect(7 * sc, 6 * sc, 2 * sc, 1 * sc);
+        // Black hair, neat style
+        g.fillStyle(0x1a0808); g.fillRect(4 * sc, 1 * sc, 8 * sc, 2 * sc);
+        g.fillStyle(0x2a1010, 0.4); g.fillRect(5 * sc, 1 * sc, 6 * sc, 1);
+        // Hair ornament
+        g.fillStyle(0xe8a0bf, 0.7); g.fillRect(11 * sc, 2 * sc, 1.5 * sc, 1.5 * sc);
+        // Eyes
+        g.fillStyle(0x000000); g.fillRect(7 * sc, 4 * sc, 1, 1);
+        g.fillRect(9 * sc, 4 * sc, 1, 1);
+        // Tea cup in hand
+        g.fillStyle(0xe8e0d0); g.fillRect(1 * sc, 9 * sc, 3 * sc, 3 * sc);
+        g.fillStyle(0xd4c8a0, 0.4); g.fillRect(1.5 * sc, 9.5 * sc, 2 * sc, 2 * sc);
+        // Steam from tea
+        g.fillStyle(0xffffff, 0.2); g.fillRect(2 * sc, 8 * sc, 1, 1.5 * sc);
       },
-      // 6: 小鱼 (kid, cap, green)
+      // 6: 小鱼 - young kid, orange cap, green shirt, small
       (g: Phaser.GameObjects.Graphics) => {
-        g.fillStyle(0x4a8f4a); g.fillRect(5 * sc, 6 * sc, 6 * sc, 4 * sc);
+        g.fillStyle(0x000000, 0.1); g.fillEllipse(8 * sc, 15 * sc + 1, 7 * sc, 3);
+        // Smaller body (kid proportions)
+        g.fillStyle(0x3a7a3a); g.fillRect(5 * sc, 6 * sc, 6 * sc, 5 * sc);
+        g.fillStyle(0x5aaa5a, 0.4); g.fillRect(5 * sc, 6 * sc, 6 * sc, 2 * sc);
+        // Oversized buttons
+        g.fillStyle(0xf0f0f0, 0.6); g.fillRect(7.5 * sc, 7 * sc, 1, 1);
+        g.fillRect(7.5 * sc, 9 * sc, 1, 1);
+        // Face - round, youthful
         g.fillStyle(0xfce4c8); g.fillRect(5 * sc, 2 * sc, 6 * sc, 5 * sc);
+        g.fillStyle(0xfff0e0, 0.3); g.fillRect(6 * sc, 3 * sc, 4 * sc, 3 * sc);
+        // Orange cap
         g.fillStyle(0xe8a040); g.fillRect(4 * sc, 0, 8 * sc, 3 * sc);
+        g.fillStyle(0xf0c060, 0.3); g.fillRect(5 * sc, 1 * sc, 6 * sc, 1);
+        // Big eager eyes
         g.fillStyle(0x000000); g.fillRect(6 * sc, 4 * sc, 2 * sc, 2 * sc);
         g.fillRect(9 * sc, 4 * sc, 2 * sc, 2 * sc);
-        g.fillStyle(0xffffff); g.fillRect(6 * sc, 4 * sc, 1 * sc, 1 * sc);
-        g.fillRect(9 * sc, 4 * sc, 1 * sc, 1 * sc);
+        g.fillStyle(0xffffff); g.fillRect(6 * sc, 4 * sc, 1, 1);
+        g.fillRect(9 * sc, 4 * sc, 1, 1);
+        // Big smile
+        g.fillStyle(0xc06060, 0.5); g.fillRect(7 * sc, 6 * sc, 2 * sc, 0.5 * sc);
+        // Shorts
+        g.fillStyle(0x3060a0); g.fillRect(5 * sc, 11 * sc, 6 * sc, 2 * sc);
+        // Sneakers
+        g.fillStyle(0xe8e8e8); g.fillRect(6 * sc, 13 * sc, 2.5 * sc, 2 * sc);
+        g.fillRect(9 * sc, 13 * sc, 2.5 * sc, 2 * sc);
       },
-      // 7: 格雷福斯 (ex-sailor, striped shirt, white beard)
+      // 7: 格雷福斯 - old sailor, striped shirt, white beard, pipe
       (g: Phaser.GameObjects.Graphics) => {
-        g.fillStyle(0x3a5a8a); g.fillRect(4 * sc, 6 * sc, 8 * sc, 5 * sc);
+        g.fillStyle(0x000000, 0.1); g.fillEllipse(8 * sc, 15 * sc + 1, 9 * sc, 3);
+        // Blue and white striped shirt
+        g.fillStyle(0x2a4a7a); g.fillRect(4 * sc, 6 * sc, 8 * sc, 6 * sc);
         g.fillStyle(0xf0f0f0);
-        for (let py = 7; py < 11; py += 2) g.fillRect(4 * sc, py * sc, 8 * sc, 1 * sc);
+        for (let py = 7; py < 11; py += 2) g.fillRect(4 * sc, py * sc, 8 * sc, 1);
+        // Suspenders
+        g.fillStyle(0x6a3010, 0.7); g.fillRect(6 * sc, 6 * sc, 1, 6 * sc);
+        g.fillRect(9 * sc, 6 * sc, 1, 6 * sc);
+        // Weather-beaten face
         g.fillStyle(0xe8c39e); g.fillRect(5 * sc, 2 * sc, 6 * sc, 5 * sc);
+        g.fillStyle(0xd0a070, 0.3); g.fillRect(5 * sc, 4 * sc, 6 * sc, 3 * sc);
+        // White hair + beard
         g.fillStyle(0xe8e8e8); g.fillRect(4 * sc, 1 * sc, 8 * sc, 2 * sc);
-        g.fillStyle(0xe8e8e8); g.fillRect(5 * sc, 6 * sc, 6 * sc, 3 * sc);
-        g.fillStyle(0x000000); g.fillRect(7 * sc, 4 * sc, 1 * sc, 1 * sc);
-        g.fillRect(9 * sc, 4 * sc, 1 * sc, 1 * sc);
+        g.fillStyle(0xf0f0f0); g.fillRect(5 * sc, 6 * sc, 6 * sc, 3 * sc); // beard
+        g.fillStyle(0xffffff, 0.5); g.fillRect(6 * sc, 6 * sc, 4 * sc, 1);
+        // Pipe
+        g.fillStyle(0x6a3a1a); g.fillRect(11 * sc, 7 * sc, 3 * sc, 1);
+        g.fillStyle(0x8a5a3a, 0.4); g.fillRect(12 * sc, 7 * sc, 2 * sc, 1);
+        // Eyes with crows feet
+        g.fillStyle(0x000000); g.fillRect(7 * sc, 4 * sc, 1, 1);
+        g.fillRect(9 * sc, 4 * sc, 1, 1);
       },
-      // 8: 维克兹 (botanist, green, glasses)
+      // 8: 维克兹 - botanist, green explorer vest, glasses, plant in hand
       (g: Phaser.GameObjects.Graphics) => {
-        g.fillStyle(0x4a8a4a); g.fillRect(4 * sc, 6 * sc, 8 * sc, 5 * sc);
+        g.fillStyle(0x000000, 0.1); g.fillEllipse(8 * sc, 15 * sc + 1, 8 * sc, 3);
+        // Green field vest
+        g.fillStyle(0x3a6a3a); g.fillRect(4 * sc, 6 * sc, 8 * sc, 6 * sc);
+        g.fillStyle(0x5a9a5a, 0.4); g.fillRect(5 * sc, 6 * sc, 6 * sc, 2 * sc);
+        // Vest pockets
+        g.fillStyle(0x2a4a2a, 0.5); g.fillRect(5 * sc, 8 * sc, 2 * sc, 2 * sc);
+        g.fillRect(9 * sc, 8 * sc, 2 * sc, 2 * sc);
+        // Face
         g.fillStyle(0xfce4c8); g.fillRect(5 * sc, 2 * sc, 6 * sc, 5 * sc);
-        g.fillStyle(0x5d3a1a); g.fillRect(5 * sc, 1 * sc, 6 * sc, 2 * sc);
+        // Brown hair, messy
+        g.fillStyle(0x5d3a1a); g.fillRect(4 * sc, 1 * sc, 8 * sc, 2 * sc);
+        g.fillStyle(0x7a5030, 0.3); g.fillRect(3 * sc, 2 * sc, 2 * sc, 3 * sc);
+        // Thick glasses
         g.fillStyle(0x444444); g.fillRect(6 * sc, 3 * sc, 3 * sc, 2 * sc);
         g.fillRect(9 * sc, 3 * sc, 3 * sc, 2 * sc);
-        g.fillStyle(0x80d080); g.fillRect(7 * sc, 8 * sc, 2 * sc, 2 * sc);
+        g.fillStyle(0x555555); g.fillRect(8.5 * sc, 3.5 * sc, 1, 0.5 * sc);
+        // Plant in hand
+        g.fillStyle(0x6a4a20); g.fillRect(1.5 * sc, 9 * sc, 2 * sc, 3 * sc);
+        g.fillStyle(0x4a8a4a); g.fillCircle(2.5 * sc, 8 * sc, 3 * sc);
+        g.fillStyle(0x7dcea0, 0.4); g.fillCircle(2.5 * sc, 7 * sc, 2 * sc);
       },
-      // 9: 玄虚 (hooded, purple, mystic)
+      // 9: 时光老头 - mystic hermit, deep purple hooded robe, glowing eyes
       (g: Phaser.GameObjects.Graphics) => {
-        g.fillStyle(0x3a3050); g.fillRect(2 * sc, 5 * sc, 12 * sc, 7 * sc);
-        g.fillStyle(0x3a3050); g.fillTriangle(8 * sc, 0, 2 * sc, 5 * sc, 14 * sc, 5 * sc);
-        g.fillStyle(0xfce4c8); g.fillRect(6 * sc, 3 * sc, 4 * sc, 2 * sc);
-        g.fillStyle(0x000000); g.fillRect(6 * sc, 4 * sc, 1 * sc, 1 * sc);
-        g.fillRect(9 * sc, 4 * sc, 1 * sc, 1 * sc);
-        g.fillStyle(0xa0f0a0, 0.8); g.fillRect(7 * sc, 8 * sc, 2 * sc, 2 * sc);
+        g.fillStyle(0x000000, 0.15); g.fillEllipse(8 * sc, 15 * sc + 1, 10 * sc, 4);
+        // Hooded robe - deep purple with folds
+        g.fillStyle(0x2a2040); g.fillRect(2 * sc, 5 * sc, 12 * sc, 8 * sc);
+        g.fillStyle(0x3a3050, 0.5); g.fillRect(3 * sc, 5 * sc, 10 * sc, 4 * sc);
+        // Hood triangle
+        g.fillStyle(0x2a2040); g.fillTriangle(8 * sc, -2 * sc, 1 * sc, 5 * sc, 15 * sc, 5 * sc);
+        g.fillStyle(0x3a3050, 0.3); g.fillTriangle(8 * sc, -1 * sc, 3 * sc, 5 * sc, 13 * sc, 5 * sc);
+        // Robe folds
+        g.fillStyle(0x1a1030, 0.4); g.fillRect(6 * sc, 6 * sc, 1, 7 * sc);
+        g.fillRect(9 * sc, 6 * sc, 1, 7 * sc);
+        // Mysterious clasp
+        g.fillStyle(0xd4a853, 0.6); g.fillRect(7 * sc, 8 * sc, 2 * sc, 1);
+        // Face (shadowed in hood)
+        g.fillStyle(0x3a2a20); g.fillRect(6 * sc, 3 * sc, 4 * sc, 3 * sc);
+        g.fillStyle(0xfce4c8, 0.3); g.fillRect(7 * sc, 3 * sc, 2 * sc, 2 * sc);
+        // Glowing eyes
+        g.fillStyle(0xa0f0a0, 0.9); g.fillRect(6.5 * sc, 4 * sc, 1, 1);
+        g.fillRect(9 * sc, 4 * sc, 1, 1);
+        g.fillStyle(0xc0ffc0, 0.4); g.fillRect(6 * sc, 4 * sc, 2 * sc, 1);
+        g.fillRect(8.5 * sc, 4 * sc, 2 * sc, 1);
+        // Ancient amulet
+        g.fillStyle(0xffd700, 0.5); g.fillRect(7 * sc, 7 * sc, 2 * sc, 2 * sc);
+        g.fillStyle(0xd4a853, 0.4); g.fillRect(7.5 * sc, 7.5 * sc, 1, 1);
       },
     ];
 
     drawNPCs.forEach((fn, i) => {
       const gfx = this.make.graphics({ x: 0, y: 0 });
       fn(gfx);
-      gfx.fillStyle(0x4a3020);
+      // Feet/shoes
+      gfx.fillStyle(0x3a2010);
       gfx.fillRect(6 * sc, 12 * sc, 3 * sc, 2 * sc);
       gfx.fillRect(9 * sc, 12 * sc, 3 * sc, 2 * sc);
       gfx.generateTexture(`npc_${i}`, T, T);
@@ -304,139 +620,180 @@ export class BootScene extends Phaser.Scene {
     });
   }
 
-  // ─── FISH ───────────────────────────────────
+  // ─── FISH (detailed with fins and scales) ─────
 
   private createFishTextures(): void {
     const fishTypes = [
-      { b: 0xc0c0c0, f: 0xa0a0a0, s: 18, y: 0xf0f0f0 },
-      { b: 0xe8a040, f: 0xf0c060, s: 22, y: 0xf0d0a0 },
-      { b: 0x7a9a5a, f: 0x5a8a4a, s: 20, y: 0xa0c080 },
-      { b: 0xffd700, f: 0xffa000, s: 16, y: 0xfff0c0 },
-      { b: 0xff7060, f: 0xff4040, s: 24, y: 0xffb0a0 },
-      { b: 0x3060c0, f: 0x2050a0, s: 30, y: 0x80a0e0 },
-      { b: 0xf0c040, f: 0xd0a030, s: 34, y: 0xf0e0a0 },
-      { b: 0xe0e0ff, f: 0xc0c0f0, s: 32, y: 0xf8f8ff },
+      { b: 0xc0c0c0, f: 0xa0a0a0, s: 18, y: 0xf0f0f0, fin: 0xd0d0d0 },
+      { b: 0xe8a040, f: 0xf0c060, s: 22, y: 0xf0d0a0, fin: 0xf0b030 },
+      { b: 0x7a9a5a, f: 0x5a8a4a, s: 20, y: 0xa0c080, fin: 0x6aaa50 },
+      { b: 0xffd700, f: 0xffa000, s: 16, y: 0xfff0c0, fin: 0xffc000 },
+      { b: 0xff7060, f: 0xff4040, s: 24, y: 0xffb0a0, fin: 0xff5050 },
+      { b: 0x3060c0, f: 0x2050a0, s: 30, y: 0x80a0e0, fin: 0x2060d0 },
+      { b: 0xf0c040, f: 0xd0a030, s: 34, y: 0xf0e0a0, fin: 0xe0b020 },
+      { b: 0xe0e0ff, f: 0xc0c0f0, s: 32, y: 0xf8f8ff, fin: 0xd0d0f0 },
     ];
 
     fishTypes.forEach((f, i) => {
       const gfx = this.make.graphics({ x: 0, y: 0 });
       const W = f.s, H = f.s * 0.65;
+      // Body
       gfx.fillStyle(f.b); gfx.fillEllipse(W / 2, H / 2, W, H);
-      gfx.fillStyle(f.y, 0.6); gfx.fillEllipse(W / 2, H / 2 + 1, W * 0.7, H * 0.5);
-      gfx.fillStyle(f.f); gfx.fillTriangle(W - 2, H / 2, W + 6, H / 2 - 5, W + 6, H / 2 + 5);
-      gfx.fillStyle(0xffffff); gfx.fillCircle(W * 0.22, H * 0.4, 3);
-      gfx.fillStyle(0x000000); gfx.fillCircle(W * 0.24, H * 0.4, 1.5);
-      gfx.fillStyle(f.f, 0.8); gfx.fillTriangle(W * 0.5, 0, W * 0.35, -4, W * 0.6, -4);
-      gfx.generateTexture(`fish_${i}`, W + 8, H + 8);
+      // Belly highlight
+      gfx.fillStyle(f.y, 0.6); gfx.fillEllipse(W / 2, H / 2 + 2, W * 0.7, H * 0.45);
+      // Scale pattern dots
+      gfx.fillStyle(f.f, 0.3);
+      for (let sx = 3; sx < W - 6; sx += 4) {
+        for (let sy = 3; sy < H - 2; sy += 3) {
+          gfx.fillCircle(sx + 2, sy + 2, 0.8);
+        }
+      }
+      // Tail fin
+      gfx.fillStyle(f.fin); gfx.fillTriangle(W - 2, H / 2, W + 7, H / 2 - 5, W + 7, H / 2 + 5);
+      gfx.fillStyle(f.b, 0.4); gfx.fillTriangle(W - 1, H / 2, W + 4, H / 2 - 3, W + 4, H / 2 + 3);
+      // Dorsal fin
+      gfx.fillStyle(f.fin, 0.8); gfx.fillTriangle(W * 0.35, -1, W * 0.45, -8, W * 0.6, -1);
+      // Eye
+      gfx.fillStyle(0xffffff); gfx.fillCircle(W * 0.2, H * 0.38, 3);
+      gfx.fillStyle(0x000000); gfx.fillCircle(W * 0.22, H * 0.38, 1.8);
+      gfx.fillStyle(0xffffff, 0.8); gfx.fillCircle(W * 0.2, H * 0.35, 0.8);
+      // Mouth line
+      gfx.fillStyle(f.f, 0.5); gfx.fillRect(W * 0.06, H * 0.5, 2, 0.5);
+      // Pectoral fin
+      gfx.fillStyle(f.fin, 0.5); gfx.fillTriangle(W * 0.25, H * 0.7, W * 0.2, H * 0.85, W * 0.35, H * 0.8);
+      gfx.generateTexture(`fish_${i}`, W + 10, H + 12);
       gfx.destroy();
     });
   }
 
-  // ─── BUILDINGS ──────────────────────────────
+  // ─── BUILDINGS (already detailed, keep existing) ─
 
   private createBuildingTextures(): void {
     const S = TILE_SIZE * 2; // 32px base unit
 
     // Fish Pond Small (3x2 tiles)
     const pS = this.make.graphics({ x: 0, y: 0 });
-    // Water
-    pS.fillStyle(0x2980b9); pS.fillRoundedRect(2, 2, S * 3 - 4, S * 2 - 4, 6);
-    pS.fillStyle(0x3498db, 0.5); pS.fillRect(4, 4, S * 3 - 8, 3);
-    // Border
+    pS.fillStyle(0x1a5276); pS.fillRoundedRect(2, 2, S * 3 - 4, S * 2 - 4, 6);
+    pS.fillStyle(0x2980b9); pS.fillRoundedRect(3, 3, S * 3 - 6, S * 2 - 6, 5);
+    pS.fillStyle(0x3498db, 0.4); pS.fillRect(4, 4, S * 3 - 8, 3);
+    pS.fillStyle(0x85c1e9, 0.15); pS.fillRect(8, 6, 8, 1);
+    pS.fillRect(20, S, 8, 1);
     pS.lineStyle(3, 0x8b6914); pS.strokeRoundedRect(1, 1, S * 3 - 2, S * 2 - 2, 7);
-    pS.lineStyle(2, 0xc4a35a); pS.strokeRoundedRect(4, 4, S * 3 - 8, S * 2 - 8, 5);
+    pS.lineStyle(1.5, 0xc4a35a); pS.strokeRoundedRect(4, 4, S * 3 - 8, S * 2 - 8, 5);
     // Water lily
-    pS.fillStyle(0x7dcea0); pS.fillCircle(S * 1.5, S, 5);
+    pS.fillStyle(0x3a8a3a); pS.fillCircle(S * 1.5, S, 5);
+    pS.fillStyle(0x5aaa5a, 0.5); pS.fillCircle(S * 1.5, S - 1, 3);
     pS.fillStyle(0xe8a0bf); pS.fillCircle(S * 1.5, S, 3);
+    pS.fillStyle(0xf4d03f, 0.5); pS.fillCircle(S * 1.5, S, 1.5);
     pS.generateTexture('building_pond_small', S * 3, S * 2); pS.destroy();
 
     // Fish Pond Medium (4x2 tiles)
     const pM = this.make.graphics({ x: 0, y: 0 });
-    pM.fillStyle(0x2980b9); pM.fillRoundedRect(2, 2, S * 4 - 4, S * 2 - 4, 6);
-    pM.fillStyle(0x3498db, 0.5); pM.fillRect(4, 4, S * 4 - 8, 3);
+    pM.fillStyle(0x1a5276); pM.fillRoundedRect(2, 2, S * 4 - 4, S * 2 - 4, 6);
+    pM.fillStyle(0x2980b9); pM.fillRoundedRect(3, 3, S * 4 - 6, S * 2 - 6, 5);
+    pM.fillStyle(0x3498db, 0.4); pM.fillRect(4, 4, S * 4 - 8, 3);
+    pM.fillStyle(0x85c1e9, 0.15); pM.fillRect(10, 6, 10, 1);
     pM.lineStyle(3, 0x8b6914); pM.strokeRoundedRect(1, 1, S * 4 - 2, S * 2 - 2, 7);
-    pM.lineStyle(2, 0xc4a35a); pM.strokeRoundedRect(4, 4, S * 4 - 8, S * 2 - 8, 5);
-    pM.fillStyle(0x7dcea0); pM.fillCircle(S * 1.2, S, 5);
+    pM.lineStyle(1.5, 0xc4a35a); pM.strokeRoundedRect(4, 4, S * 4 - 8, S * 2 - 8, 5);
+    pM.fillStyle(0x3a8a3a); pM.fillCircle(S * 1.2, S, 5);
     pM.fillStyle(0xf4d03f); pM.fillCircle(S * 1.2, S, 3);
-    pM.fillStyle(0x7dcea0); pM.fillCircle(S * 2.8, S, 4);
+    pM.fillStyle(0x3a8a3a); pM.fillCircle(S * 2.8, S, 4);
     pM.fillStyle(0xe8a0bf); pM.fillCircle(S * 2.8, S, 2);
     pM.generateTexture('building_pond_medium', S * 4, S * 2); pM.destroy();
 
     // Fish Pond Large (5x3 tiles)
     const pL = this.make.graphics({ x: 0, y: 0 });
-    pL.fillStyle(0x2980b9); pL.fillRoundedRect(2, 2, S * 5 - 4, S * 3 - 4, 6);
-    pL.fillStyle(0x3498db, 0.5); pL.fillRect(4, 4, S * 5 - 8, 4);
+    pL.fillStyle(0x1a5276); pL.fillRoundedRect(2, 2, S * 5 - 4, S * 3 - 4, 7);
+    pL.fillStyle(0x2980b9); pL.fillRoundedRect(3, 3, S * 5 - 6, S * 3 - 6, 6);
+    pL.fillStyle(0x3498db, 0.4); pL.fillRect(4, 4, S * 5 - 8, 4);
+    pL.fillStyle(0x85c1e9, 0.15); pL.fillRect(12, 7, 14, 1);
+    pL.fillRect(6, 18, 12, 1);
     pL.lineStyle(4, 0x8b6914); pL.strokeRoundedRect(1, 1, S * 5 - 2, S * 3 - 2, 8);
-    pL.lineStyle(2, 0xc4a35a); pL.strokeRoundedRect(4, 4, S * 5 - 8, S * 3 - 8, 5);
-    // Decorative plants
-    pL.fillStyle(0x7dcea0); pL.fillCircle(S, S * 1.5, 6); pL.fillCircle(S * 4, S * 1.5, 5);
+    pL.lineStyle(2, 0xc4a35a); pL.strokeRoundedRect(4, 4, S * 5 - 8, S * 3 - 8, 6);
+    pL.fillStyle(0x3a8a3a); pL.fillCircle(S, S * 1.5, 6); pL.fillCircle(S * 4, S * 1.5, 5);
     pL.fillStyle(0xe8a0bf); pL.fillCircle(S, S * 1.5, 4);
     pL.fillStyle(0xf4d03f); pL.fillCircle(S * 4, S * 1.5, 3);
     pL.generateTexture('building_pond_large', S * 5, S * 3); pL.destroy();
 
-    // Warehouse (2x2 tiles, brown building with red roof)
+    // Warehouse
     const wG = this.make.graphics({ x: 0, y: 0 });
-    wG.fillStyle(0x8b6914); wG.fillRect(2, 8, S * 2 - 4, S * 2 - 8);
-    wG.fillStyle(0xc4a35a, 0.5); wG.fillRect(4, 8, S - 6, S * 2 - 10);
+    wG.fillStyle(0x6a4a1a); wG.fillRect(2, 8, S * 2 - 4, S * 2 - 8);
+    wG.fillStyle(0x8b6914, 0.5); wG.fillRect(2, 8, S * 2 - 4, S - 4);
+    wG.fillStyle(0xc4a35a, 0.3); wG.fillRect(4, 8, S - 8, S * 2 - 10);
     wG.fillStyle(0xa04040); wG.fillTriangle(S, 0, 0, 8, S * 2, 8);
-    wG.fillStyle(0x5d4e37); wG.fillRect(S - 4, S, 8, S - 2);
-    wG.fillStyle(0xd4a853); wG.fillRect(S - 2, S + 2, 2, 2); // door knob
-    wG.fillStyle(0x000000, 0.15); wG.fillRect(0, S * 2 - 3, S * 2, 4);
+    wG.fillStyle(0xc05050, 0.3); wG.fillTriangle(S, 2, 2, 8, S * 2 - 2, 8);
+    wG.fillStyle(0x5d4e37); wG.fillRect(S - 5, S, 10, S - 2);
+    wG.fillStyle(0x3a2a1a, 0.4); wG.fillRect(S - 4, S, 8, S - 3);
+    wG.fillStyle(0xd4a853); wG.fillRect(S - 2, S + 2, 2, 2);
+    wG.fillStyle(0x000000, 0.15); wG.fillRect(0, S * 2 - 4, S * 2, 4);
+    // Window
+    wG.fillStyle(0x85c1e9, 0.4); wG.fillRect(6, 10, 5, 4);
     wG.generateTexture('building_warehouse', S * 2, S * 2); wG.destroy();
 
-    // Dock (2x1 tiles)
+    // Dock
     const dG = this.make.graphics({ x: 0, y: 0 });
-    dG.fillStyle(0xc4a35a); dG.fillRect(0, 2, S * 2, S - 2);
-    dG.fillStyle(0x8b6914, 0.4);
-    for (let x = 0; x < S * 2; x += 5) dG.fillRect(x, 2, 3, S - 3);
-    dG.fillStyle(0x000000, 0.15); dG.fillRect(0, S - 2, S * 2, 3);
-    // Posts
+    dG.fillStyle(0xb8956a); dG.fillRect(0, 2, S * 2, S - 2);
+    dG.fillStyle(0xc4a87c, 0.4); dG.fillRect(0, 2, S * 2, S - 4);
+    dG.fillStyle(0x8b6914, 0.3);
+    for (let x = 0; x < S * 2; x += 5) dG.fillRect(x, 2, 2, S - 3);
+    dG.fillStyle(0x000000, 0.12); dG.fillRect(0, S - 2, S * 2, 3);
     dG.fillStyle(0x5d4e37); dG.fillRect(3, 0, 3, S); dG.fillRect(S * 2 - 6, 0, 3, S);
     dG.generateTexture('building_dock', S * 2, S); dG.destroy();
 
-    // ── Decorations ──────────────────────────
-    const decoS = TILE_SIZE; // 16px for decorations
+    // Decorations
+    const decoS = TILE_SIZE;
 
-    // Lantern (1x1 tile)
+    // Lantern
     const lG = this.make.graphics({ x: 0, y: 0 });
-    lG.fillStyle(0x808b96); lG.fillRect(6, decoS - 4, 4, 4); // base
-    lG.fillStyle(0x9aa5b0); lG.fillRect(7, 2, 2, decoS - 6); // post
-    lG.fillStyle(0xf4d03f, 0.9); lG.fillRoundedRect(3, 0, 10, 8, 3); // lantern body
-    lG.fillStyle(0xf0d040, 0.5); lG.fillRect(5, 1, 6, 2); // glow
-    lG.fillStyle(0xa04040); lG.fillRect(4, -2, 8, 3); // top
+    lG.fillStyle(0x6a757e); lG.fillRect(6, decoS - 4, 4, 5);
+    lG.fillStyle(0x808b96, 0.3); lG.fillRect(7, decoS - 3, 2, 3);
+    lG.fillStyle(0x5a6570); lG.fillRect(7, 2, 2, decoS - 6);
+    lG.fillStyle(0xf4d03f, 0.9); lG.fillRoundedRect(3, 0, 10, 9, 3);
+    lG.fillStyle(0xf0d040, 0.5); lG.fillRect(4, 2, 8, 2);
+    lG.fillStyle(0xffffff, 0.3); lG.fillRect(5, 1, 6, 1);
+    lG.fillStyle(0xa04040); lG.fillRect(3, -2, 10, 3);
+    lG.fillStyle(0xd4a853, 0.4); lG.fillRect(4, -2, 8, 1);
     lG.generateTexture('deco_lantern', decoS, decoS); lG.destroy();
 
-    // Bench (2x1 tile)
+    // Bench
     const bG = this.make.graphics({ x: 0, y: 0 });
-    bG.fillStyle(0x8b6914); bG.fillRect(2, 6, decoS * 2 - 4, 4); // seat
-    bG.fillStyle(0x5d4e37); bG.fillRect(2, 4, decoS * 2 - 4, 2); // backrest
-    bG.fillStyle(0x6e4c1e); bG.fillRect(4, 9, 3, 5); // left leg
-    bG.fillRect(decoS * 2 - 7, 9, 3, 5); // right leg
-    bG.fillStyle(0xc4a35a, 0.3); bG.fillRect(3, 6, decoS * 2 - 6, 2);
+    bG.fillStyle(0x7a5a3a); bG.fillRect(2, 6, decoS * 2 - 4, 4);
+    bG.fillStyle(0x9b7930, 0.3); bG.fillRect(2, 6, decoS * 2 - 4, 2);
+    bG.fillStyle(0x5d4e37); bG.fillRect(2, 4, decoS * 2 - 4, 2);
+    bG.fillStyle(0x6e4c1e); bG.fillRect(4, 9, 3, 5);
+    bG.fillRect(decoS * 2 - 7, 9, 3, 5);
+    bG.fillStyle(0x4a3020, 0.3); bG.fillRect(4, 9, 3, 2);
+    bG.fillRect(decoS * 2 - 7, 9, 3, 2);
+    bG.fillStyle(0xc4a35a, 0.2); bG.fillRect(3, 7, decoS * 2 - 6, 1);
     bG.generateTexture('deco_bench', decoS * 2, decoS + 4); bG.destroy();
 
-    // Flower Pot (1x1 tile)
+    // Flower Pot
     const fpG = this.make.graphics({ x: 0, y: 0 });
-    fpG.fillStyle(0xaf7d4b); fpG.fillRoundedRect(2, 7, decoS - 4, decoS - 7, 3); // pot
-    fpG.fillStyle(0x52be80); fpG.fillRect(3, 2, 2, 6); // stem
-    fpG.fillStyle(0x7dcea0); fpG.fillCircle(4, 0, 5); // leaves
-    fpG.fillStyle(0xe8a0bf); fpG.fillCircle(6, -1, 4); // flower 1
-    fpG.fillStyle(0xf4d03f); fpG.fillCircle(2, -2, 3); // flower 2
-    fpG.fillStyle(0xf0a0a0); fpG.fillCircle(7, -3, 3); // flower 3
+    fpG.fillStyle(0x8a5a30); fpG.fillRoundedRect(3, 8, decoS - 6, decoS - 8, 3);
+    fpG.fillStyle(0xaf7d4b, 0.4); fpG.fillRoundedRect(4, 8, decoS - 8, decoS - 10, 2);
+    fpG.fillStyle(0x3a7a3a); fpG.fillRect(7, 3, 2, 6);
+    fpG.fillStyle(0x5aaa5a); fpG.fillCircle(8, 1, 6);
+    fpG.fillStyle(0x7dcea0, 0.4); fpG.fillCircle(8, 0, 4);
+    fpG.fillStyle(0xe8a0bf); fpG.fillCircle(10, -1, 4);
+    fpG.fillStyle(0xf4d03f); fpG.fillCircle(5, -2, 3);
+    fpG.fillStyle(0xf0a0a0); fpG.fillCircle(11, 0, 3);
+    fpG.fillStyle(0xff8888, 0.5); fpG.fillCircle(10, -1, 2);
     fpG.generateTexture('deco_flower_pot', decoS, decoS); fpG.destroy();
 
-    // Fish Statue (1x1 tile)
+    // Fish Statue
     const fsG = this.make.graphics({ x: 0, y: 0 });
-    fsG.fillStyle(0x9aa5b0); fsG.fillRect(2, decoS - 3, decoS - 4, 3); // pedestal
-    fsG.fillStyle(0x808b96); fsG.fillRect(4, decoS - 4, decoS - 8, 1);
-    // Fish body
-    fsG.fillStyle(0xb0c0d0); fsG.fillEllipse(decoS / 2, decoS / 2 - 2, decoS - 4, decoS - 8);
-    fsG.fillStyle(0xd0d8e0, 0.6); fsG.fillEllipse(decoS / 2, decoS / 2 - 3, decoS - 8, decoS - 12);
-    // Tail
-    fsG.fillStyle(0xb0c0d0); fsG.fillTriangle(decoS - 2, decoS / 2 - 2, decoS + 2, decoS / 2 - 6, decoS + 2, decoS / 2 + 2);
-    // Eye
+    fsG.fillStyle(0x707880); fsG.fillRect(2, decoS - 4, decoS - 4, 4);
+    fsG.fillStyle(0x9098a0, 0.3); fsG.fillRect(3, decoS - 3, decoS - 6, 3);
+    fsG.fillStyle(0xb0c0d0); fsG.fillEllipse(decoS / 2, decoS / 2 - 2, decoS - 4, decoS - 9);
+    fsG.fillStyle(0xd0d8e0, 0.5); fsG.fillEllipse(decoS / 2, decoS / 2 - 3, decoS - 8, decoS - 13);
+    fsG.fillStyle(0x8090a0); fsG.fillTriangle(decoS - 2, decoS / 2 - 2, decoS + 3, decoS / 2 - 7, decoS + 3, decoS / 2 + 3);
+    fsG.fillStyle(0xa0b0c0, 0.3); fsG.fillTriangle(decoS - 1, decoS / 2 - 2, decoS + 1, decoS / 2 - 5, decoS + 1, decoS / 2 + 1);
     fsG.fillStyle(0xffffff); fsG.fillCircle(4, decoS / 2 - 3, 2);
-    fsG.fillStyle(0x000000); fsG.fillCircle(4, decoS / 2 - 3, 1);
+    fsG.fillStyle(0x000000); fsG.fillCircle(4, decoS / 2 - 3, 1.2);
+    fsG.fillStyle(0xffffff, 0.7); fsG.fillCircle(3.5, decoS / 2 - 4, 0.6);
+    // Scale detail
+    fsG.fillStyle(0xc0d0e0, 0.3);
+    for (let s = 0; s < 3; s++) fsG.fillCircle(7 + s * 2, decoS / 2 - 1, 0.8);
     fsG.generateTexture('deco_fish_statue', decoS, decoS); fsG.destroy();
   }
 
@@ -444,19 +801,24 @@ export class BootScene extends Phaser.Scene {
 
   private createUITextures(): void {
     const hG = this.make.graphics({ x: 0, y: 0 });
-    hG.fillStyle(0xe85d75); hG.fillCircle(4, 3, 4); hG.fillCircle(10, 3, 4);
-    hG.fillTriangle(0, 4, 14, 4, 7, 12);
-    hG.generateTexture('ui_heart', 14, 13); hG.destroy();
+    hG.fillStyle(0xc04040); hG.fillCircle(4, 3, 4); hG.fillCircle(10, 3, 4);
+    hG.fillStyle(0xe85d75, 0.5); hG.fillCircle(4, 2, 2); hG.fillCircle(10, 2, 2);
+    hG.fillStyle(0xe85d75); hG.fillTriangle(0, 4, 14, 4, 7, 13);
+    hG.fillStyle(0xf08090, 0.3); hG.fillTriangle(2, 5, 12, 5, 7, 11);
+    hG.generateTexture('ui_heart', 14, 14); hG.destroy();
 
     const cG = this.make.graphics({ x: 0, y: 0 });
-    cG.fillStyle(0xd4a853); cG.fillCircle(7, 7, 7);
-    cG.fillStyle(0xc09830); cG.fillCircle(7, 7, 5);
+    cG.fillStyle(0xb08020); cG.fillCircle(7, 7, 7);
+    cG.fillStyle(0xd4a853); cG.fillCircle(7, 7, 5.5);
+    cG.fillStyle(0xe8c878, 0.3); cG.fillCircle(7, 6, 3);
     cG.fillStyle(0xd4a853); cG.fillRect(6, 3, 2, 8);
     cG.generateTexture('ui_coin', 14, 14); cG.destroy();
 
     const eG = this.make.graphics({ x: 0, y: 0 });
-    eG.fillStyle(0xf0d040); eG.fillRect(5, 0, 5, 8);
-    eG.fillRect(2, 4, 11, 5); eG.fillRect(0, 9, 15, 4);
+    eG.fillStyle(0xc0a020); eG.fillRect(4, 0, 7, 8);
+    eG.fillRect(1, 4, 13, 5); eG.fillRect(0, 9, 15, 4);
+    eG.fillStyle(0xf0d040, 0.4); eG.fillRect(5, 1, 5, 6);
+    eG.fillStyle(0xf0d040, 0.3); eG.fillRect(2, 5, 11, 3);
     eG.generateTexture('ui_energy', 15, 13); eG.destroy();
   }
 }

@@ -428,29 +428,31 @@ export class GameScene extends Phaser.Scene {
   }
 
   private renderEnvironment(): void {
-    // Clear existing
     this.decoSprites.forEach(s => s.destroy());
     this.decoSprites = [];
-
     const S = TILE_SIZE * 2;
 
-    // Render trees (depth 2 - behind player/NPCs)
+    // Render trees with slight size variation
     this.decorationPositions.forEach(pos => {
       const sprite = this.add.image(pos.x * S + S / 2, pos.y * S + S / 2, 'tile_tree');
+      const sVar = 0.85 + Math.random() * 0.3;
+      sprite.setScale(sVar);
       sprite.setDepth(2);
       this.decoSprites.push(sprite);
     });
 
-    // Render bushes (depth 2)
+    // Render bushes
     this.bushPositions.forEach(pos => {
       const sprite = this.add.image(pos.x * S + S / 2, pos.y * S + S / 2, 'tile_bush');
+      sprite.setScale(0.8 + Math.random() * 0.4);
       sprite.setDepth(2);
       this.decoSprites.push(sprite);
     });
 
-    // Render flowers (depth 4 - above ground but below NPCs)
+    // Render flowers
     this.flowerPositions.forEach(pos => {
       const sprite = this.add.image(pos.x * S + S / 2, pos.y * S + S / 2, 'tile_flower');
+      sprite.setScale(0.8 + Math.random() * 0.3);
       sprite.setDepth(4);
       this.decoSprites.push(sprite);
     });
