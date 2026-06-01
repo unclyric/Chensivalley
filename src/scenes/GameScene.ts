@@ -66,21 +66,6 @@ export class GameScene extends Phaser.Scene {
     // Action key (E for fish/talk)
     this.actionKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.E);
 
-    // UI keys via direct keyboard event (most reliable, bypasses focus issues)
-    this.input.keyboard!.on('keydown', (event: KeyboardEvent) => {
-      const s = useGameStore.getState();
-      if (!s.gameStarted) return;
-      // I = inventory (keyCode 73)
-      if (event.keyCode === 73) {
-        if (s.currentPanel === 'none') s.openPanel('backpack');
-        else if (s.currentPanel === 'backpack') s.closePanel();
-      }
-      // M = map (keyCode 77)
-      if (event.keyCode === 77) {
-        if (s.currentPanel === 'none') s.openPanel('map');
-        else if (s.currentPanel === 'map') s.closePanel();
-      }
-    });
 
     // ── Background Music ──────────────────────
     this.sound.volume = 0.25;

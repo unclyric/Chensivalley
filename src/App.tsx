@@ -64,51 +64,48 @@ const App: React.FC = () => {
     };
   }, [gameStarted]);
 
-  // Keyboard shortcuts (ESC/B/J handled here; WASD/E handled by Phaser)
+  // ── ALL keyboard shortcuts (single handler, capture phase) ──
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      // Skip if target is an input/textarea
+    const onKey = (e: KeyboardEvent) => {
       const tag = (e.target as HTMLElement)?.tagName;
       if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
 
-      const store = useGameStore.getState();
-      if (!store.gameStarted) return;
+      const s = useGameStore.getState();
+      if (!s.gameStarted) return;
+      if (s.currentPanel === 'fishing_game') return; // let minigame handle keys
 
-      // ESC: toggle settings / close any panel
-      if (e.key === 'Escape') {
-        e.preventDefault(); // prevent browser ESC behavior
-        if (store.currentPanel === 'fishing_game') return; // don't close fishing minigame
-        if (store.currentPanel !== 'none') {
-          store.closePanel();
-        } else {
-          store.openPanel('settings');
-        }
+      const panel = s.currentPanel;
+      const code = e.code;
+
+      // ── ESC ──
+      if (code === 'Escape') {
+        e.preventDefault();
+        if (panel !== 'none') s.closePanel();
+        else s.openPanel('settings');
       }
-      // B: building menu
-      if (e.key === 'b' || e.key === 'B') {
-        if (store.currentPanel === 'none') store.openPanel('building');
-        else if (store.currentPanel === 'building') store.closePanel();
+      // ── I: backpack ──
+      else if (code === 'KeyI') {
+        if (panel === 'none') s.openPanel('backpack');
+        else if (panel === 'backpack') s.closePanel();
       }
-      // J: quest journal
-      if (e.key === 'j' || e.key === 'J') {
-        if (store.currentPanel === 'none') store.openPanel('quests');
-        else if (store.currentPanel === 'quests') store.closePanel();
+      // ── M: map ──
+      else if (code === 'KeyM') {
+        if (panel === 'none') s.openPanel('map');
+        else if (panel === 'map') s.closePanel();
       }
-      // N: BGM toggle (handled by Phaser, but also here as fallback)
-      // I: inventory
-      if (e.key === 'i' || e.key === 'I') {
-        if (store.currentPanel === 'none') store.openPanel('backpack');
-        else if (store.currentPanel === 'backpack') store.closePanel();
+      // ── B: building ──
+      else if (code === 'KeyB') {
+        if (panel === 'none') s.openPanel('building');
+        else if (panel === 'building') s.closePanel();
       }
-      // M: map
-      if (e.key === 'm' || e.key === 'M') {
-        if (store.currentPanel === 'none') store.openPanel('map');
-        else if (store.currentPanel === 'map') store.closePanel();
+      // ── J: quests ──
+      else if (code === 'KeyJ') {
+        if (panel === 'none') s.openPanel('quests');
+        else if (panel === 'quests') s.closePanel();
       }
     };
-    // Use capture phase to get keys before Phaser
-    window.addEventListener('keydown', handleKeyDown, true);
-    return () => window.removeEventListener('keydown', handleKeyDown, true);
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
   }, []);
 
   if (!gameStarted) {
