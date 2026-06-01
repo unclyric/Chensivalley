@@ -63,10 +63,10 @@ export class GameScene extends Phaser.Scene {
       D: this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.D),
     };
 
-    // Action keys (Phaser handles movement + E key only; ESC/B/J handled in App.tsx)
+    // Action keys
     this.actionKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.E);
-    this.mapKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.M);
-    this.inventoryKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.I);
+    const inventoryKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.I);
+    const mapKey2 = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.M);
 
     // ── Background Music ──────────────────────
     this.sound.volume = 0.25;
@@ -94,7 +94,7 @@ export class GameScene extends Phaser.Scene {
       store.player.position.y * TILE_SIZE * 2,
       'player'
     );
-    this.player.setScale(3.5); // much bigger character on map
+    this.player.setScale(2.2); // same size as NPCs
     this.player.setDepth(10);
     this.player.setCollideWorldBounds(true);
     this.physics.world.setBounds(0, 0, MAP_WIDTH * TILE_SIZE * 2, MAP_HEIGHT * TILE_SIZE * 2);
@@ -143,22 +143,24 @@ export class GameScene extends Phaser.Scene {
       }
     });
 
-    // Keyboard event for UI
-    this.inventoryKey.on('down', () => {
+    // E key for fishing/talking
+    this.actionKey.on('down', () => {
+      this.tryFish();
+      this.tryTalkToNPC();
+    });
+
+    // I key for inventory
+    inventoryKey.on('down', () => {
       const s = useGameStore.getState();
       if (s.currentPanel === 'none') s.openPanel('backpack');
       else if (s.currentPanel === 'backpack') s.closePanel();
     });
 
-    this.mapKey.on('down', () => {
+    // M key for map
+    mapKey2.on('down', () => {
       const s = useGameStore.getState();
       if (s.currentPanel === 'none') s.openPanel('map');
       else if (s.currentPanel === 'map') s.closePanel();
-    });
-
-    this.actionKey.on('down', () => {
-      this.tryFish();
-      this.tryTalkToNPC();
     });
 
     this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
@@ -705,7 +707,7 @@ export class GameScene extends Phaser.Scene {
       // Add name label (proportional to scaled-up NPC)
       const npcData = useGameStore.getState().npcData[npc.id];
       if (npcData) {
-        const labelYOffset = -22; // above NPC head (NPC is ~32px * 2.2 / 2 ≈ 35px tall from center)
+        const labelYOffset = -30; // higher above NPC head
         const label = this.add.text(nx * TILE_SIZE * 2, ny * TILE_SIZE * 2 + labelYOffset, npcData.name, {
           fontFamily: '"Press Start 2P", monospace',
           fontSize: '14px',

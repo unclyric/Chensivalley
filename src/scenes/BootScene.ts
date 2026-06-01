@@ -329,89 +329,95 @@ export class BootScene extends Phaser.Scene {
     const drawNPCs = [
       // 0: 华泽 - wise old fisherman, grey flowing beard, straw hat, brown robe
       (g: Phaser.GameObjects.Graphics) => {
-        // Shadow
         g.fillStyle(0x000000, 0.1); g.fillEllipse(8 * sc, 15 * sc + 1, 8 * sc, 3);
-        // Robe
         g.fillStyle(0x5a4a3a); g.fillRect(3 * sc, 7 * sc, 10 * sc, 6 * sc);
         g.fillStyle(0x7a6a5a, 0.5); g.fillRect(4 * sc, 7 * sc, 8 * sc, 3 * sc);
-        // Robe fold
         g.fillStyle(0x4a3a2a, 0.3); g.fillRect(6 * sc, 8 * sc, 1, 5 * sc);
         g.fillRect(9 * sc, 8 * sc, 1, 5 * sc);
-        // Inner robe
         g.fillStyle(0x8a7a6a, 0.3); g.fillRect(5 * sc, 8 * sc, 6 * sc, 2 * sc);
-        // Hat
         g.fillStyle(0xd4b896); g.fillRect(2 * sc, 0, 12 * sc, 4 * sc);
         g.fillStyle(0xc4a070, 0.4); g.fillRect(3 * sc, 1 * sc, 10 * sc, 2 * sc);
         g.fillStyle(0x8b6914, 0.3); g.fillRect(5 * sc, 0, 6 * sc, 1);
         // Face
         g.fillStyle(0xfce4c8); g.fillRect(5 * sc, 3 * sc, 6 * sc, 5 * sc);
         g.fillStyle(0xf0d0b0, 0.3); g.fillRect(5 * sc, 5 * sc, 6 * sc, 3 * sc);
-        // Grey hair
         g.fillStyle(0xc0c0c0); g.fillRect(2 * sc, 2 * sc, 3 * sc, 3 * sc);
         g.fillRect(11 * sc, 2 * sc, 3 * sc, 3 * sc);
-        // Grey beard
         g.fillStyle(0xd8d8d8); g.fillRect(6 * sc, 7 * sc, 4 * sc, 4 * sc);
         g.fillStyle(0xe8e8e8, 0.5); g.fillRect(7 * sc, 7 * sc, 2 * sc, 2 * sc);
-        // Kind eyes (wrinkled corners)
-        g.fillStyle(0x000000); g.fillRect(6 * sc, 5 * sc, 2 * sc, 1);
-        g.fillRect(9 * sc, 5 * sc, 2 * sc, 1);
-        g.fillStyle(0xf0a080, 0.3); g.fillRect(5 * sc, 5 * sc, 1, 1);
-        g.fillRect(10 * sc, 5 * sc, 1, 1);
-        // Sandals
+        // Detailed eyes - dark with wisdom sparkle
+        g.fillStyle(0xffffff); g.fillRect(6 * sc, 4.5 * sc, 2.5 * sc, 2 * sc);
+        g.fillRect(9 * sc, 4.5 * sc, 2.5 * sc, 2 * sc);
+        g.fillStyle(0x4a3020); g.fillRect(6.5 * sc, 4.5 * sc, 1.5 * sc, 2 * sc);
+        g.fillRect(9.5 * sc, 4.5 * sc, 1.5 * sc, 2 * sc);
+        g.fillStyle(0x000000); g.fillRect(7 * sc, 5 * sc, 1 * sc, 1.5 * sc);
+        g.fillRect(10 * sc, 5 * sc, 1 * sc, 1.5 * sc);
+        g.fillStyle(0xffffff); g.fillRect(7 * sc, 4.5 * sc, 0.6 * sc, 0.6 * sc);
+        g.fillRect(10 * sc, 4.5 * sc, 0.6 * sc, 0.6 * sc);
+        // Grey eyebrows
+        g.fillStyle(0xa0a0a0); g.fillRect(6 * sc, 4 * sc, 2.5 * sc, 0.5 * sc);
+        g.fillRect(9 * sc, 4 * sc, 2.5 * sc, 0.5 * sc);
+        // Smile lines
+        g.fillStyle(0xd0a090, 0.3); g.fillRect(6 * sc, 6 * sc, 4 * sc, 0.5 * sc);
         g.fillStyle(0x5a3a1a); g.fillRect(6 * sc, 13 * sc, 3 * sc, 2 * sc);
         g.fillRect(9 * sc, 13 * sc, 3 * sc, 2 * sc);
       },
       // 1: 智爸 - traveling merchant, warm red coat, hat, kind face
       (g: Phaser.GameObjects.Graphics) => {
         g.fillStyle(0x000000, 0.1); g.fillEllipse(8 * sc, 15 * sc + 1, 8 * sc, 3);
-        // Red merchant coat
         g.fillStyle(0xa03030); g.fillRect(4 * sc, 6 * sc, 8 * sc, 6 * sc);
         g.fillStyle(0xc04040, 0.5); g.fillRect(5 * sc, 6 * sc, 6 * sc, 3 * sc);
-        // Coat trim
         g.fillStyle(0xd4a853); g.fillRect(4 * sc, 10 * sc, 8 * sc, 1);
-        // Coat buttons
         g.fillStyle(0xd4a853); g.fillRect(8 * sc, 7 * sc, 1, 1);
         g.fillRect(8 * sc, 9 * sc, 1, 1);
-        // Bag on side
         g.fillStyle(0x8a6a30); g.fillRect(2 * sc, 7 * sc, 3 * sc, 5 * sc);
         g.fillStyle(0x9b7930, 0.4); g.fillRect(2 * sc, 7 * sc, 3 * sc, 2 * sc);
-        // Face
         g.fillStyle(0xe8c39e); g.fillRect(5 * sc, 2 * sc, 6 * sc, 5 * sc);
         g.fillStyle(0xdcb088, 0.3); g.fillRect(5 * sc, 4 * sc, 6 * sc, 3 * sc);
-        // Leather hat
         g.fillStyle(0x5d3a1a); g.fillRect(2 * sc, 0, 12 * sc, 3 * sc);
         g.fillStyle(0x7a5030, 0.4); g.fillRect(4 * sc, 1 * sc, 8 * sc, 1);
-        // Warm eyes
-        g.fillStyle(0x000000); g.fillRect(7 * sc, 4 * sc, 1, 2 * sc);
-        g.fillRect(10 * sc, 4 * sc, 1, 2 * sc);
-        // Smile
-        g.fillStyle(0x8a5040, 0.4); g.fillRect(7 * sc, 5.5 * sc, 2 * sc, 0.5 * sc);
-        g.fillRect(9 * sc, 5.5 * sc, 2 * sc, 0.5 * sc);
-        // Boots
+        // Warm detailed eyes
+        g.fillStyle(0xffffff); g.fillRect(6.5 * sc, 3.5 * sc, 2 * sc, 2 * sc);
+        g.fillRect(9.5 * sc, 3.5 * sc, 2 * sc, 2 * sc);
+        g.fillStyle(0x5a3a1a); g.fillRect(7 * sc, 3.5 * sc, 1.5 * sc, 2 * sc);
+        g.fillRect(10 * sc, 3.5 * sc, 1.5 * sc, 2 * sc);
+        g.fillStyle(0x000000); g.fillRect(7.5 * sc, 4 * sc, 1 * sc, 1.5 * sc);
+        g.fillRect(10.5 * sc, 4 * sc, 1 * sc, 1.5 * sc);
+        g.fillStyle(0xffffff); g.fillRect(7.5 * sc, 3.5 * sc, 0.5 * sc, 0.5 * sc);
+        g.fillRect(10.5 * sc, 3.5 * sc, 0.5 * sc, 0.5 * sc);
+        // Bushy eyebrows
+        g.fillStyle(0x3a1a08); g.fillRect(6.5 * sc, 3 * sc, 2 * sc, 0.5 * sc);
+        g.fillRect(9.5 * sc, 3 * sc, 2 * sc, 0.5 * sc);
+        // Warm smile
+        g.fillStyle(0xc08070, 0.4); g.fillRect(7 * sc, 5.5 * sc, 2.5 * sc, 0.5 * sc);
         g.fillStyle(0x3a2010); g.fillRect(6 * sc, 12 * sc, 3 * sc, 2 * sc);
         g.fillRect(9 * sc, 12 * sc, 3 * sc, 2 * sc);
       },
       // 2: 吉格斯 - ichthyologist, white lab coat, glasses, hair bun
       (g: Phaser.GameObjects.Graphics) => {
         g.fillStyle(0x000000, 0.1); g.fillEllipse(8 * sc, 15 * sc + 1, 8 * sc, 3);
-        // Lab coat
         g.fillStyle(0xe8e8e8); g.fillRect(4 * sc, 7 * sc, 8 * sc, 6 * sc);
         g.fillStyle(0xf8f8f8, 0.5); g.fillRect(5 * sc, 7 * sc, 6 * sc, 3 * sc);
-        // Coat pocket with pen
         g.fillStyle(0xcccccc, 0.4); g.fillRect(9 * sc, 8 * sc, 3 * sc, 2 * sc);
         g.fillStyle(0x3060c0); g.fillRect(11 * sc, 8 * sc, 0.5 * sc, 2 * sc);
-        // Face
         g.fillStyle(0xfce4c8); g.fillRect(5 * sc, 2 * sc, 6 * sc, 5 * sc);
-        // Brown hair bun
         g.fillStyle(0x3a2010); g.fillRect(4 * sc, 1 * sc, 8 * sc, 2 * sc);
         g.fillStyle(0x3a2010); g.fillCircle(12 * sc, 2 * sc, 3 * sc);
-        // Glasses
-        g.fillStyle(0x333333); g.fillRect(6 * sc, 3 * sc, 3 * sc, 2 * sc);
-        g.fillRect(9 * sc, 3 * sc, 3 * sc, 2 * sc);
-        g.fillStyle(0x444444); g.fillRect(8.5 * sc, 3.5 * sc, 1, 0.5 * sc);
-        // Eyes behind glasses
-        g.fillStyle(0x000000); g.fillRect(7 * sc, 3.5 * sc, 1, 1);
-        g.fillRect(10 * sc, 3.5 * sc, 1, 1);
+        // Glasses with eyes behind
+        g.fillStyle(0x444444); g.fillRect(5.5 * sc, 3.5 * sc, 3.5 * sc, 2.5 * sc);
+        g.fillRect(9 * sc, 3.5 * sc, 3.5 * sc, 2.5 * sc);
+        g.fillStyle(0x666666); g.fillRect(8.5 * sc, 4 * sc, 0.8 * sc, 0.5 * sc);
+        g.fillStyle(0xffffff); g.fillRect(6 * sc, 4 * sc, 2.5 * sc, 2 * sc);
+        g.fillRect(9.5 * sc, 4 * sc, 2.5 * sc, 2 * sc);
+        g.fillStyle(0x1a3050); g.fillRect(6.5 * sc, 4 * sc, 1.5 * sc, 2 * sc);
+        g.fillRect(10 * sc, 4 * sc, 1.5 * sc, 2 * sc);
+        g.fillStyle(0x000000); g.fillRect(7 * sc, 4.5 * sc, 1 * sc, 1.5 * sc);
+        g.fillRect(10.5 * sc, 4.5 * sc, 1 * sc, 1.5 * sc);
+        g.fillStyle(0xffffff); g.fillRect(7 * sc, 4 * sc, 0.5 * sc, 0.5 * sc);
+        g.fillRect(10.5 * sc, 4 * sc, 0.5 * sc, 0.5 * sc);
+        // Thin eyebrows
+        g.fillStyle(0x3a2010); g.fillRect(6 * sc, 3 * sc, 2.5 * sc, 0.4 * sc);
+        g.fillRect(9.5 * sc, 3 * sc, 2.5 * sc, 0.4 * sc);
         // Clipboard
         g.fillStyle(0xf0e8d0); g.fillRect(1 * sc, 8 * sc, 3 * sc, 4 * sc);
         g.fillStyle(0xddddd0, 0.4); g.fillRect(1.5 * sc, 8.5 * sc, 2, 3);
@@ -419,55 +425,61 @@ export class BootScene extends Phaser.Scene {
       // 3: 老聂 - lighthouse keeper, navy uniform, cap, weather-beaten
       (g: Phaser.GameObjects.Graphics) => {
         g.fillStyle(0x000000, 0.1); g.fillEllipse(8 * sc, 15 * sc + 1, 8 * sc, 3);
-        // Navy coat
         g.fillStyle(0x1a3050); g.fillRect(4 * sc, 6 * sc, 8 * sc, 6 * sc);
         g.fillStyle(0x2a4a6a, 0.5); g.fillRect(5 * sc, 6 * sc, 6 * sc, 3 * sc);
-        // Gold buttons
         g.fillStyle(0xd4a853); g.fillRect(7.5 * sc, 7 * sc, 1, 1);
         g.fillRect(7.5 * sc, 9 * sc, 1, 1);
-        // Epaulettes
         g.fillStyle(0xd4a853, 0.6); g.fillRect(4 * sc, 6 * sc, 2 * sc, 1);
         g.fillRect(10 * sc, 6 * sc, 2 * sc, 1);
-        // Face - weathered
         g.fillStyle(0xe0b080); g.fillRect(5 * sc, 2 * sc, 6 * sc, 5 * sc);
         g.fillStyle(0xd0a070, 0.4); g.fillRect(5 * sc, 4 * sc, 6 * sc, 3 * sc);
-        // Navy cap
         g.fillStyle(0x1a3040); g.fillRect(3 * sc, 0, 10 * sc, 3 * sc);
         g.fillStyle(0x2a4a6a, 0.4); g.fillRect(4 * sc, 1 * sc, 8 * sc, 1);
-        // Cap badge
         g.fillStyle(0xd4a853, 0.7); g.fillRect(6 * sc, 1.5 * sc, 4 * sc, 0.5 * sc);
-        // Eyes
-        g.fillStyle(0x000000); g.fillRect(7 * sc, 4 * sc, 1, 1);
-        g.fillRect(9 * sc, 4 * sc, 1, 1);
-        // Stubble
+        // Stern eyes
+        g.fillStyle(0xffffff); g.fillRect(6.5 * sc, 4 * sc, 2 * sc, 2 * sc);
+        g.fillRect(9.5 * sc, 4 * sc, 2 * sc, 2 * sc);
+        g.fillStyle(0x3a4a5a); g.fillRect(7 * sc, 4 * sc, 1.5 * sc, 2 * sc);
+        g.fillRect(10 * sc, 4 * sc, 1.5 * sc, 2 * sc);
+        g.fillStyle(0x000000); g.fillRect(7.5 * sc, 4.5 * sc, 1 * sc, 1.5 * sc);
+        g.fillRect(10.5 * sc, 4.5 * sc, 1 * sc, 1.5 * sc);
+        g.fillStyle(0xffffff); g.fillRect(7.5 * sc, 4 * sc, 0.5 * sc, 0.5 * sc);
+        g.fillRect(10.5 * sc, 4 * sc, 0.5 * sc, 0.5 * sc);
+        // Thick eyebrows
+        g.fillStyle(0x4a3a2a); g.fillRect(6.5 * sc, 3.5 * sc, 2 * sc, 0.5 * sc);
+        g.fillRect(9.5 * sc, 3.5 * sc, 2 * sc, 0.5 * sc);
         g.fillStyle(0x909090, 0.2); g.fillRect(6 * sc, 6 * sc, 4 * sc, 1);
       },
       // 4: 佳佳 - painter, red beret, green smock, paint palette
       (g: Phaser.GameObjects.Graphics) => {
         g.fillStyle(0x000000, 0.1); g.fillEllipse(8 * sc, 15 * sc + 1, 8 * sc, 3);
-        // Green artist smock
         g.fillStyle(0x4a7a4a); g.fillRect(4 * sc, 6 * sc, 8 * sc, 6 * sc);
         g.fillStyle(0x5a9a5a, 0.5); g.fillRect(5 * sc, 6 * sc, 6 * sc, 3 * sc);
-        // Paint stains on smock
         g.fillStyle(0xe8a0bf, 0.5); g.fillRect(8 * sc, 8 * sc, 2, 2);
         g.fillStyle(0xf4d03f, 0.5); g.fillRect(10 * sc, 9 * sc, 1.5, 1.5);
         g.fillStyle(0x3060c0, 0.4); g.fillRect(5 * sc, 10 * sc, 1.5, 1.5);
-        // Face
         g.fillStyle(0xfce4c8); g.fillRect(5 * sc, 2 * sc, 6 * sc, 5 * sc);
-        // Red beret
         g.fillStyle(0xc04040); g.fillCircle(8 * sc, 2 * sc, 6 * sc);
         g.fillStyle(0xe06060, 0.4); g.fillCircle(7 * sc, 1 * sc, 3 * sc);
-        // Brown hair peeking out
         g.fillStyle(0x5d3a1a); g.fillRect(4 * sc, 3 * sc, 5 * sc, 3 * sc);
-        // Eyes
-        g.fillStyle(0x000000); g.fillRect(7 * sc, 4 * sc, 2, 2);
-        g.fillRect(10 * sc, 4 * sc, 2, 2);
-        g.fillStyle(0xffffff); g.fillRect(7 * sc, 4 * sc, 1, 1);
-        g.fillRect(10 * sc, 4 * sc, 1, 1);
-        // Blush
-        g.fillStyle(0xf0a0a0, 0.3); g.fillRect(6 * sc, 5 * sc, 1, 1);
-        g.fillRect(9 * sc, 5 * sc, 1, 1);
-        // Paint palette in hand
+        // Bright artist eyes
+        g.fillStyle(0xffffff); g.fillRect(6.5 * sc, 4 * sc, 2 * sc, 2 * sc);
+        g.fillRect(9.5 * sc, 4 * sc, 2 * sc, 2 * sc);
+        g.fillStyle(0x4a6040); g.fillRect(7 * sc, 4 * sc, 1.5 * sc, 2 * sc);
+        g.fillRect(10 * sc, 4 * sc, 1.5 * sc, 2 * sc);
+        g.fillStyle(0x000000); g.fillRect(7.5 * sc, 4.5 * sc, 1 * sc, 1.5 * sc);
+        g.fillRect(10.5 * sc, 4.5 * sc, 1 * sc, 1.5 * sc);
+        g.fillStyle(0xffffff); g.fillRect(7.5 * sc, 4 * sc, 0.5 * sc, 0.5 * sc);
+        g.fillRect(10.5 * sc, 4 * sc, 0.5 * sc, 0.5 * sc);
+        // Thin eyebrows + lashes
+        g.fillStyle(0x5d3a1a); g.fillRect(6.5 * sc, 3.5 * sc, 2 * sc, 0.3 * sc);
+        g.fillRect(9.5 * sc, 3.5 * sc, 2 * sc, 0.3 * sc);
+        g.fillStyle(0x000000); g.fillRect(6.5 * sc, 4 * sc, 2 * sc, 0.2 * sc);
+        g.fillRect(9.5 * sc, 4 * sc, 2 * sc, 0.2 * sc);
+        // Blush + smile
+        g.fillStyle(0xf0a0a0, 0.3); g.fillRect(5.5 * sc, 5.5 * sc, 1.5, 1);
+        g.fillRect(9 * sc, 5.5 * sc, 1.5, 1);
+        g.fillStyle(0xd08080, 0.4); g.fillRect(8 * sc, 6 * sc, 1 * sc, 0.3 * sc);
         g.fillStyle(0x8a6a4a); g.fillRect(0.5 * sc, 8 * sc, 4 * sc, 3 * sc);
         g.fillStyle(0xe04040, 0.7); g.fillRect(1 * sc, 8.5 * sc, 1, 1);
         g.fillStyle(0x4080e0, 0.7); g.fillRect(2.5 * sc, 8.5 * sc, 1, 1);
@@ -476,102 +488,116 @@ export class BootScene extends Phaser.Scene {
       // 5: 淇爹 - tea house owner, elegant purple qipao, tea cup
       (g: Phaser.GameObjects.Graphics) => {
         g.fillStyle(0x000000, 0.1); g.fillEllipse(8 * sc, 15 * sc + 1, 8 * sc, 3);
-        // Purple qipao dress
         g.fillStyle(0x3a2040); g.fillRect(4 * sc, 6 * sc, 8 * sc, 6 * sc);
         g.fillStyle(0x5a3050, 0.5); g.fillRect(5 * sc, 6 * sc, 6 * sc, 3 * sc);
-        // Decorative pattern
-        g.fillStyle(0xd4a853, 0.35);
-        g.fillRect(5 * sc, 8 * sc, 6 * sc, 0.5 * sc);
+        g.fillStyle(0xd4a853, 0.35); g.fillRect(5 * sc, 8 * sc, 6 * sc, 0.5 * sc);
         g.fillRect(5 * sc, 10 * sc, 6 * sc, 0.5 * sc);
-        // Collar
         g.fillStyle(0xd4a853, 0.5); g.fillRect(7 * sc, 6 * sc, 2 * sc, 1);
-        // Face
         g.fillStyle(0xe8c39e); g.fillRect(5 * sc, 2 * sc, 6 * sc, 5 * sc);
-        // Black hair, neat style
         g.fillStyle(0x1a0808); g.fillRect(4 * sc, 1 * sc, 8 * sc, 2 * sc);
         g.fillStyle(0x2a1010, 0.4); g.fillRect(5 * sc, 1 * sc, 6 * sc, 1);
-        // Hair ornament
         g.fillStyle(0xe8a0bf, 0.7); g.fillRect(11 * sc, 2 * sc, 1.5 * sc, 1.5 * sc);
-        // Eyes
-        g.fillStyle(0x000000); g.fillRect(7 * sc, 4 * sc, 1, 1);
-        g.fillRect(9 * sc, 4 * sc, 1, 1);
-        // Tea cup in hand
+        // Elegant almond eyes
+        g.fillStyle(0xffffff); g.fillRect(6.5 * sc, 4 * sc, 2 * sc, 2 * sc);
+        g.fillRect(9.5 * sc, 4 * sc, 2 * sc, 2 * sc);
+        g.fillStyle(0x2a1a2a); g.fillRect(7 * sc, 4 * sc, 1.5 * sc, 2 * sc);
+        g.fillRect(10 * sc, 4 * sc, 1.5 * sc, 2 * sc);
+        g.fillStyle(0x000000); g.fillRect(7.5 * sc, 4.5 * sc, 1 * sc, 1.5 * sc);
+        g.fillRect(10.5 * sc, 4.5 * sc, 1 * sc, 1.5 * sc);
+        g.fillStyle(0xffffff); g.fillRect(7.5 * sc, 4 * sc, 0.5 * sc, 0.5 * sc);
+        g.fillRect(10.5 * sc, 4 * sc, 0.5 * sc, 0.5 * sc);
+        // Thin elegant brows
+        g.fillStyle(0x1a0808); g.fillRect(6.5 * sc, 3.5 * sc, 2 * sc, 0.3 * sc);
+        g.fillRect(9.5 * sc, 3.5 * sc, 2 * sc, 0.3 * sc);
+        // Red lips
+        g.fillStyle(0xc04050, 0.5); g.fillRect(8 * sc, 5.8 * sc, 1 * sc, 0.4 * sc);
         g.fillStyle(0xe8e0d0); g.fillRect(1 * sc, 9 * sc, 3 * sc, 3 * sc);
         g.fillStyle(0xd4c8a0, 0.4); g.fillRect(1.5 * sc, 9.5 * sc, 2 * sc, 2 * sc);
-        // Steam from tea
         g.fillStyle(0xffffff, 0.2); g.fillRect(2 * sc, 8 * sc, 1, 1.5 * sc);
       },
       // 6: 小鱼 - young kid, orange cap, green shirt, small
       (g: Phaser.GameObjects.Graphics) => {
         g.fillStyle(0x000000, 0.1); g.fillEllipse(8 * sc, 15 * sc + 1, 7 * sc, 3);
-        // Smaller body (kid proportions)
         g.fillStyle(0x3a7a3a); g.fillRect(5 * sc, 6 * sc, 6 * sc, 5 * sc);
         g.fillStyle(0x5aaa5a, 0.4); g.fillRect(5 * sc, 6 * sc, 6 * sc, 2 * sc);
-        // Oversized buttons
         g.fillStyle(0xf0f0f0, 0.6); g.fillRect(7.5 * sc, 7 * sc, 1, 1);
         g.fillRect(7.5 * sc, 9 * sc, 1, 1);
-        // Face - round, youthful
         g.fillStyle(0xfce4c8); g.fillRect(5 * sc, 2 * sc, 6 * sc, 5 * sc);
         g.fillStyle(0xfff0e0, 0.3); g.fillRect(6 * sc, 3 * sc, 4 * sc, 3 * sc);
-        // Orange cap
         g.fillStyle(0xe8a040); g.fillRect(4 * sc, 0, 8 * sc, 3 * sc);
         g.fillStyle(0xf0c060, 0.3); g.fillRect(5 * sc, 1 * sc, 6 * sc, 1);
-        // Big eager eyes
-        g.fillStyle(0x000000); g.fillRect(6 * sc, 4 * sc, 2 * sc, 2 * sc);
-        g.fillRect(9 * sc, 4 * sc, 2 * sc, 2 * sc);
-        g.fillStyle(0xffffff); g.fillRect(6 * sc, 4 * sc, 1, 1);
-        g.fillRect(9 * sc, 4 * sc, 1, 1);
+        // Big adorable eyes
+        g.fillStyle(0xffffff); g.fillRect(6 * sc, 3.5 * sc, 2.5 * sc, 2.5 * sc);
+        g.fillRect(9 * sc, 3.5 * sc, 2.5 * sc, 2.5 * sc);
+        g.fillStyle(0x4a3020); g.fillRect(6.5 * sc, 3.5 * sc, 2 * sc, 2.5 * sc);
+        g.fillRect(9.5 * sc, 3.5 * sc, 2 * sc, 2.5 * sc);
+        g.fillStyle(0x000000); g.fillRect(7 * sc, 4 * sc, 1.5 * sc, 2 * sc);
+        g.fillRect(10 * sc, 4 * sc, 1.5 * sc, 2 * sc);
+        g.fillStyle(0xffffff); g.fillRect(7 * sc, 3.5 * sc, 0.8 * sc, 0.8 * sc);
+        g.fillRect(10 * sc, 3.5 * sc, 0.8 * sc, 0.8 * sc);
+        g.fillStyle(0xffffff); g.fillRect(6.5 * sc, 3.5 * sc, 0.4 * sc, 0.5 * sc);
+        g.fillRect(9.5 * sc, 3.5 * sc, 0.4 * sc, 0.5 * sc);
         // Big smile
-        g.fillStyle(0xc06060, 0.5); g.fillRect(7 * sc, 6 * sc, 2 * sc, 0.5 * sc);
-        // Shorts
+        g.fillStyle(0xd06060, 0.5); g.fillRect(7 * sc, 6 * sc, 2.5 * sc, 0.8 * sc);
+        // Rosy cheeks
+        g.fillStyle(0xf0a0a0, 0.25); g.fillRect(5 * sc, 5 * sc, 2, 1);
+        g.fillRect(9 * sc, 5 * sc, 2, 1);
         g.fillStyle(0x3060a0); g.fillRect(5 * sc, 11 * sc, 6 * sc, 2 * sc);
-        // Sneakers
         g.fillStyle(0xe8e8e8); g.fillRect(6 * sc, 13 * sc, 2.5 * sc, 2 * sc);
         g.fillRect(9 * sc, 13 * sc, 2.5 * sc, 2 * sc);
       },
       // 7: 格雷福斯 - old sailor, striped shirt, white beard, pipe
       (g: Phaser.GameObjects.Graphics) => {
         g.fillStyle(0x000000, 0.1); g.fillEllipse(8 * sc, 15 * sc + 1, 9 * sc, 3);
-        // Blue and white striped shirt
         g.fillStyle(0x2a4a7a); g.fillRect(4 * sc, 6 * sc, 8 * sc, 6 * sc);
-        g.fillStyle(0xf0f0f0);
-        for (let py = 7; py < 11; py += 2) g.fillRect(4 * sc, py * sc, 8 * sc, 1);
-        // Suspenders
+        g.fillStyle(0xf0f0f0); for (let py = 7; py < 11; py += 2) g.fillRect(4 * sc, py * sc, 8 * sc, 1);
         g.fillStyle(0x6a3010, 0.7); g.fillRect(6 * sc, 6 * sc, 1, 6 * sc);
         g.fillRect(9 * sc, 6 * sc, 1, 6 * sc);
-        // Weather-beaten face
         g.fillStyle(0xe8c39e); g.fillRect(5 * sc, 2 * sc, 6 * sc, 5 * sc);
         g.fillStyle(0xd0a070, 0.3); g.fillRect(5 * sc, 4 * sc, 6 * sc, 3 * sc);
-        // White hair + beard
         g.fillStyle(0xe8e8e8); g.fillRect(4 * sc, 1 * sc, 8 * sc, 2 * sc);
-        g.fillStyle(0xf0f0f0); g.fillRect(5 * sc, 6 * sc, 6 * sc, 3 * sc); // beard
+        g.fillStyle(0xf0f0f0); g.fillRect(5 * sc, 6 * sc, 6 * sc, 3 * sc);
         g.fillStyle(0xffffff, 0.5); g.fillRect(6 * sc, 6 * sc, 4 * sc, 1);
-        // Pipe
         g.fillStyle(0x6a3a1a); g.fillRect(11 * sc, 7 * sc, 3 * sc, 1);
         g.fillStyle(0x8a5a3a, 0.4); g.fillRect(12 * sc, 7 * sc, 2 * sc, 1);
-        // Eyes with crows feet
-        g.fillStyle(0x000000); g.fillRect(7 * sc, 4 * sc, 1, 1);
-        g.fillRect(9 * sc, 4 * sc, 1, 1);
+        // Sea-blue eyes
+        g.fillStyle(0xffffff); g.fillRect(6.5 * sc, 4 * sc, 2 * sc, 2 * sc);
+        g.fillRect(9.5 * sc, 4 * sc, 2 * sc, 2 * sc);
+        g.fillStyle(0x3068b0); g.fillRect(7 * sc, 4 * sc, 1.5 * sc, 2 * sc);
+        g.fillRect(10 * sc, 4 * sc, 1.5 * sc, 2 * sc);
+        g.fillStyle(0x000000); g.fillRect(7.5 * sc, 4.5 * sc, 1 * sc, 1.5 * sc);
+        g.fillRect(10.5 * sc, 4.5 * sc, 1 * sc, 1.5 * sc);
+        g.fillStyle(0xffffff); g.fillRect(7.5 * sc, 4 * sc, 0.5 * sc, 0.5 * sc);
+        g.fillRect(10.5 * sc, 4 * sc, 0.5 * sc, 0.5 * sc);
+        // Bushy white brows
+        g.fillStyle(0xd0d0d0); g.fillRect(6.5 * sc, 3.5 * sc, 2 * sc, 0.5 * sc);
+        g.fillRect(9.5 * sc, 3.5 * sc, 2 * sc, 0.5 * sc);
+        // Wrinkles
+        g.fillStyle(0xc0a080, 0.2); g.fillRect(6 * sc, 5.5 * sc, 1, 0.5 * sc);
+        g.fillRect(9 * sc, 5.5 * sc, 1, 0.5 * sc);
       },
       // 8: 维克兹 - botanist, green explorer vest, glasses, plant in hand
       (g: Phaser.GameObjects.Graphics) => {
         g.fillStyle(0x000000, 0.1); g.fillEllipse(8 * sc, 15 * sc + 1, 8 * sc, 3);
-        // Green field vest
         g.fillStyle(0x3a6a3a); g.fillRect(4 * sc, 6 * sc, 8 * sc, 6 * sc);
         g.fillStyle(0x5a9a5a, 0.4); g.fillRect(5 * sc, 6 * sc, 6 * sc, 2 * sc);
-        // Vest pockets
         g.fillStyle(0x2a4a2a, 0.5); g.fillRect(5 * sc, 8 * sc, 2 * sc, 2 * sc);
         g.fillRect(9 * sc, 8 * sc, 2 * sc, 2 * sc);
-        // Face
         g.fillStyle(0xfce4c8); g.fillRect(5 * sc, 2 * sc, 6 * sc, 5 * sc);
-        // Brown hair, messy
         g.fillStyle(0x5d3a1a); g.fillRect(4 * sc, 1 * sc, 8 * sc, 2 * sc);
         g.fillStyle(0x7a5030, 0.3); g.fillRect(3 * sc, 2 * sc, 2 * sc, 3 * sc);
-        // Thick glasses
-        g.fillStyle(0x444444); g.fillRect(6 * sc, 3 * sc, 3 * sc, 2 * sc);
-        g.fillRect(9 * sc, 3 * sc, 3 * sc, 2 * sc);
-        g.fillStyle(0x555555); g.fillRect(8.5 * sc, 3.5 * sc, 1, 0.5 * sc);
-        // Plant in hand
+        // Round glasses with eager eyes
+        g.fillStyle(0x555555); g.fillCircle(7.5 * sc, 4.5 * sc, 2 * sc);
+        g.fillCircle(11 * sc, 4.5 * sc, 2 * sc);
+        g.fillStyle(0x777777); g.fillRect(8.5 * sc, 4 * sc, 1 * sc, 1);
+        g.fillStyle(0xffffff); g.fillCircle(7.5 * sc, 4.5 * sc, 1.7 * sc);
+        g.fillCircle(11 * sc, 4.5 * sc, 1.7 * sc);
+        g.fillStyle(0x4a6040); g.fillCircle(7.5 * sc, 4.5 * sc, 1.2 * sc);
+        g.fillCircle(11 * sc, 4.5 * sc, 1.2 * sc);
+        g.fillStyle(0x000000); g.fillCircle(7.8 * sc, 4.8 * sc, 0.8 * sc);
+        g.fillCircle(11.3 * sc, 4.8 * sc, 0.8 * sc);
+        g.fillStyle(0xffffff); g.fillCircle(7.5 * sc, 4.3 * sc, 0.4 * sc);
+        g.fillCircle(11 * sc, 4.3 * sc, 0.4 * sc);
         g.fillStyle(0x6a4a20); g.fillRect(1.5 * sc, 9 * sc, 2 * sc, 3 * sc);
         g.fillStyle(0x4a8a4a); g.fillCircle(2.5 * sc, 8 * sc, 3 * sc);
         g.fillStyle(0x7dcea0, 0.4); g.fillCircle(2.5 * sc, 7 * sc, 2 * sc);
@@ -579,26 +605,28 @@ export class BootScene extends Phaser.Scene {
       // 9: 时光老头 - mystic hermit, deep purple hooded robe, glowing eyes
       (g: Phaser.GameObjects.Graphics) => {
         g.fillStyle(0x000000, 0.15); g.fillEllipse(8 * sc, 15 * sc + 1, 10 * sc, 4);
-        // Hooded robe - deep purple with folds
         g.fillStyle(0x2a2040); g.fillRect(2 * sc, 5 * sc, 12 * sc, 8 * sc);
         g.fillStyle(0x3a3050, 0.5); g.fillRect(3 * sc, 5 * sc, 10 * sc, 4 * sc);
-        // Hood triangle
         g.fillStyle(0x2a2040); g.fillTriangle(8 * sc, -2 * sc, 1 * sc, 5 * sc, 15 * sc, 5 * sc);
         g.fillStyle(0x3a3050, 0.3); g.fillTriangle(8 * sc, -1 * sc, 3 * sc, 5 * sc, 13 * sc, 5 * sc);
-        // Robe folds
         g.fillStyle(0x1a1030, 0.4); g.fillRect(6 * sc, 6 * sc, 1, 7 * sc);
         g.fillRect(9 * sc, 6 * sc, 1, 7 * sc);
-        // Mysterious clasp
         g.fillStyle(0xd4a853, 0.6); g.fillRect(7 * sc, 8 * sc, 2 * sc, 1);
-        // Face (shadowed in hood)
-        g.fillStyle(0x3a2a20); g.fillRect(6 * sc, 3 * sc, 4 * sc, 3 * sc);
-        g.fillStyle(0xfce4c8, 0.3); g.fillRect(7 * sc, 3 * sc, 2 * sc, 2 * sc);
-        // Glowing eyes
-        g.fillStyle(0xa0f0a0, 0.9); g.fillRect(6.5 * sc, 4 * sc, 1, 1);
-        g.fillRect(9 * sc, 4 * sc, 1, 1);
-        g.fillStyle(0xc0ffc0, 0.4); g.fillRect(6 * sc, 4 * sc, 2 * sc, 1);
-        g.fillRect(8.5 * sc, 4 * sc, 2 * sc, 1);
-        // Ancient amulet
+        // Shadowed face
+        g.fillStyle(0x2a1a10); g.fillRect(6 * sc, 3 * sc, 4 * sc, 3 * sc);
+        g.fillStyle(0xfce4c8, 0.2); g.fillRect(7 * sc, 3 * sc, 2 * sc, 2 * sc);
+        // Glowing green eyes (piercing)
+        g.fillStyle(0x000000); g.fillRect(6.5 * sc, 4 * sc, 1.5 * sc, 1.5 * sc);
+        g.fillRect(9.5 * sc, 4 * sc, 1.5 * sc, 1.5 * sc);
+        g.fillStyle(0x80ff80, 0.9); g.fillRect(6.5 * sc, 4 * sc, 1.5 * sc, 1.5 * sc);
+        g.fillRect(9.5 * sc, 4 * sc, 1.5 * sc, 1.5 * sc);
+        g.fillStyle(0xc0ffc0, 0.7); g.fillRect(7 * sc, 4 * sc, 1 * sc, 1 * sc);
+        g.fillRect(10 * sc, 4 * sc, 1 * sc, 1 * sc);
+        g.fillStyle(0xffffff, 0.8); g.fillRect(7 * sc, 4 * sc, 0.5 * sc, 0.5 * sc);
+        g.fillRect(10 * sc, 4 * sc, 0.5 * sc, 0.5 * sc);
+        // Glow aura around eyes
+        g.fillStyle(0x80ff80, 0.15); g.fillRect(6 * sc, 3.5 * sc, 4 * sc, 2.5 * sc);
+        // Amulet
         g.fillStyle(0xffd700, 0.5); g.fillRect(7 * sc, 7 * sc, 2 * sc, 2 * sc);
         g.fillStyle(0xd4a853, 0.4); g.fillRect(7.5 * sc, 7.5 * sc, 1, 1);
       },
