@@ -104,6 +104,9 @@ export class GameScene extends Phaser.Scene {
     // Mark fishing spots
     this.markFishingSpots();
 
+    // ── Simple Animations ─────────────────────
+    this.addAnimations();
+
     // Random notification
     this.time.delayedCall(2000, () => {
       store.showNotification('欢迎来到大辟谷！用方向键或WASD移动，走到水边按E钓鱼。');
@@ -519,6 +522,15 @@ export class GameScene extends Phaser.Scene {
     const npcData = store.npcData[npcId];
     if (!npcData) return;
 
+    // 智爸 opens the shop directly
+    if (npcId === 'traveling_merchant') {
+      store.showNotification('🏪 爸爸的小摊——想买什么自己拿！也可以把鱼卖给爸爸。');
+      store.openPanel('shop');
+      store.checkQuestProgress('talk_to_npc', npcId, 1);
+      if (Math.random() < 0.3) store.changeRelationship(npcId, 0.05);
+      return;
+    }
+
     const hearts = store.getRelationship(npcId);
     const heartLevel = Math.floor(hearts);
     const key = heartLevel.toString();
@@ -783,6 +795,63 @@ export class GameScene extends Phaser.Scene {
     // Return subset for performance
     const step = Math.max(1, Math.floor(spots.length / 20));
     return spots.filter((_, i) => i % step === 0);
+  }
+
+  // ─── Animations ────────────────────────────
+
+  private addAnimations(): void {
+    // 1. Player idle bob
+    this.tweens.add({
+      targets: this.player,
+      y: this.player.y - 2,
+      duration: 1200,
+      yoyo: true,
+      repeat: -1,
+      ease: 'Sine.easeInOut',
+    });
+
+    // 2. NPC gentle bob animations
+    this.npcSprites.forEach((sprite) => {
+      this.tweens.add({
+        targets: sprite,
+        y: sprite.y - 1.5,
+        duration: 1800 + Math.random() * 600,
+        yoyo: true,
+        repeat: -1,
+        ease: 'Sine.easeInOut',
+        delay: Math.random() * 1000,
+      });
+    });
+
+    // 3. Water shimmer on tiles (subtle alpha pulse)
+    const waterTiles = this.mapTiles.flat().filter(t => t && t.texture.key === 'tile_water');
+    waterTiles.forEach((tile, i) => {
+      if (!tile) return;
+      this.tweens.add({
+        targets: tile,
+        alpha: { from: 1, to: 0.85 },
+        duration: 2000 + Math.random() * 1000,
+        yoyo: true,
+        repeat: -1,
+        ease: 'Sine.easeInOut',
+        delay: i * 30,
+      });
+    });
+
+    // 4. Tree sway (subtle rotation)
+    const treeTiles = this.mapTiles.flat().filter(t => t && t.texture.key === 'tile_tree');
+    treeTiles.forEach((tree, i) => {
+      if (!tree) return;
+      this.tweens.add({
+        targets: tree,
+        angle: { from: -0.5, to: 0.5 },
+        duration: 3000 + Math.random() * 2000,
+        yoyo: true,
+        repeat: -1,
+        ease: 'Sine.easeInOut',
+        delay: i * 400,
+      });
+    });
   }
 
   // ─── Public API ─────────────────────────────

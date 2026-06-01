@@ -10,7 +10,7 @@ import { getRarityColor, getRarityName, formatGold } from '../../utils/helpers';
 import { ITEM_DEFINITIONS } from '../../data/items';
 
 export const Backpack: React.FC = () => {
-  const { player, closePanel, sellFish, addGold, removeItem } = useGameStore();
+  const { player, closePanel, sellFish, useItem, showNotification } = useGameStore();
   const [selectedCategory, setSelectedCategory] = useState<ItemCategory | 'all'>('all');
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
 
@@ -41,12 +41,9 @@ export const Backpack: React.FC = () => {
   };
 
   const handleUseItem = (item: typeof filteredItems[0]) => {
-    const def = ITEM_DEFINITIONS[item.itemId];
     if (item.category === ItemCategory.Food) {
-      const energyRestore = item.itemId === 'bento' ? 30 : item.itemId === 'tea' ? 50 : 80;
-      useGameStore.getState().restoreEnergy(energyRestore);
-      removeItem(item.itemId, 1);
-      useGameStore.getState().showNotification(`使用了 ${def?.name || item.itemId}，恢复了体力！`);
+      const result = useItem(item.itemId);
+      showNotification(result.message);
     }
   };
 

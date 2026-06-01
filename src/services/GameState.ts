@@ -15,6 +15,7 @@ import {
 import { ALL_FISH } from '../data/fish';
 import { ALL_NPCS } from '../data/npcs';
 import { ALL_QUESTS } from '../data/quests';
+import { ITEM_DEFINITIONS } from '../data/items';
 
 // ─── Game State Interface ────────────────────
 
@@ -77,6 +78,7 @@ export interface GameStateStore {
   removeItem: (itemId: string, quantity: number) => boolean;
   hasItem: (itemId: string, quantity?: number) => boolean;
   sellFish: (fishId: string) => number; // returns gold earned
+  useItem: (itemId: string) => { success: boolean; message: string }; // use consumable
 
   // Encyclopedia
   discoverFish: (fishId: string) => void;
@@ -287,9 +289,13 @@ export const useGameStore = create<GameStateStore>((set, get) => ({
     player: { ...state.player, currentMap: map },
   })),
 
-  addGold: (amount: number) => set(state => ({
-    player: { ...state.player, gold: state.player.gold + amount },
-  })),
+  addGold: (amount: number) => {
+    set(state => ({
+      player: { ...state.player, gold: state.player.gold + amount },
+    }));
+    // Trigger quest progress for gold threshold
+    get().checkQuestProgress('reach_gold', 'any', amount);
+  },
 
   spendGold: (amount: number) => {
     const state = get();
@@ -387,6 +393,40 @@ export const useGameStore = create<GameStateStore>((set, get) => ({
     return value;
   },
 
+  // ─── Use Item (stamina recovery) ──────────
+  useItem: (itemId: string) => {
+    const state = get();
+    const def = ITEM_DEFINITIONS[itemId];
+    if (!def || def.category !== ItemCategory.Food) {
+      return { success: false, message: '这个物品不能使用' };
+    }
+    // Check if player has the item
+    const invItem = state.player.inventory.find(i => i.itemId === itemId);
+    if (!invItem || invItem.quantity <= 0) {
+      return { success: false, message: '背包中没有这个物品' };
+    }
+    // Restore energy based on item
+    const energyRestore: Record<string, number> = {
+      bento: 30,
+      tea: 50,
+      fish_rice: 80,
+    };
+    const restore = energyRestore[itemId] || 20;
+    const currentEnergy = state.player.energy;
+    if (currentEnergy >= state.player.maxEnergy) {
+      return { success: false, message: '体力已经满了！' };
+    }
+
+    // Remove item from inventory
+    get().removeItem(itemId, 1);
+    // Restore energy
+    const newEnergy = Math.min(state.player.maxEnergy, currentEnergy + restore);
+    set({
+      player: { ...get().player, energy: newEnergy },
+    });
+    return { success: true, message: `使用了${def.name}，恢复了${restore}点体力！` };
+  },
+
   // ─── Encyclopedia ──────────────────────────
   discoverFish: (fishId: string) => set(state => ({
     fishData: {
@@ -455,7 +495,8 @@ export const useGameStore = create<GameStateStore>((set, get) => ({
             objDef.target === target ||
             (objDef.target === 'any_legendary' && ['dragon_scale_fish','phantom_light_fish','yangye_leaf_fish','old_man_fish','marsh_king'].includes(target)) ||
             (objDef.target === 'any_nanming' && state.fishData[target]?.locations?.includes(FishingLocation.NanmingRiver)) ||
-            (objDef.target === 'any_west_lake' && state.fishData[target]?.locations?.includes(FishingLocation.WestLake));
+            (objDef.target === 'any_west_lake' && state.fishData[target]?.locations?.includes(FishingLocation.WestLake)) ||
+            (objDef.target === 'all_fish' && state.player.fishCaught.includes(target));
           if (targetMatch) {
             newProgress = Math.min(objDef.quantity, obj.progress + quantity);
           }
@@ -465,6 +506,25 @@ export const useGameStore = create<GameStateStore>((set, get) => ({
         }
         if (objDef.type === 'collect_item' && actionType === 'collect_item' && objDef.target === target) {
           newProgress = Math.min(objDef.quantity, obj.progress + quantity);
+        }
+        if (objDef.type === 'build_structure' && actionType === 'build_structure') {
+          const targetMatch =
+            objDef.target === 'any_building' ||
+            objDef.target === target ||
+            (objDef.target === 'fish_pond_small' && (target === 'fish_pond' || target === 'fish_pond_small')) ||
+            (objDef.target === 'feed_pond' && target === 'feed_pond');
+          if (targetMatch) {
+            newProgress = Math.min(objDef.quantity, obj.progress + quantity);
+          }
+        }
+        if (objDef.type === 'reach_gold' && actionType === 'reach_gold') {
+          const targetGold = parseInt(objDef.target) || 0;
+          newProgress = state.player.gold >= targetGold ? objDef.quantity : 0;
+        }
+        if (objDef.type === 'reach_relationship' && actionType === 'reach_relationship') {
+          if (objDef.target === target) {
+            newProgress = Math.min(objDef.quantity, obj.progress + quantity);
+          }
         }
 
         if (newProgress < objDef.quantity) allComplete = false;
@@ -546,7 +606,8 @@ export const useGameStore = create<GameStateStore>((set, get) => ({
   })),
 
   // ─── Relationships ─────────────────────────
-  changeRelationship: (npcId: string, amount: number) => set(state => {
+  changeRelationship: (npcId: string, amount: number) => {
+    set(state => {
     const current = state.player.relationships[npcId] || 0;
     const newVal = Math.max(0, Math.min(10, current + amount));
     return {
@@ -555,19 +616,28 @@ export const useGameStore = create<GameStateStore>((set, get) => ({
         relationships: { ...state.player.relationships, [npcId]: newVal },
       },
     };
-  }),
+    });
+    // Trigger quest progress for relationship
+    const newHearts = Math.floor(get().player.relationships[npcId] || 0);
+    get().checkQuestProgress('reach_relationship', npcId, newHearts);
+  },
 
   getRelationship: (npcId: string) => {
     return get().player.relationships[npcId] || 0;
   },
 
   // ─── Buildings ─────────────────────────────
-  addBuilding: (building: Building) => set(state => ({
-    player: {
-      ...state.player,
-      buildings: [...state.player.buildings, building],
-    },
-  })),
+  addBuilding: (building: Building) => {
+    set(state => ({
+      player: {
+        ...state.player,
+        buildings: [...state.player.buildings, building],
+      },
+    }));
+    // Trigger quest progress for building
+    get().checkQuestProgress('build_structure', building.type, 1);
+    get().checkQuestProgress('build_structure', 'any_building', 1);
+  },
 
   upgradeBuilding: (buildingId: string) => set(state => ({
     player: {

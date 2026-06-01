@@ -10,7 +10,7 @@ import { POND_STATS, formatGold } from '../../utils';
 import { generateId } from '../../utils/helpers';
 
 export const BuildingMenu: React.FC = () => {
-  const { player, closePanel, spendGold, addBuilding, addFishPond } = useGameStore();
+  const { player, closePanel, spendGold, addBuilding, addFishPond, checkQuestProgress } = useGameStore();
   const [selectedCategory, setSelectedCategory] = useState<'pond' | 'building' | 'deco'>('pond');
   const [msg, setMsg] = useState('');
 
@@ -46,6 +46,10 @@ export const BuildingMenu: React.FC = () => {
       buildingId: buildId,
     };
     addFishPond(pond);
+
+    // Trigger quest progress for building
+    checkQuestProgress('build_structure', 'fish_pond_small', 1);
+    checkQuestProgress('build_structure', 'fish_pond', 1);
 
     setMsg(`建造了${stats.name}！花费 ${stats.buildCost} G`);
     setTimeout(() => setMsg(''), 3000);
