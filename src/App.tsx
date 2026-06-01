@@ -72,7 +72,6 @@ const App: React.FC = () => {
       if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
 
       const store = useGameStore.getState();
-      // Don't process game keys when not in game
       if (!store.gameStarted) return;
 
       // ESC: toggle settings / close any panel
@@ -107,8 +106,9 @@ const App: React.FC = () => {
         else if (store.currentPanel === 'map') store.closePanel();
       }
     };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    // Use capture phase to get keys before Phaser
+    window.addEventListener('keydown', handleKeyDown, true);
+    return () => window.removeEventListener('keydown', handleKeyDown, true);
   }, []);
 
   if (!gameStarted) {

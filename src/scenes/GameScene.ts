@@ -492,14 +492,14 @@ export class GameScene extends Phaser.Scene {
     // (keep last direction when only moving vertically)
 
     // ── Walking bounce animation ──────────────
+    const BASE_SCALE = 2.2;
     const isCurrentlyWalking = this.player.getData('walking') === true;
     if (isMoving && !isCurrentlyWalking) {
-      // Transition to walking
       this.tweens.killTweensOf(this.player);
-      this.player.setScale(1);
+      this.player.setScale(BASE_SCALE);
       this.tweens.add({
         targets: this.player,
-        scaleY: { from: 1, to: 0.93 },
+        scaleY: BASE_SCALE * 0.92,
         duration: 200,
         yoyo: true,
         repeat: -1,
@@ -507,12 +507,11 @@ export class GameScene extends Phaser.Scene {
       });
       this.player.setData('walking', true);
     } else if (!isMoving && (isCurrentlyWalking || this.player.getData('walking') === undefined)) {
-      // Transition to idle (or first frame)
       this.tweens.killTweensOf(this.player);
-      this.player.setScale(1);
+      this.player.setScale(BASE_SCALE);
       this.tweens.add({
         targets: this.player,
-        scaleY: { from: 1, to: 0.97 },
+        scaleY: BASE_SCALE * 0.97,
         duration: 1500,
         yoyo: true,
         repeat: -1,
