@@ -64,27 +64,47 @@ const App: React.FC = () => {
     };
   }, [gameStarted]);
 
-  // Keyboard shortcuts (only for keys NOT handled by Phaser GameScene)
+  // Keyboard shortcuts (ESC/B/J handled here; WASD/E handled by Phaser)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       // Skip if target is an input/textarea
-      if ((e.target as HTMLElement)?.tagName === 'INPUT' || (e.target as HTMLElement)?.tagName === 'TEXTAREA') return;
+      const tag = (e.target as HTMLElement)?.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
 
       const store = useGameStore.getState();
+      // Don't process game keys when not in game
+      if (!store.gameStarted) return;
+
+      // ESC: toggle settings / close any panel
       if (e.key === 'Escape') {
-        if (store.currentPanel !== 'none' && store.currentPanel !== 'fishing_game') {
+        e.preventDefault(); // prevent browser ESC behavior
+        if (store.currentPanel === 'fishing_game') return; // don't close fishing minigame
+        if (store.currentPanel !== 'none') {
           store.closePanel();
-        } else if (store.currentPanel === 'none') {
+        } else {
           store.openPanel('settings');
         }
       }
+      // B: building menu
+      if (e.key === 'b' || e.key === 'B') {
+        if (store.currentPanel === 'none') store.openPanel('building');
+        else if (store.currentPanel === 'building') store.closePanel();
+      }
+      // J: quest journal
       if (e.key === 'j' || e.key === 'J') {
         if (store.currentPanel === 'none') store.openPanel('quests');
         else if (store.currentPanel === 'quests') store.closePanel();
       }
-      if (e.key === 'b' || e.key === 'B') {
-        if (store.currentPanel === 'none') store.openPanel('building');
-        else if (store.currentPanel === 'building') store.closePanel();
+      // N: BGM toggle (handled by Phaser, but also here as fallback)
+      // I: inventory
+      if (e.key === 'i' || e.key === 'I') {
+        if (store.currentPanel === 'none') store.openPanel('backpack');
+        else if (store.currentPanel === 'backpack') store.closePanel();
+      }
+      // M: map
+      if (e.key === 'm' || e.key === 'M') {
+        if (store.currentPanel === 'none') store.openPanel('map');
+        else if (store.currentPanel === 'map') store.closePanel();
       }
     };
     window.addEventListener('keydown', handleKeyDown);

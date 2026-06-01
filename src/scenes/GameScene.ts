@@ -63,13 +63,10 @@ export class GameScene extends Phaser.Scene {
       D: this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.D),
     };
 
-    // Action keys
+    // Action keys (Phaser handles movement + E key only; ESC/B/J handled in App.tsx)
     this.actionKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.E);
     this.mapKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.M);
     this.inventoryKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.I);
-    const buildKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.B);
-    const questKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.J);
-    const escKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
 
     // ── Background Music ──────────────────────
     this.sound.volume = 0.25;
@@ -97,7 +94,7 @@ export class GameScene extends Phaser.Scene {
       store.player.position.y * TILE_SIZE * 2,
       'player'
     );
-    this.player.setScale(2.5); // bigger character on map
+    this.player.setScale(3.5); // much bigger character on map
     this.player.setDepth(10);
     this.player.setCollideWorldBounds(true);
     this.physics.world.setBounds(0, 0, MAP_WIDTH * TILE_SIZE * 2, MAP_HEIGHT * TILE_SIZE * 2);
@@ -157,25 +154,6 @@ export class GameScene extends Phaser.Scene {
       const s = useGameStore.getState();
       if (s.currentPanel === 'none') s.openPanel('map');
       else if (s.currentPanel === 'map') s.closePanel();
-    });
-
-    buildKey.on('down', () => {
-      const s = useGameStore.getState();
-      if (s.currentPanel === 'none') s.openPanel('building');
-      else if (s.currentPanel === 'building') s.closePanel();
-    });
-
-    questKey.on('down', () => {
-      const s = useGameStore.getState();
-      if (s.currentPanel === 'none') s.openPanel('quests');
-      else if (s.currentPanel === 'quests') s.closePanel();
-    });
-
-    escKey.on('down', () => {
-      const s = useGameStore.getState();
-      if (s.currentPanel === 'none') s.openPanel('settings');
-      else if (s.currentPanel === 'settings') s.closePanel();
-      else s.closePanel(); // ESC closes any open panel
     });
 
     this.actionKey.on('down', () => {
@@ -724,15 +702,16 @@ export class GameScene extends Phaser.Scene {
       sprite.setInteractive({ useHandCursor: true });
       sprite.on('pointerdown', () => this.interactWithNPC(npc.id));
 
-      // Add name label
+      // Add name label (proportional to scaled-up NPC)
       const npcData = useGameStore.getState().npcData[npc.id];
       if (npcData) {
-        const label = this.add.text(nx * TILE_SIZE * 2, ny * TILE_SIZE * 2 - 16, npcData.name, {
+        const labelYOffset = -22; // above NPC head (NPC is ~32px * 2.2 / 2 ≈ 35px tall from center)
+        const label = this.add.text(nx * TILE_SIZE * 2, ny * TILE_SIZE * 2 + labelYOffset, npcData.name, {
           fontFamily: '"Press Start 2P", monospace',
-          fontSize: '8px',
+          fontSize: '14px',
           color: '#ffffff',
           stroke: '#000000',
-          strokeThickness: 2,
+          strokeThickness: 3,
         }).setOrigin(0.5, 1).setDepth(6);
       }
 
