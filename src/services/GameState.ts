@@ -55,6 +55,9 @@ export interface GameStateStore {
   actionEffect: { type: string; icon: string; time: number } | null;
   triggerActionEffect: (type: string, icon: string) => void;
 
+  // Building version counter for re-rendering
+  buildingsVersion: number;
+
   // ─── Actions ──────────────────────────────
 
   // Game flow
@@ -195,6 +198,7 @@ export const useGameStore = create<GameStateStore>((set, get) => ({
   fishingGame: { ...defaultFishingGame },
   flags: {},
   actionEffect: null,
+  buildingsVersion: 0,
 
   // ─── Game Flow ─────────────────────────────
   startGame: () => set({
@@ -637,6 +641,7 @@ export const useGameStore = create<GameStateStore>((set, get) => ({
         ...state.player,
         buildings: [...state.player.buildings, building],
       },
+      buildingsVersion: state.buildingsVersion + 1,
     }));
     // Trigger quest progress for building
     get().checkQuestProgress('build_structure', building.type, 1);

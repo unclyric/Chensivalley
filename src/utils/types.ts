@@ -255,6 +255,7 @@ export interface QuestReward {
 export interface Building {
   id: string;
   type: BuildingType;
+  variant?: string;       // decoration subtype: lantern, bench, flower_pot, fish_statue
   position: Position;
   map: FishingLocation;
   level: number;

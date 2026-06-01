@@ -6,7 +6,7 @@
 import Phaser from 'phaser';
 import { useGameStore } from '../services/GameState';
 import { TILE_SIZE, MAP_WIDTH, MAP_HEIGHT, PALETTE, PLAYER_SPEED } from '../utils/constants';
-import { FishingLocation, Season, Weather, TimeOfDay } from '../utils/types';
+import { FishingLocation, Season, Weather, TimeOfDay, BuildingType } from '../utils/types';
 import { getTimeOfDay, formatTime, formatDate } from '../utils/helpers';
 import { getAvailableFish } from '../data/fish';
 
@@ -25,6 +25,7 @@ export class GameScene extends Phaser.Scene {
   private mapTiles: Phaser.GameObjects.Image[][] = [];
   private collisionLayer: boolean[][] = [];
   private npcSprites: Map<string, Phaser.GameObjects.Sprite> = new Map();
+  private buildingSprites: Map<string, Phaser.GameObjects.Image> = new Map();
   private fishingSpotMarkers: Phaser.GameObjects.Graphics[] = [];
 
   private hudTexts!: {
@@ -43,6 +44,7 @@ export class GameScene extends Phaser.Scene {
   private bgmMuted = false;
   private handItemText!: Phaser.GameObjects.Text;
   private lastActionTime = 0;
+  private lastBuildingsVersion = -1;
 
   constructor() {
     super({ key: 'GameScene' });
@@ -117,6 +119,9 @@ export class GameScene extends Phaser.Scene {
 
     // ── Simple Animations ─────────────────────
     this.addAnimations();
+
+    // ── Render existing buildings ────────────
+    this.renderBuildings();
 
     // Random notification
     this.time.delayedCall(2000, () => {
@@ -420,6 +425,13 @@ export class GameScene extends Phaser.Scene {
       this.showActionEffect(effect.icon);
     }
 
+    // ── Buildings re-render watcher ──────────
+    const bv = useGameStore.getState().buildingsVersion;
+    if (bv !== this.lastBuildingsVersion) {
+      this.lastBuildingsVersion = bv;
+      this.renderBuildings();
+    }
+
     // Update HUD
     this.updateHUD();
   }
@@ -510,9 +522,29 @@ export class GameScene extends Phaser.Scene {
     ];
 
     npcPositions.forEach((npc, i) => {
+      // Ensure NPC spawns on walkable land (not water)
+      let nx = npc.x;
+      let ny = npc.y;
+      if (this.collisionLayer[ny]?.[nx]) {
+        // Find nearest walkable tile
+        for (let r = 1; r < 8; r++) {
+          let found = false;
+          for (let dy = -r; dy <= r && !found; dy++) {
+            for (let dx = -r; dx <= r && !found; dx++) {
+              const cx = nx + dx;
+              const cy = ny + dy;
+              if (cx >= 0 && cx < MAP_WIDTH && cy >= 0 && cy < MAP_HEIGHT && !this.collisionLayer[cy]?.[cx]) {
+                nx = cx; ny = cy; found = true;
+              }
+            }
+          }
+          if (found) break;
+        }
+      }
+
       const sprite = this.add.sprite(
-        npc.x * TILE_SIZE * 2,
-        npc.y * TILE_SIZE * 2,
+        nx * TILE_SIZE * 2,
+        ny * TILE_SIZE * 2,
         `npc_${i}`
       );
       sprite.setDepth(5);
@@ -522,7 +554,7 @@ export class GameScene extends Phaser.Scene {
       // Add name label
       const npcData = useGameStore.getState().npcData[npc.id];
       if (npcData) {
-        const label = this.add.text(npc.x * TILE_SIZE * 2, npc.y * TILE_SIZE * 2 - 16, npcData.name, {
+        const label = this.add.text(nx * TILE_SIZE * 2, ny * TILE_SIZE * 2 - 16, npcData.name, {
           fontFamily: '"Press Start 2P", monospace',
           fontSize: '8px',
           color: '#ffffff',
@@ -891,6 +923,48 @@ export class GameScene extends Phaser.Scene {
     });
   }
 
+  // ─── Building Rendering ────────────────────
+
+  private renderBuildings(): void {
+    // Clear existing building sprites
+    this.buildingSprites.forEach(s => s.destroy());
+    this.buildingSprites.clear();
+
+    const store = useGameStore.getState();
+    const S = TILE_SIZE * 2;
+
+    store.player.buildings.forEach(b => {
+      if (!b.built) return;
+      // Only show buildings on the current map
+      if (b.map !== this.currentMap) return;
+      let textureKey = '';
+
+      if (b.type === BuildingType.FishPond) {
+        textureKey = b.variant === 'large' ? 'building_pond_large'
+          : b.variant === 'medium' ? 'building_pond_medium'
+          : 'building_pond_small';
+      } else if (b.type === BuildingType.Warehouse) {
+        textureKey = 'building_warehouse';
+      } else if (b.type === BuildingType.Dock) {
+        textureKey = 'building_dock';
+      } else if (b.type === BuildingType.Decoration) {
+        textureKey = `deco_${b.variant || 'lantern'}`;
+      }
+
+      if (!textureKey || !this.textures.exists(textureKey)) return;
+
+      const sprite = this.add.image(
+        b.position.x * S + S / 2,
+        b.position.y * S + S / 2,
+        textureKey
+      );
+      sprite.setDepth(3); // above ground, below player
+      sprite.setAlpha(0.9);
+
+      this.buildingSprites.set(b.id, sprite);
+    });
+  }
+
   // ─── Public API ─────────────────────────────
 
   teleportPlayer(tileX: number, tileY: number): void {
@@ -903,8 +977,12 @@ export class GameScene extends Phaser.Scene {
     this.mapTiles = [];
     this.fishingSpotMarkers.forEach(m => m.destroy());
     this.fishingSpotMarkers = [];
+    this.buildingSprites.forEach(s => s.destroy());
+    this.buildingSprites.clear();
     this.generateMap(location);
     this.markFishingSpots();
+    // Re-render buildings on the new map (only show buildings placed on this map)
+    this.renderBuildings();
     useGameStore.getState().changeMap(location);
   }
 }

@@ -22,11 +22,15 @@ export const BuildingMenu: React.FC = () => {
     }
     if (!spendGold(stats.buildCost)) return;
 
+    // Auto-place near player on a walkable spot
+    const pos = findNearbySpot(player.position);
+
     const buildId = generateId();
     const building = {
       id: buildId,
       type: BuildingType.FishPond,
-      position: { x: 0, y: 0 },
+      variant: size, // small/medium/large
+      position: pos,
       map: player.currentMap,
       level: 1,
       maxLevel: 3,
@@ -55,21 +59,23 @@ export const BuildingMenu: React.FC = () => {
     setTimeout(() => setMsg(''), 3000);
   };
 
-  const handleBuildOther = (type: BuildingType) => {
+  const handleBuildOther = (type: BuildingType, variant?: string, costOverride?: number) => {
     const costs: Record<string, number> = {
       warehouse: 800,
       dock: 500,
       decoration: 200,
     };
-    const cost = costs[type] || 500;
+    const cost = costOverride || costs[type] || 500;
     if (!spendGold(cost)) {
       setMsg('金币不足！');
       return;
     }
+    const pos = findNearbySpot(player.position);
     addBuilding({
       id: generateId(),
       type,
-      position: { x: 0, y: 0 },
+      variant,
+      position: pos,
       map: player.currentMap,
       level: 1,
       maxLevel: 3,
@@ -77,6 +83,13 @@ export const BuildingMenu: React.FC = () => {
     });
     setMsg(`建造成功！花费 ${cost} G`);
     setTimeout(() => setMsg(''), 3000);
+  };
+
+  // Helper: find a walkable spot near the player
+  const findNearbySpot = (base: { x: number; y: number }) => {
+    // Simple offset - place 3 tiles to the right, wrapping if needed
+    const offset = (player.buildings.length % 4) * 3 + 2;
+    return { x: base.x + offset, y: base.y + 2 };
   };
 
   const categories = [
@@ -176,10 +189,10 @@ export const BuildingMenu: React.FC = () => {
             <>
               <h3 className="font-pixel text-[10px] text-game-text mb-2">装饰物</h3>
               {[
-                { name: '石灯笼', icon: '🏮', cost: 200, desc: '日式石灯笼，为渔场增添禅意。' },
-                { name: '木长椅', icon: '🪑', cost: 150, desc: '走累了可以坐下来欣赏湖景。' },
-                { name: '花盆', icon: '🪴', cost: 100, desc: '一盆漂亮的花。' },
-                { name: '鱼雕像', icon: '🗿', cost: 500, desc: '精美的鱼形石雕。' },
+                { name: '石灯笼', icon: '🏮', cost: 200, desc: '日式石灯笼，为渔场增添禅意。', variant: 'lantern' },
+                { name: '木长椅', icon: '🪑', cost: 150, desc: '走累了可以坐下来欣赏湖景。', variant: 'bench' },
+                { name: '花盆', icon: '🪴', cost: 100, desc: '一盆漂亮的花。', variant: 'flower_pot' },
+                { name: '鱼雕像', icon: '🗿', cost: 500, desc: '精美的鱼形石雕。', variant: 'fish_statue' },
               ].map(deco => (
                 <div key={deco.name} className="border border-game-border bg-game-bg p-3 flex gap-3">
                   <div className="text-3xl">{deco.icon}</div>
@@ -188,7 +201,7 @@ export const BuildingMenu: React.FC = () => {
                     <p className="font-pixel text-[8px] text-game-border mt-1">{deco.desc}</p>
                     <div className="flex justify-between items-center mt-2">
                       <span className="font-pixel text-xs text-game-gold">{formatGold(deco.cost)}</span>
-                      <button onClick={() => handleBuildOther(BuildingType.Decoration)} className="pixel-btn text-[8px] px-3 py-1">放置</button>
+                      <button onClick={() => handleBuildOther(BuildingType.Decoration, deco.variant, deco.cost)} className="pixel-btn text-[8px] px-3 py-1">放置</button>
                     </div>
                   </div>
                 </div>

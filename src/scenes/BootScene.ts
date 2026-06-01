@@ -335,27 +335,109 @@ export class BootScene extends Phaser.Scene {
   // ─── BUILDINGS ──────────────────────────────
 
   private createBuildingTextures(): void {
-    const S = TILE_SIZE * 2;
-    const pG = this.make.graphics({ x: 0, y: 0 });
-    pG.fillStyle(0x2980b9, 0.6); pG.fillRoundedRect(4, 4, S * 3 - 8, S * 2 - 8, 4);
-    pG.lineStyle(3, 0x8b6914); pG.strokeRoundedRect(3, 3, S * 3 - 6, S * 2 - 6, 5);
-    pG.fillStyle(0x85c1e9, 0.3); pG.fillRect(8, 6, S * 3 - 16, 3);
-    pG.generateTexture('building_pond_small', S * 3, S * 2); pG.destroy();
+    const S = TILE_SIZE * 2; // 32px base unit
 
+    // Fish Pond Small (3x2 tiles)
+    const pS = this.make.graphics({ x: 0, y: 0 });
+    // Water
+    pS.fillStyle(0x2980b9); pS.fillRoundedRect(2, 2, S * 3 - 4, S * 2 - 4, 6);
+    pS.fillStyle(0x3498db, 0.5); pS.fillRect(4, 4, S * 3 - 8, 3);
+    // Border
+    pS.lineStyle(3, 0x8b6914); pS.strokeRoundedRect(1, 1, S * 3 - 2, S * 2 - 2, 7);
+    pS.lineStyle(2, 0xc4a35a); pS.strokeRoundedRect(4, 4, S * 3 - 8, S * 2 - 8, 5);
+    // Water lily
+    pS.fillStyle(0x7dcea0); pS.fillCircle(S * 1.5, S, 5);
+    pS.fillStyle(0xe8a0bf); pS.fillCircle(S * 1.5, S, 3);
+    pS.generateTexture('building_pond_small', S * 3, S * 2); pS.destroy();
+
+    // Fish Pond Medium (4x2 tiles)
+    const pM = this.make.graphics({ x: 0, y: 0 });
+    pM.fillStyle(0x2980b9); pM.fillRoundedRect(2, 2, S * 4 - 4, S * 2 - 4, 6);
+    pM.fillStyle(0x3498db, 0.5); pM.fillRect(4, 4, S * 4 - 8, 3);
+    pM.lineStyle(3, 0x8b6914); pM.strokeRoundedRect(1, 1, S * 4 - 2, S * 2 - 2, 7);
+    pM.lineStyle(2, 0xc4a35a); pM.strokeRoundedRect(4, 4, S * 4 - 8, S * 2 - 8, 5);
+    pM.fillStyle(0x7dcea0); pM.fillCircle(S * 1.2, S, 5);
+    pM.fillStyle(0xf4d03f); pM.fillCircle(S * 1.2, S, 3);
+    pM.fillStyle(0x7dcea0); pM.fillCircle(S * 2.8, S, 4);
+    pM.fillStyle(0xe8a0bf); pM.fillCircle(S * 2.8, S, 2);
+    pM.generateTexture('building_pond_medium', S * 4, S * 2); pM.destroy();
+
+    // Fish Pond Large (5x3 tiles)
+    const pL = this.make.graphics({ x: 0, y: 0 });
+    pL.fillStyle(0x2980b9); pL.fillRoundedRect(2, 2, S * 5 - 4, S * 3 - 4, 6);
+    pL.fillStyle(0x3498db, 0.5); pL.fillRect(4, 4, S * 5 - 8, 4);
+    pL.lineStyle(4, 0x8b6914); pL.strokeRoundedRect(1, 1, S * 5 - 2, S * 3 - 2, 8);
+    pL.lineStyle(2, 0xc4a35a); pL.strokeRoundedRect(4, 4, S * 5 - 8, S * 3 - 8, 5);
+    // Decorative plants
+    pL.fillStyle(0x7dcea0); pL.fillCircle(S, S * 1.5, 6); pL.fillCircle(S * 4, S * 1.5, 5);
+    pL.fillStyle(0xe8a0bf); pL.fillCircle(S, S * 1.5, 4);
+    pL.fillStyle(0xf4d03f); pL.fillCircle(S * 4, S * 1.5, 3);
+    pL.generateTexture('building_pond_large', S * 5, S * 3); pL.destroy();
+
+    // Warehouse (2x2 tiles, brown building with red roof)
     const wG = this.make.graphics({ x: 0, y: 0 });
-    wG.fillStyle(0x8b6914); wG.fillRect(2, 4, S * 2 - 4, S * 2 - 4);
-    wG.fillStyle(0xc4a35a, 0.5); wG.fillRect(4, 4, S - 6, S * 2 - 8);
-    wG.fillStyle(0xa04040); wG.fillTriangle(S, 0, 0, 4, S * 2, 4);
-    wG.fillStyle(0x5d4e37); wG.fillRect(S - 3, S, 6, S);
+    wG.fillStyle(0x8b6914); wG.fillRect(2, 8, S * 2 - 4, S * 2 - 8);
+    wG.fillStyle(0xc4a35a, 0.5); wG.fillRect(4, 8, S - 6, S * 2 - 10);
+    wG.fillStyle(0xa04040); wG.fillTriangle(S, 0, 0, 8, S * 2, 8);
+    wG.fillStyle(0x5d4e37); wG.fillRect(S - 4, S, 8, S - 2);
+    wG.fillStyle(0xd4a853); wG.fillRect(S - 2, S + 2, 2, 2); // door knob
     wG.fillStyle(0x000000, 0.15); wG.fillRect(0, S * 2 - 3, S * 2, 4);
     wG.generateTexture('building_warehouse', S * 2, S * 2); wG.destroy();
 
+    // Dock (2x1 tiles)
     const dG = this.make.graphics({ x: 0, y: 0 });
-    dG.fillStyle(0xc4a35a); dG.fillRect(0, 0, S * 2, S);
+    dG.fillStyle(0xc4a35a); dG.fillRect(0, 2, S * 2, S - 2);
     dG.fillStyle(0x8b6914, 0.4);
-    for (let x = 0; x < S * 2; x += 4) dG.fillRect(x, 1, 2, S - 2);
-    dG.fillStyle(0x000000, 0.1); dG.fillRect(0, S - 2, S * 2, 2);
+    for (let x = 0; x < S * 2; x += 5) dG.fillRect(x, 2, 3, S - 3);
+    dG.fillStyle(0x000000, 0.15); dG.fillRect(0, S - 2, S * 2, 3);
+    // Posts
+    dG.fillStyle(0x5d4e37); dG.fillRect(3, 0, 3, S); dG.fillRect(S * 2 - 6, 0, 3, S);
     dG.generateTexture('building_dock', S * 2, S); dG.destroy();
+
+    // ── Decorations ──────────────────────────
+    const decoS = TILE_SIZE; // 16px for decorations
+
+    // Lantern (1x1 tile)
+    const lG = this.make.graphics({ x: 0, y: 0 });
+    lG.fillStyle(0x808b96); lG.fillRect(6, decoS - 4, 4, 4); // base
+    lG.fillStyle(0x9aa5b0); lG.fillRect(7, 2, 2, decoS - 6); // post
+    lG.fillStyle(0xf4d03f, 0.9); lG.fillRoundedRect(3, 0, 10, 8, 3); // lantern body
+    lG.fillStyle(0xf0d040, 0.5); lG.fillRect(5, 1, 6, 2); // glow
+    lG.fillStyle(0xa04040); lG.fillRect(4, -2, 8, 3); // top
+    lG.generateTexture('deco_lantern', decoS, decoS); lG.destroy();
+
+    // Bench (2x1 tile)
+    const bG = this.make.graphics({ x: 0, y: 0 });
+    bG.fillStyle(0x8b6914); bG.fillRect(2, 6, decoS * 2 - 4, 4); // seat
+    bG.fillStyle(0x5d4e37); bG.fillRect(2, 4, decoS * 2 - 4, 2); // backrest
+    bG.fillStyle(0x6e4c1e); bG.fillRect(4, 9, 3, 5); // left leg
+    bG.fillRect(decoS * 2 - 7, 9, 3, 5); // right leg
+    bG.fillStyle(0xc4a35a, 0.3); bG.fillRect(3, 6, decoS * 2 - 6, 2);
+    bG.generateTexture('deco_bench', decoS * 2, decoS + 4); bG.destroy();
+
+    // Flower Pot (1x1 tile)
+    const fpG = this.make.graphics({ x: 0, y: 0 });
+    fpG.fillStyle(0xaf7d4b); fpG.fillRoundedRect(2, 7, decoS - 4, decoS - 7, 3); // pot
+    fpG.fillStyle(0x52be80); fpG.fillRect(3, 2, 2, 6); // stem
+    fpG.fillStyle(0x7dcea0); fpG.fillCircle(4, 0, 5); // leaves
+    fpG.fillStyle(0xe8a0bf); fpG.fillCircle(6, -1, 4); // flower 1
+    fpG.fillStyle(0xf4d03f); fpG.fillCircle(2, -2, 3); // flower 2
+    fpG.fillStyle(0xf0a0a0); fpG.fillCircle(7, -3, 3); // flower 3
+    fpG.generateTexture('deco_flower_pot', decoS, decoS); fpG.destroy();
+
+    // Fish Statue (1x1 tile)
+    const fsG = this.make.graphics({ x: 0, y: 0 });
+    fsG.fillStyle(0x9aa5b0); fsG.fillRect(2, decoS - 3, decoS - 4, 3); // pedestal
+    fsG.fillStyle(0x808b96); fsG.fillRect(4, decoS - 4, decoS - 8, 1);
+    // Fish body
+    fsG.fillStyle(0xb0c0d0); fsG.fillEllipse(decoS / 2, decoS / 2 - 2, decoS - 4, decoS - 8);
+    fsG.fillStyle(0xd0d8e0, 0.6); fsG.fillEllipse(decoS / 2, decoS / 2 - 3, decoS - 8, decoS - 12);
+    // Tail
+    fsG.fillStyle(0xb0c0d0); fsG.fillTriangle(decoS - 2, decoS / 2 - 2, decoS + 2, decoS / 2 - 6, decoS + 2, decoS / 2 + 2);
+    // Eye
+    fsG.fillStyle(0xffffff); fsG.fillCircle(4, decoS / 2 - 3, 2);
+    fsG.fillStyle(0x000000); fsG.fillCircle(4, decoS / 2 - 3, 1);
+    fsG.generateTexture('deco_fish_statue', decoS, decoS); fsG.destroy();
   }
 
   // ─── UI ICONS ───────────────────────────────
