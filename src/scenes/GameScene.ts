@@ -215,6 +215,9 @@ export class GameScene extends Phaser.Scene {
         }
       }
     }
+
+    // Render trees, bushes, flowers
+    this.renderEnvironment();
   }
 
   private generateLakeMap(): void {
@@ -236,12 +239,32 @@ export class GameScene extends Phaser.Scene {
       }
     }
 
-    // Add some trees and decoration
-    this.placeDecorations([
-      { x: 5, y: 5 }, { x: 8, y: 3 }, { x: 50, y: 4 },
-      { x: 52, y: 6 }, { x: 3, y: 30 }, { x: 55, y: 32 },
-      { x: 10, y: 10 }, { x: 48, y: 12 },
-    ]);
+    // Add trees, bushes, flowers on grass borders
+    const trees = [];
+    const bushes = [];
+    const flowers = [];
+    for (let x = 1; x < MAP_WIDTH - 1; x++) {
+      for (let y = 1; y < WATER_LEVEL - 1; y++) {
+        if (this.collisionLayer[y]?.[x] === false &&
+            !(x >= 28 && x <= 40 && y >= 8 && y <= 14)) { // avoid player spawn area
+          const r = Math.random();
+          if (r < 0.06) trees.push({ x, y });
+          else if (r < 0.15) flowers.push({ x, y });
+        }
+      }
+      // Bottom grass
+      for (let y = MAP_HEIGHT - 4; y < MAP_HEIGHT - 1; y++) {
+        if (this.collisionLayer[y]?.[x] === false) {
+          const r = Math.random();
+          if (r < 0.04) trees.push({ x, y });
+          else if (r < 0.1) bushes.push({ x, y });
+          else if (r < 0.18) flowers.push({ x, y });
+        }
+      }
+    }
+    this.placeDecorations(trees);
+    this.placeBushes(bushes);
+    this.placeFlowers(flowers);
   }
 
   private generateRiverMap(): void {
@@ -261,10 +284,27 @@ export class GameScene extends Phaser.Scene {
       }
     }
 
-    this.placeDecorations([
-      { x: 10, y: 5 }, { x: 15, y: 3 }, { x: 42, y: 8 },
-      { x: 35, y: 25 }, { x: 50, y: 30 }, { x: 5, y: 35 },
-    ]);
+    // Decorate edges with trees, bushes, flowers
+    const trees: {x:number,y:number}[] = [];
+    const bushes: {x:number,y:number}[] = [];
+    const flowers: {x:number,y:number}[] = [];
+    for (let x = 1; x < MAP_WIDTH - 1; x++) {
+      for (let y = 1; y < MAP_HEIGHT - 1; y++) {
+        if (this.collisionLayer[y]?.[x] === false) {
+          const distFromRiver = Math.abs(x - (MAP_WIDTH * 0.3 + y * 0.4));
+          // Only place on grass away from river shore
+          if (distFromRiver > 6) {
+            const r = Math.random();
+            if (r < 0.04) trees.push({ x, y });
+            else if (r < 0.08) bushes.push({ x, y });
+            else if (r < 0.14) flowers.push({ x, y });
+          }
+        }
+      }
+    }
+    this.placeDecorations(trees);
+    this.placeBushes(bushes);
+    this.placeFlowers(flowers);
   }
 
   private generateWestLakeMap(): void {
@@ -294,10 +334,24 @@ export class GameScene extends Phaser.Scene {
       }
     }
 
-    this.placeDecorations([
-      { x: 8, y: 8 }, { x: 55, y: 5 }, { x: 22, y: 24 }, // island trees
-      { x: 40, y: 14 },
-    ]);
+    // Trees on shore edges and islands
+    const trees: {x:number,y:number}[] = [];
+    const bushes: {x:number,y:number}[] = [];
+    const flowers: {x:number,y:number}[] = [];
+    for (let x = 1; x < MAP_WIDTH - 1; x++) {
+      for (let y = 1; y < MAP_HEIGHT - 1; y++) {
+        if (this.collisionLayer[y]?.[x] === false) {
+          const r = Math.random();
+          // Denser on islands, sparse on shore
+          if (r < 0.03) trees.push({ x, y });
+          else if (r < 0.08) bushes.push({ x, y });
+          else if (r < 0.15) flowers.push({ x, y });
+        }
+      }
+    }
+    this.placeDecorations(trees);
+    this.placeBushes(bushes);
+    this.placeFlowers(flowers);
   }
 
   private generateMarshMap(): void {
@@ -314,10 +368,23 @@ export class GameScene extends Phaser.Scene {
       }
     }
 
-    this.placeDecorations([
-      { x: 5, y: 8 }, { x: 50, y: 10 }, { x: 15, y: 30 },
-      { x: 45, y: 32 }, { x: 30, y: 5 },
-    ]);
+    // Scattered marsh vegetation
+    const trees: {x:number,y:number}[] = [];
+    const bushes: {x:number,y:number}[] = [];
+    const flowers: {x:number,y:number}[] = [];
+    for (let x = 1; x < MAP_WIDTH - 1; x++) {
+      for (let y = 1; y < MAP_HEIGHT - 1; y++) {
+        if (this.collisionLayer[y]?.[x] === false) {
+          const r = Math.random();
+          if (r < 0.02) trees.push({ x, y });
+          else if (r < 0.06) bushes.push({ x, y });
+          else if (r < 0.10) flowers.push({ x, y });
+        }
+      }
+    }
+    this.placeDecorations(trees);
+    this.placeBushes(bushes);
+    this.placeFlowers(flowers);
   }
 
   private getTileType(x: number, y: number): string | null {
@@ -338,13 +405,55 @@ export class GameScene extends Phaser.Scene {
   }
 
   private decorationPositions: { x: number; y: number }[] = [];
+  private bushPositions: { x: number; y: number }[] = [];
+  private flowerPositions: { x: number; y: number }[] = [];
+  private decoSprites: Phaser.GameObjects.Image[] = [];
 
   private placeDecorations(positions: { x: number; y: number }[]): void {
     this.decorationPositions = positions;
   }
 
+  private placeBushes(positions: { x: number; y: number }[]): void {
+    this.bushPositions = positions;
+  }
+
+  private placeFlowers(positions: { x: number; y: number }[]): void {
+    this.flowerPositions = positions;
+  }
+
   private hasDecoration(x: number, y: number): boolean {
-    return this.decorationPositions.some(d => d.x === x && d.y === y);
+    return this.decorationPositions.some(d => d.x === x && d.y === y)
+      || this.bushPositions.some(d => d.x === x && d.y === y)
+      || this.flowerPositions.some(d => d.x === x && d.y === y);
+  }
+
+  private renderEnvironment(): void {
+    // Clear existing
+    this.decoSprites.forEach(s => s.destroy());
+    this.decoSprites = [];
+
+    const S = TILE_SIZE * 2;
+
+    // Render trees (depth 2 - behind player/NPCs)
+    this.decorationPositions.forEach(pos => {
+      const sprite = this.add.image(pos.x * S + S / 2, pos.y * S + S / 2, 'tile_tree');
+      sprite.setDepth(2);
+      this.decoSprites.push(sprite);
+    });
+
+    // Render bushes (depth 2)
+    this.bushPositions.forEach(pos => {
+      const sprite = this.add.image(pos.x * S + S / 2, pos.y * S + S / 2, 'tile_bush');
+      sprite.setDepth(2);
+      this.decoSprites.push(sprite);
+    });
+
+    // Render flowers (depth 4 - above ground but below NPCs)
+    this.flowerPositions.forEach(pos => {
+      const sprite = this.add.image(pos.x * S + S / 2, pos.y * S + S / 2, 'tile_flower');
+      sprite.setDepth(4);
+      this.decoSprites.push(sprite);
+    });
   }
 
   // ─── Player Movement ────────────────────────
@@ -368,6 +477,45 @@ export class GameScene extends Phaser.Scene {
 
     if (this.cursors.up.isDown || this.wasd.W.isDown) vy = -speed;
     else if (this.cursors.down.isDown || this.wasd.S.isDown) vy = speed;
+
+    // ── Player facing direction ──────────────
+    const isMoving = vx !== 0 || vy !== 0;
+    if (vx < 0) {
+      this.player.setFlipX(true);  // face left
+    } else if (vx > 0) {
+      this.player.setFlipX(false); // face right
+    }
+    // (keep last direction when only moving vertically)
+
+    // ── Walking bounce animation ──────────────
+    const isCurrentlyWalking = this.player.getData('walking') === true;
+    if (isMoving && !isCurrentlyWalking) {
+      // Transition to walking
+      this.tweens.killTweensOf(this.player);
+      this.player.setScale(1);
+      this.tweens.add({
+        targets: this.player,
+        scaleY: { from: 1, to: 0.93 },
+        duration: 200,
+        yoyo: true,
+        repeat: -1,
+        ease: 'Sine.easeInOut',
+      });
+      this.player.setData('walking', true);
+    } else if (!isMoving && (isCurrentlyWalking || this.player.getData('walking') === undefined)) {
+      // Transition to idle (or first frame)
+      this.tweens.killTweensOf(this.player);
+      this.player.setScale(1);
+      this.tweens.add({
+        targets: this.player,
+        scaleY: { from: 1, to: 0.97 },
+        duration: 1500,
+        yoyo: true,
+        repeat: -1,
+        ease: 'Sine.easeInOut',
+      });
+      this.player.setData('walking', false);
+    }
 
     // Check water collision manually
     const playerTileX = Math.floor(this.player.x / (TILE_SIZE * 2));
@@ -869,15 +1017,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   private addAnimations(): void {
-    // 1. Player idle breathing (scale only, no position conflict with physics)
-    this.tweens.add({
-      targets: this.player,
-      scaleY: { from: 1, to: 0.97 },
-      duration: 1500,
-      yoyo: true,
-      repeat: -1,
-      ease: 'Sine.easeInOut',
-    });
+    // 1. Player idle breathing starts in update loop
 
     // 2. NPC gentle bob animations
     this.npcSprites.forEach((sprite) => {
@@ -975,6 +1115,8 @@ export class GameScene extends Phaser.Scene {
     this.currentMap = location;
     this.mapTiles.flat().forEach(t => t.destroy());
     this.mapTiles = [];
+    this.decoSprites.forEach(s => s.destroy());
+    this.decoSprites = [];
     this.fishingSpotMarkers.forEach(m => m.destroy());
     this.fishingSpotMarkers = [];
     this.buildingSprites.forEach(s => s.destroy());
