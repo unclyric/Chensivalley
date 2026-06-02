@@ -5,6 +5,29 @@
 
 import React, { useState } from 'react';
 import { useGameStore } from '../../services/GameState';
+import { PhaserGameManager } from '../../services/PhaserGame';
+
+const BgmToggle: React.FC = () => {
+  const [muted, setMuted] = useState(false);
+  const toggle = () => {
+    const next = !muted;
+    setMuted(next);
+    const game = PhaserGameManager.getInstance().getGame();
+    if (game) game.sound.mute = next;
+  };
+  return (
+    <button
+      onClick={toggle}
+      className={`font-pixel text-[9px] px-3 py-1 border transition-colors
+        ${muted
+          ? 'border-game-heart text-game-heart bg-game-heart/10'
+          : 'border-game-accent text-game-accent bg-game-accent/10'
+        }`}
+    >
+      {muted ? '🔇 音乐关' : '🎵 音乐开'}
+    </button>
+  );
+};
 
 export const SettingsPanel: React.FC = () => {
   const { closePanel, openPanel } = useGameStore();
@@ -22,7 +45,10 @@ export const SettingsPanel: React.FC = () => {
         <div className="space-y-5">
           {/* Sound */}
           <div>
-            <h3 className="font-pixel text-xs text-game-text mb-2">🔊 音量</h3>
+            <div className="flex justify-between items-center mb-2">
+              <h3 className="font-pixel text-xs text-game-text">🔊 音量</h3>
+              <BgmToggle />
+            </div>
             <input
               type="range"
               min="0"
@@ -81,7 +107,9 @@ export const SettingsPanel: React.FC = () => {
               <p><span className="text-game-accent">E</span> - 钓鱼 / 对话</p>
               <p><span className="text-game-accent">I</span> - 背包</p>
               <p><span className="text-game-accent">M</span> - 地图</p>
+              <p><span className="text-game-accent">B</span> - 建造</p>
               <p><span className="text-game-accent">J</span> - 任务</p>
+              <p><span className="text-game-accent">N</span> - 开关音乐</p>
               <p><span className="text-game-accent">Esc</span> - 设置</p>
               <p><span className="text-game-accent">方向键 / WASD</span> - 移动</p>
             </div>

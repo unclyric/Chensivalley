@@ -10,13 +10,13 @@ import { QuestType } from '../../utils/types';
 
 export const QuestPanel: React.FC = () => {
   const { player, activeQuests, closePanel, acceptQuest } = useGameStore();
-  const [selectedTab, setSelectedTab] = useState<QuestType | 'active'>('active');
+  const [selectedTab, setSelectedTab] = useState<QuestType | 'active'>(QuestType.Main);
 
   const tabs: { key: QuestType | 'active'; label: string }[] = [
-    { key: 'active', label: '进行中' },
     { key: QuestType.Main, label: '主线' },
     { key: QuestType.Side, label: '支线' },
     { key: QuestType.Daily, label: '每日' },
+    { key: 'active', label: '进行中' },
   ];
 
   const activeQuestData = ALL_QUESTS.filter(q =>
