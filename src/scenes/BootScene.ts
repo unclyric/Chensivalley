@@ -122,6 +122,25 @@ export class BootScene extends Phaser.Scene {
     sG.lineBetween(8, 2, 12, 10); sG.lineBetween(12, 10, 10, 18);
     sG.generateTexture('tile_stone', S, S); sG.destroy();
 
+    // Rock (1x1 decorative)
+    const rG = this.make.graphics({ x: 0, y: 0 });
+    rG.fillStyle(0x6a757e); rG.fillRoundedRect(4, 8, S - 8, S - 10, 5);
+    rG.fillStyle(0x808b96, 0.5); rG.fillRoundedRect(5, 8, S - 12, S - 14, 4);
+    rG.fillStyle(0x9aa5b0, 0.3); rG.fillRect(7, 9, 8, 3);
+    rG.fillStyle(0x5a6570, 0.3); rG.fillRect(6, S - 4, 6, 3);
+    rG.fillStyle(0x000000, 0.12); rG.fillEllipse(S / 2, S - 1, S - 6, 4);
+    rG.generateTexture('env_rock', S, S); rG.destroy();
+
+    // Lily pad (for water decoration)
+    const lpG = this.make.graphics({ x: 0, y: 0 });
+    lpG.fillStyle(0x2d7a2d); lpG.fillEllipse(S / 2, S / 2, S - 8, S - 12);
+    lpG.fillStyle(0x4da64d, 0.5); lpG.fillEllipse(S / 2, S / 2 - 1, S - 12, S - 16);
+    lpG.fillStyle(0x1a5a1a, 0.3); lpG.fillRect(S / 2 - 1, 8, 2, 2); // notch
+    // Small flower on lily pad
+    lpG.fillStyle(0xf0a0c0, 0.6); lpG.fillCircle(S / 2 + 3, S / 2 - 2, 3);
+    lpG.fillStyle(0xf4d03f, 0.5); lpG.fillCircle(S / 2 + 3, S / 2 - 2, 1.5);
+    lpG.generateTexture('env_lilypad', S, S); lpG.destroy();
+
     // Tree - 3D with thick trunk going into canopy, layered leaves, ground shadow
     const tG = this.make.graphics({ x: 0, y: 0 });
     // Ground shadow (elongated ellipse for 3D feel)

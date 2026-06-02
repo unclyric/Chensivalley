@@ -249,9 +249,26 @@ export class GameScene extends Phaser.Scene {
         }
       }
     }
+    // Rocks on shore/grass edges, lily pads on water
+    const rocks: {x:number,y:number}[] = [];
+    const lilies: {x:number,y:number}[] = [];
+    for (let x = 1; x < MAP_WIDTH - 1; x++) {
+      for (let y = WATER_LEVEL - 2; y < WATER_LEVEL; y++) {
+        if (this.collisionLayer[y]?.[x] === false && !this.collisionLayer[y+1]?.[x]) {
+          if (Math.random() < 0.15) rocks.push({ x, y });
+        }
+      }
+      for (let y = WATER_LEVEL; y < MAP_HEIGHT - 5; y++) {
+        if (this.collisionLayer[y]?.[x] === true && this.collisionLayer[y-1]?.[x] === false) {
+          if (Math.random() < 0.2) lilies.push({ x, y: y + 1 });
+        }
+      }
+    }
     this.placeDecorations(trees);
     this.placeBushes(bushes);
     this.placeFlowers(flowers);
+    this.placeRocks(rocks);
+    this.placeLilies(lilies);
   }
 
   private generateRiverMap(): void {
@@ -394,24 +411,31 @@ export class GameScene extends Phaser.Scene {
   private decorationPositions: { x: number; y: number }[] = [];
   private bushPositions: { x: number; y: number }[] = [];
   private flowerPositions: { x: number; y: number }[] = [];
+  private rockPositions: { x: number; y: number }[] = [];
+  private lilyPositions: { x: number; y: number }[] = [];
   private decoSprites: Phaser.GameObjects.Image[] = [];
 
   private placeDecorations(positions: { x: number; y: number }[]): void {
     this.decorationPositions = positions;
   }
-
   private placeBushes(positions: { x: number; y: number }[]): void {
     this.bushPositions = positions;
   }
-
   private placeFlowers(positions: { x: number; y: number }[]): void {
     this.flowerPositions = positions;
+  }
+  private placeRocks(positions: { x: number; y: number }[]): void {
+    this.rockPositions = positions;
+  }
+  private placeLilies(positions: { x: number; y: number }[]): void {
+    this.lilyPositions = positions;
   }
 
   private hasDecoration(x: number, y: number): boolean {
     return this.decorationPositions.some(d => d.x === x && d.y === y)
       || this.bushPositions.some(d => d.x === x && d.y === y)
-      || this.flowerPositions.some(d => d.x === x && d.y === y);
+      || this.flowerPositions.some(d => d.x === x && d.y === y)
+      || this.rockPositions.some(d => d.x === x && d.y === y);
   }
 
   private renderEnvironment(): void {
@@ -419,28 +443,40 @@ export class GameScene extends Phaser.Scene {
     this.decoSprites = [];
     const S = TILE_SIZE * 2;
 
-    // Render trees with slight size variation
+    // Trees
     this.decorationPositions.forEach(pos => {
       const sprite = this.add.image(pos.x * S + S / 2, pos.y * S + S / 2, 'tile_tree');
-      const sVar = 0.85 + Math.random() * 0.3;
-      sprite.setScale(sVar);
+      sprite.setScale(0.85 + Math.random() * 0.3);
       sprite.setDepth(2);
       this.decoSprites.push(sprite);
     });
-
-    // Render bushes
+    // Bushes
     this.bushPositions.forEach(pos => {
       const sprite = this.add.image(pos.x * S + S / 2, pos.y * S + S / 2, 'tile_bush');
       sprite.setScale(0.8 + Math.random() * 0.4);
       sprite.setDepth(2);
       this.decoSprites.push(sprite);
     });
-
-    // Render flowers
+    // Flowers
     this.flowerPositions.forEach(pos => {
       const sprite = this.add.image(pos.x * S + S / 2, pos.y * S + S / 2, 'tile_flower');
       sprite.setScale(0.8 + Math.random() * 0.3);
       sprite.setDepth(4);
+      this.decoSprites.push(sprite);
+    });
+    // Rocks (depth 3 - behind player but above ground)
+    this.rockPositions.forEach(pos => {
+      const sprite = this.add.image(pos.x * S + S / 2, pos.y * S + S / 2, 'env_rock');
+      sprite.setScale(0.7 + Math.random() * 0.5);
+      sprite.setDepth(3);
+      this.decoSprites.push(sprite);
+    });
+    // Lily pads (depth 1 - on water surface)
+    this.lilyPositions.forEach(pos => {
+      const sprite = this.add.image(pos.x * S + S / 2, pos.y * S + S / 2, 'env_lilypad');
+      sprite.setScale(0.6 + Math.random() * 0.5);
+      sprite.setDepth(1);
+      sprite.setAlpha(0.7);
       this.decoSprites.push(sprite);
     });
   }
