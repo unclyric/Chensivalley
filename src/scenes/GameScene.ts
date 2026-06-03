@@ -25,8 +25,11 @@ export class GameScene extends Phaser.Scene {
   private mapTiles: Phaser.GameObjects.Image[][] = [];
   private collisionLayer: boolean[][] = [];
   private npcSprites: Map<string, Phaser.GameObjects.Sprite> = new Map();
+  private npcShadows: Map<string, Phaser.GameObjects.Ellipse> = new Map();
   private buildingSprites: Map<string, Phaser.GameObjects.Image> = new Map();
   private fishingSpotMarkers: Phaser.GameObjects.Graphics[] = [];
+  private playerShadow!: Phaser.GameObjects.Ellipse;
+  private walkDustTimer = 0;
 
   private hudTexts!: {
     time: Phaser.GameObjects.Text;
@@ -93,9 +96,13 @@ export class GameScene extends Phaser.Scene {
       store.player.position.y * TILE_SIZE * 2,
       'player'
     );
-    this.player.setScale(2.2); // same size as NPCs
+    this.player.setScale(2.2);
     this.player.setDepth(10);
     this.player.setCollideWorldBounds(true);
+
+    // Player drop shadow
+    this.playerShadow = this.add.ellipse(0, 0, 8, 3, 0x000000, 0.2);
+    this.playerShadow.setDepth(1);
     this.physics.world.setBounds(0, 0, MAP_WIDTH * TILE_SIZE * 2, MAP_HEIGHT * TILE_SIZE * 2);
 
     // Create HUD
@@ -562,9 +569,42 @@ export class GameScene extends Phaser.Scene {
       this.player.setVelocityY(0);
     }
 
+    // ── Shadow sync ───────────────────────────
+    this.playerShadow.setPosition(this.player.x, this.player.y + 16);
+    this.npcShadows.forEach((shadow, npcId) => {
+      const sprite = this.npcSprites.get(npcId);
+      if (sprite) shadow.setPosition(sprite.x, sprite.y + 14);
+    });
+
+    // ── Walk dust particles ──────────────────
+    if (isMoving) {
+      this.walkDustTimer += delta;
+      if (this.walkDustTimer > 250) {
+        this.walkDustTimer = 0;
+        const dx = (Math.random() - 0.5) * 6;
+        const dy = (Math.random() - 0.5) * 4;
+        const dust = this.add.circle(this.player.x + dx, this.player.y + 14 + dy, 2, 0xc4a87c, 0.4);
+        dust.setDepth(1);
+        this.tweens.add({ targets: dust, alpha: 0, scale: 1.5, duration: 400, onComplete: () => dust.destroy() });
+      }
+    }
+
+    // ── NPC proximity glow ───────────────────
+    const pTileX = Math.floor(this.player.x / (TILE_SIZE * 2));
+    const pTileY = Math.floor(this.player.y / (TILE_SIZE * 2));
+    this.npcSprites.forEach((sprite, npcId) => {
+      const nTileX = Math.floor(sprite.x / (TILE_SIZE * 2));
+      const nTileY = Math.floor(sprite.y / (TILE_SIZE * 2));
+      const dist = Math.abs(pTileX - nTileX) + Math.abs(pTileY - nTileY);
+      const targetAlpha = dist <= 2 ? 1 : 0.8;
+      if (Math.abs(sprite.alpha - targetAlpha) > 0.01) {
+        sprite.setAlpha(sprite.alpha + (targetAlpha - sprite.alpha) * 0.1);
+      }
+    });
+
     // Update store position
-    const newTileX = Math.floor(this.player.x / (TILE_SIZE * 2));
-    const newTileY = Math.floor(this.player.y / (TILE_SIZE * 2));
+    const newTileX = pTileX;
+    const newTileY = pTileY;
     const currentStorePos = useGameStore.getState().player.position;
     if (newTileX !== currentStorePos.x || newTileY !== currentStorePos.y) {
       store.movePlayer(newTileX, newTileY);
@@ -719,10 +759,15 @@ export class GameScene extends Phaser.Scene {
         ny * TILE_SIZE * 2,
         `npc_${i}`
       );
-      sprite.setScale(2.2); // bigger NPCs
+      sprite.setScale(2.2);
       sprite.setDepth(5);
       sprite.setInteractive({ useHandCursor: true });
       sprite.on('pointerdown', () => this.interactWithNPC(npc.id));
+
+      // NPC drop shadow
+      const shadow = this.add.ellipse(0, 0, 7, 3, 0x000000, 0.18);
+      shadow.setDepth(1);
+      this.npcShadows.set(npc.id, shadow);
 
       // Add name label (proportional to scaled-up NPC)
       const npcData = useGameStore.getState().npcData[npc.id];
@@ -822,6 +867,22 @@ export class GameScene extends Phaser.Scene {
     const heartDisplay = '❤️'.repeat(Math.floor(hearts / 2)) + '🤍'.repeat(5 - Math.floor(hearts / 2));
     const dialogues = [`${npcData.name} - ${npcData.title}`, `好感度: ${heartDisplay}`, ...selected];
 
+    // ── NPC reaction: "!" popup ──────────────
+    const npcSprite = this.npcSprites.get(npcId);
+    if (npcSprite) {
+      const reactText = this.add.text(npcSprite.x, npcSprite.y - 24, '💬', {
+        fontSize: '16px',
+      }).setOrigin(0.5).setDepth(20);
+      this.tweens.add({
+        targets: reactText,
+        y: npcSprite.y - 40,
+        alpha: 0,
+        duration: 800,
+        ease: 'Quad.easeOut',
+        onComplete: () => reactText.destroy(),
+      });
+    }
+
     // Track quest progress for "talk to NPC" objectives
     store.checkQuestProgress('talk_to_npc', npcId, 1);
 
@@ -910,6 +971,29 @@ export class GameScene extends Phaser.Scene {
 
     // Use energy
     store.useEnergy(10);
+
+    // ── Water splash at player feet ──────────
+    const splashX = this.player.x;
+    const splashY = this.player.y + 12;
+    for (let i = 0; i < 4; i++) {
+      const drop = this.add.circle(
+        splashX + (Math.random() - 0.5) * 10,
+        splashY + (Math.random() - 0.5) * 6,
+        1.5 + Math.random() * 2,
+        0x85c1e9,
+        0.6
+      );
+      drop.setDepth(8);
+      this.tweens.add({
+        targets: drop,
+        y: drop.y - 8 - Math.random() * 6,
+        x: drop.x + (Math.random() - 0.5) * 12,
+        alpha: 0,
+        scale: 1.5,
+        duration: 300 + Math.random() * 200,
+        onComplete: () => drop.destroy(),
+      });
+    }
 
     // Show fishing notification + visual rod effect
     store.showNotification(`🐟 有鱼上钩了！`);
