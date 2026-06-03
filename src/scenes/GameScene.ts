@@ -31,6 +31,7 @@ export class GameScene extends Phaser.Scene {
   private fishingSpotMarkers: Phaser.GameObjects.Graphics[] = [];
   private playerShadow!: Phaser.GameObjects.Ellipse;
   private walkDustTimer = 0;
+  private waterColliders!: Phaser.Physics.Arcade.StaticGroup;
 
   private hudTexts!: {
     time: Phaser.GameObjects.Text;
@@ -105,6 +106,11 @@ export class GameScene extends Phaser.Scene {
     this.playerShadow = this.add.ellipse(0, 0, 8, 3, 0x000000, 0.2);
     this.playerShadow.setDepth(1);
     this.physics.world.setBounds(0, 0, MAP_WIDTH * TILE_SIZE * 2, MAP_HEIGHT * TILE_SIZE * 2);
+
+    // ── Water collision (physics) ────────────
+    this.waterColliders = this.physics.add.staticGroup();
+    this.buildWaterColliders();
+    this.physics.add.collider(this.player, this.waterColliders);
 
     // Create HUD
     this.createHUD();
@@ -581,26 +587,8 @@ export class GameScene extends Phaser.Scene {
       this.player.setData('walking', false);
     }
 
-    // Check water collision manually
-    const playerTileX = Math.floor(this.player.x / (TILE_SIZE * 2));
-    const playerTileY = Math.floor(this.player.y / (TILE_SIZE * 2));
-    const targetTileX = Math.floor((this.player.x + vx * (delta / 1000)) / (TILE_SIZE * 2));
-    const targetTileY = Math.floor((this.player.y + vy * (delta / 1000)) / (TILE_SIZE * 2));
-
-    // Allow movement off water tiles (safety: if stuck on water, let player move freely)
-    const playerOnWater = !this.isTileWalkable(playerTileX, playerTileY);
-
-    if (playerOnWater || this.isTileWalkable(targetTileX, playerTileY)) {
-      this.player.setVelocityX(vx);
-    } else {
-      this.player.setVelocityX(0);
-    }
-
-    if (playerOnWater || this.isTileWalkable(playerTileX, targetTileY)) {
-      this.player.setVelocityY(vy);
-    } else {
-      this.player.setVelocityY(0);
-    }
+    // Set velocity (water blocked by physics colliders)
+    this.player.setVelocity(vx, vy);
 
     // ── Shadow sync ───────────────────────────
     this.playerShadow.setPosition(this.player.x, this.player.y + 16);
@@ -700,30 +688,30 @@ export class GameScene extends Phaser.Scene {
   private createHUD(): void {
     const style: Phaser.Types.GameObjects.Text.TextStyle = {
       fontFamily: '"Press Start 2P", monospace',
-      fontSize: '10px',
+      fontSize: '14px',
       color: '#e8d5c4',
       stroke: '#000000',
-      strokeThickness: 2,
+      strokeThickness: 3,
     };
 
     this.hudTexts = {
-      time: this.add.text(10, 10, '', style).setDepth(100).setScrollFactor(0),
-      date: this.add.text(10, 25, '', style).setDepth(100).setScrollFactor(0),
-      season: this.add.text(10, 40, '', style).setDepth(100).setScrollFactor(0),
-      gold: this.add.text(this.cameras.main.width - 10, 10, '', { ...style, color: '#d4a853' })
+      time: this.add.text(14, 14, '', { ...style, fontSize: '15px' }).setDepth(100).setScrollFactor(0),
+      date: this.add.text(14, 36, '', { ...style, fontSize: '13px' }).setDepth(100).setScrollFactor(0),
+      season: this.add.text(14, 56, '', { ...style, fontSize: '18px' }).setDepth(100).setScrollFactor(0),
+      gold: this.add.text(this.cameras.main.width - 14, 14, '', { ...style, color: '#d4a853', fontSize: '18px' })
         .setOrigin(1, 0).setDepth(100).setScrollFactor(0),
-      location: this.add.text(this.cameras.main.width / 2, 10, '', style)
+      location: this.add.text(this.cameras.main.width / 2, 14, '', { ...style, fontSize: '20px' })
         .setOrigin(0.5, 0).setDepth(100).setScrollFactor(0),
-      weather: this.add.text(this.cameras.main.width - 10, 25, '', style)
+      weather: this.add.text(this.cameras.main.width - 14, 40, '', { ...style, fontSize: '13px' })
         .setOrigin(1, 0).setDepth(100).setScrollFactor(0),
     };
 
-    // Map travel button (bottom right)
-    const mapBtn = this.add.text(this.cameras.main.width - 10, this.cameras.main.height - 10, '🗺️ 地图 [M]', {
+    // Map travel button (bottom right - bigger)
+    const mapBtn = this.add.text(this.cameras.main.width - 14, this.cameras.main.height - 14, '🗺️ 地图 [M]', {
       ...style,
-      fontSize: '10px',
+      fontSize: '15px',
       backgroundColor: '#3d2b3e',
-      padding: { x: 6, y: 4 },
+      padding: { x: 10, y: 6 },
     })
       .setOrigin(1, 1)
       .setDepth(100)
@@ -1285,8 +1273,26 @@ export class GameScene extends Phaser.Scene {
     this.buildingSprites.clear();
     this.generateMap(location);
     this.markFishingSpots();
-    // Re-render buildings on the new map (only show buildings placed on this map)
+    // Rebuild water colliders for new map
+    this.buildWaterColliders();
+    // Re-render buildings
     this.renderBuildings();
     useGameStore.getState().changeMap(location);
+  }
+
+  private buildWaterColliders(): void {
+    this.waterColliders.clear(true, true);
+    const S = TILE_SIZE * 2;
+    for (let y = 0; y < MAP_HEIGHT; y++) {
+      for (let x = 0; x < MAP_WIDTH; x++) {
+        if (this.collisionLayer[y]?.[x] === true) {
+          const hasLand = (y>0&&!this.collisionLayer[y-1]?.[x])||(y<MAP_HEIGHT-1&&!this.collisionLayer[y+1]?.[x])||(x>0&&!this.collisionLayer[y]?.[x-1])||(x<MAP_WIDTH-1&&!this.collisionLayer[y]?.[x+1]);
+          if (hasLand) {
+            const b = this.waterColliders.create(x*S+S/2, y*S+S/2);
+            b.setSize(S, S).setVisible(false).refreshBody();
+          }
+        }
+      }
+    }
   }
 }
