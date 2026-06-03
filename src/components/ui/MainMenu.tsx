@@ -49,11 +49,12 @@ export const MainMenu: React.FC = () => {
   return (
     <div className="w-full h-full flex flex-col items-center justify-center relative overflow-hidden"
       style={{ backgroundColor: '#1a0d1e' }}>
-      {/* Pixel art background: grass at bottom, sky gradient */}
-      <div className="absolute bottom-0 left-0 right-0 h-[35%]"
-        style={{ background: 'linear-gradient(to top, #1a6e35, #228b3a 40%, transparent)' }} />
-      <div className="absolute bottom-[35%] left-0 right-0 h-[20%]"
-        style={{ background: 'linear-gradient(to top, #2d9d4e, #52be80 60%, transparent)' }} />
+      {/* Seamless grass ground */}
+      <div className="absolute bottom-0 left-0 right-0 h-[45%]"
+        style={{ background: 'linear-gradient(to top, #1a5a1a 0%, #228b3a 20%, #2d7a2d 40%, #3d8a3d 60%, #4da64d 80%, transparent 100%)' }} />
+      {/* Grass blade texture overlay */}
+      <div className="absolute bottom-0 left-0 right-0 h-[45%] opacity-10"
+        style={{ backgroundImage: 'repeating-linear-gradient(85deg, transparent, transparent 4px, #fff 4px, #fff 5px, transparent 5px, transparent 9px), repeating-linear-gradient(95deg, transparent, transparent 6px, #fff 6px, #fff 7px, transparent 7px, transparent 11px)' }} />
 
       {/* Pixel water shimmer */}
       {bubbles.map((b, i) => (
@@ -62,11 +63,25 @@ export const MainMenu: React.FC = () => {
             animationDelay: `${b.delay}s`, backgroundColor: '#3498db', opacity: 0.15 }} />
       ))}
 
-      {/* Decorative pixel trees */}
-      <div className="absolute bottom-[30%] left-[8%] text-6xl opacity-40" style={{ filter: 'drop-shadow(0 6px 3px rgba(0,0,0,0.4))' }}>🌲</div>
-      <div className="absolute bottom-[32%] right-[6%] text-7xl opacity-35" style={{ filter: 'drop-shadow(0 6px 3px rgba(0,0,0,0.4))' }}>🌳</div>
-      <div className="absolute bottom-[28%] left-[18%] text-5xl opacity-25">🌿</div>
-      <div className="absolute bottom-[30%] right-[18%] text-4xl opacity-25">🪨</div>
+      {/* Decorative pixel trees + details */}
+      <div className="absolute bottom-[30%] left-[8%] text-6xl opacity-50" style={{ filter: 'drop-shadow(0 8px 4px rgba(0,0,0,0.5))' }}>🌲</div>
+      <div className="absolute bottom-[33%] right-[6%] text-7xl opacity-45" style={{ filter: 'drop-shadow(0 8px 4px rgba(0,0,0,0.5))' }}>🌳</div>
+      <div className="absolute bottom-[29%] left-[18%] text-5xl opacity-30" style={{ filter: 'drop-shadow(0 4px 2px rgba(0,0,0,0.3))' }}>🌿</div>
+      <div className="absolute bottom-[31%] right-[20%] text-4xl opacity-30" style={{ filter: 'drop-shadow(0 4px 2px rgba(0,0,0,0.3))' }}>🪨</div>
+      {/* Small flowers */}
+      <div className="absolute bottom-[27%] left-[25%] text-2xl opacity-40">🌸</div>
+      <div className="absolute bottom-[29%] right-[28%] text-xl opacity-35">💮</div>
+      <div className="absolute bottom-[26%] left-[35%] text-lg opacity-30">🌼</div>
+      {/* Fence posts along bottom */}
+      {Array.from({length: 12}).map((_, i) => (
+        <div key={i} className="absolute bottom-[44%] text-xs opacity-25"
+          style={{ left: `${5 + i * 8}%`, fontSize: '10px' }}>🪵</div>
+      ))}
+      {/* Pixel fish jumping from water */}
+      <div className="absolute bottom-[50%] left-[70%] text-3xl opacity-30 animate-bounce"
+        style={{ animationDuration: '2s' }}>🐟</div>
+      <div className="absolute bottom-[48%] left-[15%] text-2xl opacity-25"
+        style={{ transform: 'scaleX(-1)', animation: 'bounce 2.5s infinite' }}>🐟</div>
 
       {/* Title — wooden sign style */}
       <div className="text-center mb-8 animate-slide-in z-10">

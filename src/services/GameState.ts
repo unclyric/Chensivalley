@@ -300,7 +300,7 @@ export const useGameStore = create<GameStateStore>((set, get) => ({
     const spawns: Record<string, { x: number; y: number }> = {
       meditation_lake: { x: 30, y: 12 },
       nanming_river: { x: 50, y: 30 },
-      west_lake: { x: 55, y: 30 },
+      west_lake: { x: 55, y: 6 },
       yangye_marsh: { x: 30, y: 5 },
     };
     const pos = spawns[map] || { x: 30, y: 12 };
