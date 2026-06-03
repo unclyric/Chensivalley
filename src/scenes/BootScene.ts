@@ -441,10 +441,14 @@ export class BootScene extends Phaser.Scene {
       // 1: 智爸 - Black merchant coat, no hat, kind father
       (g: Phaser.GameObjects.Graphics) => {
         g.fillStyle(0x000000, 0.1); g.fillEllipse(8 * sc, 15 * sc + 1, 8 * sc, 3);
-        // Black coat
-        g.fillStyle(0x2a2a2a); g.fillRect(4 * sc, 6 * sc, 8 * sc, 6 * sc);
-        g.fillStyle(0x3a3a3a, 0.5); g.fillRect(5 * sc, 6 * sc, 6 * sc, 3 * sc);
-        g.fillStyle(0x1a1a1a, 0.3); g.fillRect(6 * sc, 7 * sc, 1, 5 * sc);
+        // Pure black coat (no color tint)
+        g.fillStyle(0x0d0d0d); g.fillRect(4 * sc, 6 * sc, 8 * sc, 6 * sc);
+        g.fillStyle(0x1a1a1a, 0.6); g.fillRect(5 * sc, 6 * sc, 6 * sc, 3 * sc);
+        // Coat fold lines
+        g.fillStyle(0x050505, 0.5); g.fillRect(6 * sc, 7 * sc, 0.8, 5 * sc);
+        g.fillRect(9 * sc, 7 * sc, 0.8, 5 * sc);
+        // Coat lapel highlight
+        g.fillStyle(0x2a2a2a, 0.25); g.fillRect(5 * sc, 7 * sc, 1.5 * sc, 4 * sc);
         // Gold buttons
         g.fillStyle(0xd4a853); g.fillRect(7.5 * sc, 7 * sc, 1, 1);
         g.fillRect(7.5 * sc, 9 * sc, 1, 1);
@@ -455,9 +459,9 @@ export class BootScene extends Phaser.Scene {
         // Face (warm, no hat)
         g.fillStyle(0xe8c39e); g.fillRect(5 * sc, 2 * sc, 6 * sc, 5 * sc);
         g.fillStyle(0xdcb088, 0.3); g.fillRect(5 * sc, 4 * sc, 6 * sc, 3 * sc);
-        // Black hair (neat)
-        g.fillStyle(0x1a1a1a); g.fillRect(4 * sc, 0, 8 * sc, 3 * sc);
-        g.fillStyle(0x2a2a2a, 0.3); g.fillRect(5 * sc, 1 * sc, 6 * sc, 1.5 * sc);
+        // Black hair (neat, pure black)
+        g.fillStyle(0x080808); g.fillRect(4 * sc, 0, 8 * sc, 3 * sc);
+        g.fillStyle(0x151515, 0.35); g.fillRect(5 * sc, 1 * sc, 6 * sc, 1.5 * sc);
         // Warm eyes
         g.fillStyle(0xffffff); g.fillRect(6.5 * sc, 3.5 * sc, 2 * sc, 2 * sc);
         g.fillRect(9.5 * sc, 3.5 * sc, 2 * sc, 2 * sc);
@@ -471,10 +475,10 @@ export class BootScene extends Phaser.Scene {
         g.fillRect(9.5 * sc, 3 * sc, 2 * sc, 0.5 * sc);
         // Kind smile
         g.fillStyle(0xc08070, 0.4); g.fillRect(7 * sc, 5.5 * sc, 2.5 * sc, 0.5 * sc);
-        // Black boots
-        g.fillStyle(0x2a2a2a); g.fillRect(5.5 * sc, 12 * sc, 3 * sc, 3 * sc);
+        // Pure black boots
+        g.fillStyle(0x0a0a0a); g.fillRect(5.5 * sc, 12 * sc, 3 * sc, 3 * sc);
         g.fillRect(8.5 * sc, 12 * sc, 3 * sc, 3 * sc);
-        g.fillStyle(0x1a1a1a, 0.4); g.fillRect(5.5 * sc, 14 * sc, 3 * sc, 1);
+        g.fillStyle(0x151515, 0.35); g.fillRect(5.5 * sc, 12 * sc, 3 * sc, 1);
       },
       // 2: 吉格斯 - Bomb expert, rugged coat, goggles, dynamite belt
       (g: Phaser.GameObjects.Graphics) => {

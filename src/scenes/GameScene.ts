@@ -136,8 +136,23 @@ export class GameScene extends Phaser.Scene {
     // ── Render existing buildings ────────────
     this.renderBuildings();
 
+    // ── Camera intro: zoom in on player, then pull back ──
+    this.cameras.main.zoom = 2.5;
+    this.cameras.main.centerOn(this.player.x, this.player.y);
+    this.tweens.add({
+      targets: this.cameras.main,
+      zoom: 1,
+      duration: 2000,
+      ease: 'Quad.easeInOut',
+      delay: 500,
+    });
+    // Camera follows player after intro
+    this.time.delayedCall(2600, () => {
+      this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
+    });
+
     // Random notification
-    this.time.delayedCall(2000, () => {
+    this.time.delayedCall(3000, () => {
       store.showNotification('欢迎来到大辟谷！WASD移动 | E钓鱼/对话 | I背包 | M地图 | B建造 | N音乐 | ESC设置');
     });
 

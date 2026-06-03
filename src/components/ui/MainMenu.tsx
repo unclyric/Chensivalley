@@ -12,19 +12,27 @@ export const MainMenu: React.FC = () => {
   const [hasExistingSave, setHasExistingSave] = useState(false);
   const [showInstructions, setShowInstructions] = useState(false);
   const [bubbles, setBubbles] = useState<{ x: number; y: number; size: number; delay: number }[]>([]);
+  const [clouds, setClouds] = useState<{ x: number; y: number; w: number; delay: number; dur: number }[]>([]);
+  const [stars, setStars] = useState<{ x: number; y: number; size: number; delay: number }[]>([]);
 
   useEffect(() => {
-    // Check for existing save
     setHasExistingSave(SaveSystem.hasSave());
-
-    // Generate floating bubbles
-    const newBubbles = Array.from({ length: 15 }, () => ({
-      x: Math.random() * 100,
-      y: 80 + Math.random() * 20,
-      size: 4 + Math.random() * 12,
-      delay: Math.random() * 3,
+    // Water shimmer bubbles
+    const newBubbles = Array.from({ length: 20 }, () => ({
+      x: Math.random() * 100, y: 75 + Math.random() * 25,
+      size: 3 + Math.random() * 10, delay: Math.random() * 4,
     }));
     setBubbles(newBubbles);
+    // Floating clouds
+    setClouds(Array.from({ length: 4 }, () => ({
+      x: Math.random() * 120 - 10, y: 5 + Math.random() * 18,
+      w: 60 + Math.random() * 80, delay: Math.random() * 8, dur: 15 + Math.random() * 20,
+    })));
+    // Twinkling stars
+    setStars(Array.from({ length: 10 }, () => ({
+      x: Math.random() * 100, y: Math.random() * 55,
+      size: 1 + Math.random() * 2.5, delay: Math.random() * 3,
+    })));
   }, []);
 
   const handleNewGame = () => {
@@ -49,6 +57,30 @@ export const MainMenu: React.FC = () => {
   return (
     <div className="w-full h-full flex flex-col items-center justify-center relative overflow-hidden"
       style={{ backgroundColor: '#1a0d1e' }}>
+      {/* Twinkling stars (sky area) */}
+      {stars.map((s, i) => (
+        <div key={`star${i}`} className="absolute rounded-full animate-pulse"
+          style={{ left: `${s.x}%`, top: `${s.y}%`, width: s.size, height: s.size,
+            backgroundColor: '#fff', opacity: 0.3 + Math.random() * 0.4, animationDelay: `${s.delay}s`, animationDuration: '2s' }} />
+      ))}
+      {/* Floating clouds */}
+      {clouds.map((c, i) => (
+        <div key={`cloud${i}`} className="absolute animate-float rounded-full"
+          style={{ left: `${c.x}%`, top: `${c.y}%`, width: c.w, height: c.w * 0.35,
+            backgroundColor: 'rgba(255,255,255,0.06)', animationDelay: `${c.delay}s`, animationDuration: `${c.dur}s`,
+            boxShadow: '20px -5px 30px 10px rgba(255,255,255,0.04), -15px 3px 25px 8px rgba(255,255,255,0.03)' }} />
+      ))}
+      {/* Falling leaf particles */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none" style={{ zIndex: 5 }}>
+        {Array.from({length: 6}).map((_, i) => (
+          <div key={`leaf${i}`} className="absolute text-lg"
+            style={{ left: `${10 + i * 15}%`, top: '-5%',
+              animation: `fall ${4 + i * 2}s ${i * 1.5}s linear infinite`, opacity: 0.25 }}>
+            🍂
+          </div>
+        ))}
+      </div>
+
       {/* Seamless grass ground */}
       <div className="absolute bottom-0 left-0 right-0 h-[45%]"
         style={{ background: 'linear-gradient(to top, #1a5a1a 0%, #228b3a 20%, #2d7a2d 40%, #3d8a3d 60%, #4da64d 80%, transparent 100%)' }} />
