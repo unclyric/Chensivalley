@@ -9,6 +9,7 @@ import { TILE_SIZE, MAP_WIDTH, MAP_HEIGHT, PALETTE, PLAYER_SPEED } from '../util
 import { FishingLocation, Season, Weather, TimeOfDay, BuildingType } from '../utils/types';
 import { getTimeOfDay, formatTime, formatDate } from '../utils/helpers';
 import { getAvailableFish } from '../data/fish';
+import { playFishCaught, playTalk } from '../utils/SoundFX';
 
 // Map generation constants
 const WATER_LEVEL = 16; // tiles from top where water starts
@@ -867,6 +868,9 @@ export class GameScene extends Phaser.Scene {
     const heartDisplay = '❤️'.repeat(Math.floor(hearts / 2)) + '🤍'.repeat(5 - Math.floor(hearts / 2));
     const dialogues = [`${npcData.name} - ${npcData.title}`, `好感度: ${heartDisplay}`, ...selected];
 
+    // ── Talk sound ──────────────────────────
+    playTalk();
+
     // ── NPC reaction: "!" popup ──────────────
     const npcSprite = this.npcSprites.get(npcId);
     if (npcSprite) {
@@ -998,6 +1002,7 @@ export class GameScene extends Phaser.Scene {
     // Show fishing notification + visual rod effect
     store.showNotification(`🐟 有鱼上钩了！`);
     store.triggerActionEffect('fish', '🎣');
+    playFishCaught();
 
     // Delay then start fishing minigame
     this.time.delayedCall(1000, () => {

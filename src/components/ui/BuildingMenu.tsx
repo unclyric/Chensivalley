@@ -8,6 +8,7 @@ import { useGameStore } from '../../services/GameState';
 import { BuildingType, PondSize } from '../../utils/types';
 import { POND_STATS, formatGold } from '../../utils';
 import { generateId } from '../../utils/helpers';
+import { playBuild } from '../../utils/SoundFX';
 
 export const BuildingMenu: React.FC = () => {
   const { player, closePanel, spendGold, addBuilding, addFishPond, checkQuestProgress } = useGameStore();
@@ -55,6 +56,7 @@ export const BuildingMenu: React.FC = () => {
     checkQuestProgress('build_structure', 'fish_pond_small', 1);
     checkQuestProgress('build_structure', 'fish_pond', 1);
 
+    playBuild();
     setMsg(`建造了${stats.name}！花费 ${stats.buildCost} G`);
     setTimeout(() => setMsg(''), 3000);
   };
@@ -81,6 +83,7 @@ export const BuildingMenu: React.FC = () => {
       maxLevel: 3,
       built: true,
     });
+    playBuild();
     setMsg(`建造成功！花费 ${cost} G`);
     setTimeout(() => setMsg(''), 3000);
   };

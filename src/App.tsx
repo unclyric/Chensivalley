@@ -21,6 +21,7 @@ import { FishingMinigameUI } from './components/ui/FishingMinigameUI';
 import { MapPanel } from './components/ui/MapPanel';
 import { SceneTransition } from './components/ui/SceneTransition';
 import { FishingLocation } from './utils/types';
+import { resumeAudio } from './utils/SoundFX';
 
 const App: React.FC = () => {
   const gameContainerRef = useRef<HTMLDivElement>(null);
@@ -113,7 +114,7 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className="w-full h-full relative bg-game-bg overflow-hidden">
+    <div className="w-full h-full relative bg-game-bg overflow-hidden" onClick={resumeAudio}>
       {/* Phaser Game Container */}
       <div id="game-container" ref={gameContainerRef} />
 

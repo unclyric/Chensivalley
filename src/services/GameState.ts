@@ -16,6 +16,7 @@ import { ALL_FISH } from '../data/fish';
 import { ALL_NPCS } from '../data/npcs';
 import { ALL_QUESTS } from '../data/quests';
 import { ITEM_DEFINITIONS } from '../data/items';
+import { playQuestComplete, playGold, playItemUse, playLevelUp } from '../utils/SoundFX';
 
 // ─── Game State Interface ────────────────────
 
@@ -432,6 +433,7 @@ export const useGameStore = create<GameStateStore>((set, get) => ({
     get().restoreEnergy(restore);
     // Show visual effect
     get().triggerActionEffect('use_item', def.icon);
+    playItemUse();
     return { success: true, message: `使用了${def.name}，恢复了${restore}点体力！` };
   },
 
@@ -582,6 +584,10 @@ export const useGameStore = create<GameStateStore>((set, get) => ({
       });
 
       // Show notifications after state update
+      if (completedQuestIds.length > 0) {
+        playQuestComplete();
+        setTimeout(() => playGold(), 400);
+      }
       completedQuestIds.forEach(qid => {
         const qData = ALL_QUESTS.find(q => q.id === qid);
         if (qData) {
