@@ -87,10 +87,6 @@ export const MainMenu: React.FC = () => {
       {/* Smooth grass-to-sky transition */}
       <div className="absolute bottom-0 left-0 right-0 h-[55%]"
         style={{ background: 'linear-gradient(to top, #1a5a1a 0%, #228b3a 15%, #2d7a2d 30%, #3d8a3d 45%, #4da64d 55%, #5a8a6a 65%, #6a8a7a 75%, transparent 100%)' }} />
-      {/* Grass texture (subtle) */}
-      <div className="absolute bottom-0 left-0 right-0 h-[55%] opacity-8"
-        style={{ backgroundImage: 'repeating-linear-gradient(85deg, transparent, transparent 4px, #fff 4px, #fff 5px, transparent 5px, transparent 9px), repeating-linear-gradient(95deg, transparent, transparent 6px, #fff 6px, #fff 7px, transparent 7px, transparent 11px)' }} />
-      {/* Horizon glow line */}
       <div className="absolute bottom-[55%] left-0 right-0 h-1 opacity-15"
         style={{ background: 'linear-gradient(to right, transparent 20%, #a0d0a0 40%, #c0e0c0 50%, #a0d0a0 60%, transparent 80%)' }} />
 
