@@ -277,6 +277,18 @@ export class GameScene extends Phaser.Scene {
     this.placeFlowers(flowers);
     this.placeRocks(rocks);
     this.placeLilies(lilies);
+    // Mushrooms near trees, fences along paths
+    const mushrooms: {x:number,y:number}[] = [];
+    const fences: {x:number,y:number}[] = [];
+    for (let x = 1; x < MAP_WIDTH - 1; x++) {
+      for (let y = 1; y < WATER_LEVEL - 1; y++) {
+        if (this.collisionLayer[y]?.[x] === false && Math.random() < 0.015) mushrooms.push({x,y});
+      }
+      // Fences along the top grass edge
+      if (x % 12 === 0 && this.collisionLayer[WATER_LEVEL-3]?.[x] === false) fences.push({x, y: WATER_LEVEL-3});
+    }
+    this.mushroomPositions = mushrooms;
+    this.fencePositions = fences;
   }
 
   private generateRiverMap(): void {
@@ -421,6 +433,8 @@ export class GameScene extends Phaser.Scene {
   private flowerPositions: { x: number; y: number }[] = [];
   private rockPositions: { x: number; y: number }[] = [];
   private lilyPositions: { x: number; y: number }[] = [];
+  private mushroomPositions: { x: number; y: number }[] = [];
+  private fencePositions: { x: number; y: number }[] = [];
   private decoSprites: Phaser.GameObjects.Image[] = [];
 
   private placeDecorations(positions: { x: number; y: number }[]): void {
@@ -479,12 +493,22 @@ export class GameScene extends Phaser.Scene {
       sprite.setDepth(3);
       this.decoSprites.push(sprite);
     });
-    // Lily pads (depth 1 - on water surface)
+    // Lily pads (depth 1)
     this.lilyPositions.forEach(pos => {
       const sprite = this.add.image(pos.x * S + S / 2, pos.y * S + S / 2, 'env_lilypad');
-      sprite.setScale(0.6 + Math.random() * 0.5);
-      sprite.setDepth(1);
-      sprite.setAlpha(0.7);
+      sprite.setScale(0.6 + Math.random() * 0.5); sprite.setDepth(1); sprite.setAlpha(0.7);
+      this.decoSprites.push(sprite);
+    });
+    // Mushrooms (depth 4)
+    this.mushroomPositions.forEach(pos => {
+      const sprite = this.add.image(pos.x * S + S / 2, pos.y * S + S / 2, 'env_mushroom');
+      sprite.setScale(0.8 + Math.random() * 0.3); sprite.setDepth(4);
+      this.decoSprites.push(sprite);
+    });
+    // Fences (depth 3)
+    this.fencePositions.forEach(pos => {
+      const sprite = this.add.image(pos.x * S + S / 2, pos.y * S + S / 2, 'env_fence');
+      sprite.setScale(0.9 + Math.random() * 0.2); sprite.setDepth(3);
       this.decoSprites.push(sprite);
     });
   }
@@ -645,6 +669,15 @@ export class GameScene extends Phaser.Scene {
       this.renderBuildings();
     }
 
+    // ── Y-sort: trees render behind player when above, in front when below ──
+    this.decoSprites.forEach(sprite => {
+      if (!sprite || !sprite.active) return;
+      const key = sprite.texture.key;
+      if (key === 'tile_tree' || key === 'tile_bush') {
+        sprite.setDepth(sprite.y > this.player.y + 4 ? 11 : 2);
+      }
+    });
+
     // Update HUD
     this.updateHUD();
   }
@@ -729,12 +762,19 @@ export class GameScene extends Phaser.Scene {
     const npcPositions = [
       { id: 'old_fisherman', x: 18, y: 8 },
       { id: 'traveling_merchant', x: 35, y: 10 },
-      { id: 'tea_house_owner', x: 28, y: 15 },
-      { id: 'young_angler', x: 14, y: 12 },
+      { id: 'ichthyologist', x: 12, y: 10 },
+      { id: 'lighthouse_keeper', x: 42, y: 10 },
       { id: 'wandering_painter', x: 20, y: 5 },
+      { id: 'tea_house_owner', x: 28, y: 15 },
+      { id: 'young_angler', x: 14, y: 14 },
+      { id: 'retired_sailor', x: 48, y: 14 },
+      { id: 'botanist', x: 8, y: 6 },
+      { id: 'mysterious_hermit', x: 52, y: 20 },
     ];
 
-    npcPositions.forEach((npc, i) => {
+    npcPositions.forEach((npc) => {
+      const npcData = useGameStore.getState().npcData[npc.id];
+      const texIdx = npcData?.spriteIndex ?? 0;
       // Ensure NPC spawns on walkable land (not water)
       let nx = npc.x;
       let ny = npc.y;
@@ -758,7 +798,7 @@ export class GameScene extends Phaser.Scene {
       const sprite = this.add.sprite(
         nx * TILE_SIZE * 2,
         ny * TILE_SIZE * 2,
-        `npc_${i}`
+        `npc_${texIdx}`
       );
       sprite.setScale(2.2);
       sprite.setDepth(5);
@@ -770,8 +810,7 @@ export class GameScene extends Phaser.Scene {
       shadow.setDepth(1);
       this.npcShadows.set(npc.id, shadow);
 
-      // Add name label (proportional to scaled-up NPC)
-      const npcData = useGameStore.getState().npcData[npc.id];
+      // Add name label
       if (npcData) {
         const labelYOffset = -30; // higher above NPC head
         const label = this.add.text(nx * TILE_SIZE * 2, ny * TILE_SIZE * 2 + labelYOffset, npcData.name, {

@@ -53,10 +53,15 @@ export class BootScene extends Phaser.Scene {
     wG.fillStyle(0xaed6f1, 0.12);
     wG.fillRect(8, 10, 6, 1); wG.fillRect(20, 18, 4, 1);
     wG.fillRect(4, 24, 8, 1); wG.fillRect(14, 30, 5, 1);
-    // Subtle shimmer dots
+    // Bottom deep water band
+    wG.fillStyle(0x0a2a4a, 0.4); wG.fillRect(0, S - 4, S, 4);
+    // Shimmer dots (more + varied)
     wG.fillStyle(0xffffff, 0.1);
     wG.fillRect(10, 12, 2, 1); wG.fillRect(22, 20, 2, 1);
-    wG.fillRect(5, 28, 1, 2);
+    wG.fillRect(5, 28, 1, 2); wG.fillRect(16, 6, 1, 1);
+    wG.fillRect(26, 16, 1, 1); wG.fillRect(8, 24, 2, 1);
+    // Faint inverted reflection
+    wG.fillStyle(0x1a5a1a, 0.04); wG.fillRect(6, 2, 8, 6);
     wG.generateTexture('tile_water', S, S); wG.destroy();
 
     // Water edge - sand meeting water
@@ -81,12 +86,22 @@ export class BootScene extends Phaser.Scene {
     gG.fillStyle(0x1a6e35); gG.fillRect(0, 0, S, S);
     gG.fillStyle(0x228b3a); gG.fillRect(0, 1, S, S - 2);
     gG.fillStyle(0x2d9d4e, 0.5); gG.fillRect(1, 1, S - 2, S - 3);
-    // Grass blade clusters
+    // Grass blade clusters (more + varied)
     gG.fillStyle(0x35b058, 0.45);
-    for (let i = 0; i < 14; i++) {
+    for (let i = 0; i < 20; i++) {
       const gx = (i * 13 + 5) % S, gy = (i * 7 + 2) % (S - 2);
       gG.fillRect(gx, gy, 2, 4); gG.fillRect(gx + 1, gy - 1, 1, 2);
     }
+    // V-shaped blades
+    gG.fillStyle(0x4eca6f, 0.25);
+    for (let i = 0; i < 4; i++) {
+      const gx = (i * 19 + 8) % S, gy = (i * 11 + 3) % (S - 4);
+      gG.fillRect(gx, gy, 1, 3); gG.fillRect(gx + 2, gy, 1, 4);
+    }
+    // Tiny wildflower specks
+    gG.fillStyle(0xf0f0f0, 0.3); gG.fillRect(8, 6, 1, 1); gG.fillRect(22, 10, 1, 1);
+    gG.fillStyle(0xf4d03f, 0.25); gG.fillRect(16, 4, 1, 1);
+    gG.fillStyle(0xe8a0bf, 0.2); gG.fillRect(10, 18, 1, 1); gG.fillRect(24, 8, 1, 1);
     // Darker patches
     gG.fillStyle(0x1a6e35, 0.4);
     gG.fillRect(4, 14, 5, 3); gG.fillRect(20, 22, 4, 3);
@@ -156,6 +171,15 @@ export class BootScene extends Phaser.Scene {
     tG.fillRect(S / 2 + 1, S - 3, 4, 3);
     tG.fillStyle(0x6a4a20, 0.4); tG.fillRect(S / 2 - 4, S - 2, 3, 3);
     tG.fillRect(S / 2 + 1, S - 2, 3, 3);
+    // Bark grain + knot
+    for (let bx = -2; bx <= 2; bx++) { tG.fillStyle(bx===0?0x3a1a08:0x6a4a20,0.15); tG.fillRect(S/2+bx*1.5,11,0.6,S-14); }
+    tG.fillStyle(0x3a1a08,0.25); tG.fillEllipse(S/2+1,15,2.5,2);
+    tG.fillStyle(0x6a4a20,0.2); tG.fillEllipse(S/2+1,14.5,1.8,1.3);
+    // Grass tufts at base (ground blend)
+    tG.fillStyle(0x2d9d4e,0.5); tG.fillRect(S/2-5,S-2,2,2); tG.fillRect(S/2+3,S-2,2,2);
+    tG.fillStyle(0x35b058,0.3); tG.fillRect(S/2-3,S-1,1.5,2); tG.fillRect(S/2+1,S-1,1.5,2);
+    // Edge softening dots around canopy
+    for (let i=0;i<8;i++) { const a=Math.random()*Math.PI*2,d=14+Math.random()*3; tG.fillStyle(0x4da64d,0.08); tG.fillCircle(S/2+Math.cos(a)*d,S/2+Math.sin(a)*d*0.7,1+Math.random()); }
     // Canopy shadow (dark green underside)
     tG.fillStyle(0x0d3d0d); tG.fillCircle(S / 2, 9, 13);
     tG.fillCircle(S / 2 - 8, 11, 8); tG.fillCircle(S / 2 + 8, 11, 8);
@@ -409,8 +433,10 @@ export class BootScene extends Phaser.Scene {
         g.fillRect(9 * sc, 4 * sc, 2.5 * sc, 0.5 * sc);
         // Smile lines
         g.fillStyle(0xd0a090, 0.3); g.fillRect(6 * sc, 6 * sc, 4 * sc, 0.5 * sc);
-        g.fillStyle(0x5a3a1a); g.fillRect(6 * sc, 13 * sc, 3 * sc, 2 * sc);
-        g.fillRect(9 * sc, 13 * sc, 3 * sc, 2 * sc);
+        // Straw sandals with weave
+        g.fillStyle(0xc4a060); g.fillRect(5 * sc, 13 * sc, 3.5 * sc, 2 * sc);
+        g.fillRect(8.5 * sc, 13 * sc, 3.5 * sc, 2 * sc);
+        for (let sx = 5; sx < 9; sx++) g.fillStyle(0x8a6a3a, 0.3), g.fillRect(sx * sc, 13 * sc, 0.5 * sc, 2 * sc);
       },
       // 1: 智爸 - traveling merchant, warm red coat, hat, kind face
       (g: Phaser.GameObjects.Graphics) => {
@@ -685,10 +711,6 @@ export class BootScene extends Phaser.Scene {
     drawNPCs.forEach((fn, i) => {
       const gfx = this.make.graphics({ x: 0, y: 0 });
       fn(gfx);
-      // Feet/shoes
-      gfx.fillStyle(0x3a2010);
-      gfx.fillRect(6 * sc, 12 * sc, 3 * sc, 2 * sc);
-      gfx.fillRect(9 * sc, 12 * sc, 3 * sc, 2 * sc);
       gfx.generateTexture(`npc_${i}`, T, T);
       gfx.destroy();
     });
@@ -869,6 +891,28 @@ export class BootScene extends Phaser.Scene {
     fsG.fillStyle(0xc0d0e0, 0.3);
     for (let s = 0; s < 3; s++) fsG.fillCircle(7 + s * 2, decoS / 2 - 1, 0.8);
     fsG.generateTexture('deco_fish_statue', decoS, decoS); fsG.destroy();
+
+    // ── New Environment Elements ──────────────
+    const ES = TILE_SIZE; // 16px
+
+    // Mushroom (red with white spots)
+    const mG = this.make.graphics({ x: 0, y: 0 });
+    mG.fillStyle(0x000000, 0.12); mG.fillEllipse(ES/2, ES-1, 10, 3);
+    mG.fillStyle(0xf0e8d0); mG.fillRect(ES/2-2, 12, 4, ES-12);
+    mG.fillStyle(0xc04040); mG.fillEllipse(ES/2, 10, 14, 9);
+    mG.fillStyle(0xe06060, 0.4); mG.fillEllipse(ES/2, 9, 11, 6);
+    mG.fillStyle(0xffffff, 0.7); mG.fillCircle(ES/2-3, 8, 2); mG.fillCircle(ES/2+3, 10, 1.5);
+    mG.fillCircle(ES/2, 7, 1.5); mG.fillCircle(ES/2-1, 11, 1);
+    mG.generateTexture('env_mushroom', ES, ES); mG.destroy();
+
+    // Fence post
+    const fG = this.make.graphics({ x: 0, y: 0 });
+    fG.fillStyle(0x000000, 0.1); fG.fillEllipse(8, ES-1, 8, 3);
+    fG.fillStyle(0x6a4a1a); fG.fillRect(5, 4, 6, ES-4);
+    fG.fillStyle(0x8a6a3a, 0.4); fG.fillRect(6, 4, 4, ES-6);
+    fG.fillStyle(0x5a3a10, 0.3); fG.fillRect(9, 6, 1, ES-8);
+    fG.fillStyle(0x6a4a1a); fG.fillTriangle(5, 4, 11, 4, 8, 0);
+    fG.generateTexture('env_fence', ES, ES); fG.destroy();
   }
 
   // ─── UI ICONS ───────────────────────────────
