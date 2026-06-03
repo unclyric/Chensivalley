@@ -1278,6 +1278,9 @@ export class GameScene extends Phaser.Scene {
     // Re-render buildings
     this.renderBuildings();
     useGameStore.getState().changeMap(location);
+    // Teleport player to safe spawn on new map
+    const pos = useGameStore.getState().player.position;
+    this.teleportPlayer(pos.x, pos.y);
   }
 
   private buildWaterColliders(): void {

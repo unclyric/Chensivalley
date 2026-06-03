@@ -537,40 +537,55 @@ export class BootScene extends Phaser.Scene {
         g.fillRect(9.5 * sc, 3.5 * sc, 2 * sc, 0.5 * sc);
         g.fillStyle(0x909090, 0.2); g.fillRect(6 * sc, 6 * sc, 4 * sc, 1);
       },
-      // 4: 佳佳 - painter, red beret, green smock, paint palette
+      // 4: 佳佳 - Cute girl in pink dress, painter
       (g: Phaser.GameObjects.Graphics) => {
         g.fillStyle(0x000000, 0.1); g.fillEllipse(8 * sc, 15 * sc + 1, 8 * sc, 3);
-        g.fillStyle(0x4a7a4a); g.fillRect(4 * sc, 6 * sc, 8 * sc, 6 * sc);
-        g.fillStyle(0x5a9a5a, 0.5); g.fillRect(5 * sc, 6 * sc, 6 * sc, 3 * sc);
-        g.fillStyle(0xe8a0bf, 0.5); g.fillRect(8 * sc, 8 * sc, 2, 2);
-        g.fillStyle(0xf4d03f, 0.5); g.fillRect(10 * sc, 9 * sc, 1.5, 1.5);
-        g.fillStyle(0x3060c0, 0.4); g.fillRect(5 * sc, 10 * sc, 1.5, 1.5);
+        // Pink dress with ruffles
+        g.fillStyle(0xe890a0); g.fillRect(3 * sc, 7 * sc, 10 * sc, 6 * sc);
+        g.fillStyle(0xf0a8b8, 0.5); g.fillRect(4 * sc, 7 * sc, 8 * sc, 3 * sc);
+        g.fillStyle(0xf0c0c8, 0.3); g.fillRect(5 * sc, 7 * sc, 6 * sc, 2 * sc);
+        // Dress waist ribbon
+        g.fillStyle(0xf8f0f0); g.fillRect(4 * sc, 10 * sc, 8 * sc, 1.5 * sc);
+        g.fillStyle(0xffffff, 0.4); g.fillRect(5 * sc, 10 * sc, 6 * sc, 0.5 * sc);
+        // Skirt lace hem
+        g.fillStyle(0xf0c0c8, 0.5);
+        for (let lx = 3; lx < 13; lx += 2) g.fillRect(lx * sc, 12 * sc, 1.5 * sc, 1);
+        // Face (cute round)
         g.fillStyle(0xfce4c8); g.fillRect(5 * sc, 2 * sc, 6 * sc, 5 * sc);
-        g.fillStyle(0xc04040); g.fillCircle(8 * sc, 2 * sc, 6 * sc);
-        g.fillStyle(0xe06060, 0.4); g.fillCircle(7 * sc, 1 * sc, 3 * sc);
-        g.fillStyle(0x5d3a1a); g.fillRect(4 * sc, 3 * sc, 5 * sc, 3 * sc);
-        // Bright artist eyes
-        g.fillStyle(0xffffff); g.fillRect(6.5 * sc, 4 * sc, 2 * sc, 2 * sc);
-        g.fillRect(9.5 * sc, 4 * sc, 2 * sc, 2 * sc);
-        g.fillStyle(0x4a6040); g.fillRect(7 * sc, 4 * sc, 1.5 * sc, 2 * sc);
+        g.fillStyle(0xfff0e0, 0.3); g.fillRect(6 * sc, 3 * sc, 4 * sc, 3 * sc);
+        // Brown twin-tails hair
+        g.fillStyle(0x5d3a1a); g.fillRect(4 * sc, 0, 8 * sc, 3 * sc);
+        g.fillRect(3 * sc, 1 * sc, 3 * sc, 5 * sc);  // left hair
+        g.fillRect(10 * sc, 1 * sc, 3 * sc, 5 * sc); // right hair
+        g.fillStyle(0x7a5030, 0.3); g.fillRect(5 * sc, 0, 6 * sc, 2 * sc);
+        // Pink hair ribbon
+        g.fillStyle(0xf080a0); g.fillRect(4 * sc, 3 * sc, 1.5 * sc, 2 * sc);
+        g.fillRect(10.5 * sc, 3 * sc, 1.5 * sc, 2 * sc);
+        // Big sparkly eyes
+        g.fillStyle(0xffffff); g.fillRect(6 * sc, 3.5 * sc, 2.5 * sc, 2.5 * sc);
+        g.fillRect(9 * sc, 3.5 * sc, 2.5 * sc, 2.5 * sc);
+        g.fillStyle(0x805060); g.fillRect(6.5 * sc, 3.5 * sc, 2 * sc, 2.5 * sc);
+        g.fillRect(9.5 * sc, 3.5 * sc, 2 * sc, 2.5 * sc);
+        g.fillStyle(0x000000); g.fillRect(7 * sc, 4 * sc, 1.5 * sc, 2 * sc);
         g.fillRect(10 * sc, 4 * sc, 1.5 * sc, 2 * sc);
-        g.fillStyle(0x000000); g.fillRect(7.5 * sc, 4.5 * sc, 1 * sc, 1.5 * sc);
-        g.fillRect(10.5 * sc, 4.5 * sc, 1 * sc, 1.5 * sc);
-        g.fillStyle(0xffffff); g.fillRect(7.5 * sc, 4 * sc, 0.5 * sc, 0.5 * sc);
-        g.fillRect(10.5 * sc, 4 * sc, 0.5 * sc, 0.5 * sc);
-        // Thin eyebrows + lashes
-        g.fillStyle(0x5d3a1a); g.fillRect(6.5 * sc, 3.5 * sc, 2 * sc, 0.3 * sc);
-        g.fillRect(9.5 * sc, 3.5 * sc, 2 * sc, 0.3 * sc);
-        g.fillStyle(0x000000); g.fillRect(6.5 * sc, 4 * sc, 2 * sc, 0.2 * sc);
-        g.fillRect(9.5 * sc, 4 * sc, 2 * sc, 0.2 * sc);
-        // Blush + smile
-        g.fillStyle(0xf0a0a0, 0.3); g.fillRect(5.5 * sc, 5.5 * sc, 1.5, 1);
-        g.fillRect(9 * sc, 5.5 * sc, 1.5, 1);
-        g.fillStyle(0xd08080, 0.4); g.fillRect(8 * sc, 6 * sc, 1 * sc, 0.3 * sc);
-        g.fillStyle(0x8a6a4a); g.fillRect(0.5 * sc, 8 * sc, 4 * sc, 3 * sc);
-        g.fillStyle(0xe04040, 0.7); g.fillRect(1 * sc, 8.5 * sc, 1, 1);
-        g.fillStyle(0x4080e0, 0.7); g.fillRect(2.5 * sc, 8.5 * sc, 1, 1);
-        g.fillStyle(0xf0d040, 0.7); g.fillRect(1.5 * sc, 9.5 * sc, 1, 1);
+        g.fillStyle(0xffffff); g.fillRect(7 * sc, 3.5 * sc, 0.6 * sc, 0.6 * sc);
+        g.fillRect(10 * sc, 3.5 * sc, 0.6 * sc, 0.6 * sc);
+        // Eyelashes
+        g.fillStyle(0x000000); g.fillRect(6 * sc, 3.5 * sc, 2.5 * sc, 0.3 * sc);
+        g.fillRect(9 * sc, 3.5 * sc, 2.5 * sc, 0.3 * sc);
+        // Rosy cheeks + smile
+        g.fillStyle(0xf0a0a0, 0.35); g.fillCircle(5 * sc, 5 * sc, 1.5);
+        g.fillCircle(10 * sc, 5 * sc, 1.5);
+        g.fillStyle(0xe08090, 0.4); g.fillRect(7.5 * sc, 5.5 * sc, 1.5 * sc, 0.5 * sc);
+        // Paint palette in hand
+        g.fillStyle(0x8a6a4a); g.fillRect(0.5 * sc, 8 * sc, 3.5 * sc, 3 * sc);
+        g.fillStyle(0xe04040, 0.6); g.fillRect(1 * sc, 8.5 * sc, 1, 1);
+        g.fillStyle(0x4080e0, 0.6); g.fillRect(2.5 * sc, 8.5 * sc, 1, 1);
+        g.fillStyle(0xf0d040, 0.6); g.fillRect(1.5 * sc, 9.5 * sc, 1, 1);
+        g.fillStyle(0xe8a0bf, 0.5); g.fillRect(8 * sc, 10 * sc, 1.5, 1);
+        // Pink shoes
+        g.fillStyle(0xe88090); g.fillRect(5 * sc, 13 * sc, 3 * sc, 2 * sc);
+        g.fillRect(8.5 * sc, 13 * sc, 3 * sc, 2 * sc);
       },
       // 5: 淇爹 - tea house owner, elegant purple qipao, tea cup
       (g: Phaser.GameObjects.Graphics) => {

@@ -47,53 +47,93 @@ export const MainMenu: React.FC = () => {
   };
 
   return (
-    <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-b from-game-water/20 to-game-bg relative overflow-hidden">
-      {/* Animated background bubbles */}
+    <div className="w-full h-full flex flex-col items-center justify-center relative overflow-hidden"
+      style={{ backgroundColor: '#1a0d1e' }}>
+      {/* Pixel art background: grass at bottom, sky gradient */}
+      <div className="absolute bottom-0 left-0 right-0 h-[35%]"
+        style={{ background: 'linear-gradient(to top, #1a6e35, #228b3a 40%, transparent)' }} />
+      <div className="absolute bottom-[35%] left-0 right-0 h-[20%]"
+        style={{ background: 'linear-gradient(to top, #2d9d4e, #52be80 60%, transparent)' }} />
+
+      {/* Pixel water shimmer */}
       {bubbles.map((b, i) => (
-        <div
-          key={i}
-          className="absolute rounded-full bg-game-water/20 animate-float"
-          style={{
-            left: `${b.x}%`,
-            top: `${b.y}%`,
-            width: b.size,
-            height: b.size,
-            animationDelay: `${b.delay}s`,
-          }}
-        />
+        <div key={i} className="absolute rounded-full animate-float"
+          style={{ left: `${b.x}%`, top: `${b.y}%`, width: b.size, height: b.size,
+            animationDelay: `${b.delay}s`, backgroundColor: '#3498db', opacity: 0.15 }} />
       ))}
 
-      {/* Title */}
+      {/* Decorative pixel trees */}
+      <div className="absolute bottom-[30%] left-[8%] text-6xl opacity-40" style={{ filter: 'drop-shadow(0 6px 3px rgba(0,0,0,0.4))' }}>🌲</div>
+      <div className="absolute bottom-[32%] right-[6%] text-7xl opacity-35" style={{ filter: 'drop-shadow(0 6px 3px rgba(0,0,0,0.4))' }}>🌳</div>
+      <div className="absolute bottom-[28%] left-[18%] text-5xl opacity-25">🌿</div>
+      <div className="absolute bottom-[30%] right-[18%] text-4xl opacity-25">🪨</div>
+
+      {/* Title — wooden sign style */}
       <div className="text-center mb-8 animate-slide-in z-10">
-        <div className="text-6xl mb-4">🎣</div>
-        <h1 className="font-pixel text-3xl text-game-text mb-2 tracking-wider"
-          style={{ textShadow: '0 4px 0 #1a0d1e, 0 0 20px #7eb5a6' }}>
-          沉思谷物鱼
-        </h1>
-        <p className="font-pixel text-xs text-game-accent mt-2">
-          Meditation Valley Fish
-        </p>
-        <p className="font-pixel text-[10px] text-game-border mt-4 max-w-md">
+        {/* Pixel fish icon */}
+        <div className="text-7xl mb-3" style={{ filter: 'drop-shadow(0 4px 0 #1a0d1e)' }}>🐟</div>
+
+        {/* Wooden sign background */}
+        <div className="relative inline-block px-10 py-4 border-4 mx-auto"
+          style={{
+            backgroundColor: '#8b6914',
+            borderColor: '#5d4e37',
+            borderStyle: 'solid',
+            boxShadow: '0 6px 0 #3a2a1a, 0 8px 16px rgba(0,0,0,0.5), inset 0 2px 0 #c4a35a',
+          }}>
+          {/* Wood grain lines */}
+          <div className="absolute inset-0 opacity-10" style={{
+            backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 3px, #000 3px, #000 4px)'
+          }} />
+          <h1 className="font-pixel text-4xl tracking-widest relative"
+            style={{ color: '#f0d9b5', textShadow: '3px 3px 0 #3a2a1a, -1px -1px 0 #5d4e37' }}>
+            沉思谷物鱼
+          </h1>
+        </div>
+
+        {/* Subtitle on a hanging board */}
+        <div className="mt-3 inline-block px-4 py-1 border-2"
+          style={{ backgroundColor: '#5d4e37', borderColor: '#3a2a1a', boxShadow: '0 3px 0 #3a2a1a' }}>
+          <p className="font-pixel text-[11px] tracking-wide" style={{ color: '#d4a853' }}>
+            ✦ Meditation Valley Fish ✦
+          </p>
+        </div>
+
+        <p className="font-pixel text-[11px] mt-4 max-w-md mx-auto leading-relaxed"
+          style={{ color: '#7eb5a6', textShadow: '0 2px 0 #1a0d1e' }}>
           继承一座废弃湖畔渔场，通过钓鱼、养殖、探索和沉思，恢复整个大辟谷的生机。
         </p>
       </div>
 
-      {/* Menu Options */}
+      {/* Menu Options — wooden buttons */}
       <div className="flex flex-col gap-3 z-10">
-        <button onClick={handleNewGame} className="pixel-btn accent min-w-[250px] text-sm">
+        <button onClick={handleNewGame}
+          className="font-pixel text-base px-10 py-3 border-3 tracking-wider transition-all hover:scale-105"
+          style={{
+            backgroundColor: '#7eb5a6', color: '#1a0d1e', borderColor: '#5a9a8a',
+            boxShadow: '0 4px 0 #3d7a6a, 0 6px 12px rgba(0,0,0,0.4)',
+          }}>
           🌅 新的旅程
         </button>
 
         {hasExistingSave && (
-          <button onClick={handleLoadGame} className="pixel-btn gold min-w-[250px] text-sm">
+          <button onClick={handleLoadGame}
+            className="font-pixel text-base px-10 py-3 border-3 tracking-wider transition-all hover:scale-105"
+            style={{
+              backgroundColor: '#d4a853', color: '#1a0d1e', borderColor: '#b08020',
+              boxShadow: '0 4px 0 #8a6018, 0 6px 12px rgba(0,0,0,0.4)',
+            }}>
             📂 继续旅程
           </button>
         )}
 
         <button
           onClick={() => setShowInstructions(!showInstructions)}
-          className="pixel-btn min-w-[250px] text-sm"
-        >
+          className="font-pixel text-sm px-8 py-2 border-2 tracking-wider transition-all hover:scale-105"
+          style={{
+            backgroundColor: '#3d2b3e', color: '#e8d5c4', borderColor: '#5a3d5c',
+            boxShadow: '0 3px 0 #2d1b2e, 0 4px 8px rgba(0,0,0,0.3)',
+          }}>
           📖 游戏说明
         </button>
       </div>

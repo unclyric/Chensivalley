@@ -295,9 +295,19 @@ export const useGameStore = create<GameStateStore>((set, get) => ({
     player: { ...state.player, position: { x, y } },
   })),
 
-  changeMap: (map: FishingLocation) => set(state => ({
-    player: { ...state.player, currentMap: map },
-  })),
+  changeMap: (map: FishingLocation) => {
+    // Default safe spawn positions per map
+    const spawns: Record<string, { x: number; y: number }> = {
+      meditation_lake: { x: 30, y: 12 },
+      nanming_river: { x: 50, y: 30 },
+      west_lake: { x: 55, y: 30 },
+      yangye_marsh: { x: 30, y: 5 },
+    };
+    const pos = spawns[map] || { x: 30, y: 12 };
+    set(state => ({
+      player: { ...state.player, currentMap: map, position: pos },
+    }));
+  },
 
   addGold: (amount: number) => {
     set(state => ({
