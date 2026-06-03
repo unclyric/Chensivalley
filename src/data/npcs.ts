@@ -343,11 +343,11 @@ export const ALL_NPCS: NPCData[] = [
   {
     id: 'ichthyologist',
     name: '吉格斯',
-    title: '鱼类学家',
+    title: '炸弹学家',
     birthday: { season: Season.Spring, day: 22 },
-    lovedGifts: ['research_notes', 'rare_fish_sample', 'fossil_fish'],
-    likedGifts: ['new_fish_species', 'water_sample', 'scientific_journal'],
-    hatedGifts: ['fish_bone', 'dried_fish'],
+    lovedGifts: ['gunpowder', 'detonator', 'firework'],
+    likedGifts: ['bomb_casing', 'fuse', 'metal_scrap'],
+    hatedGifts: ['water_bucket', 'wet_blanket'],
     schedule: {
       spring_22: {
         7: { location: FishingLocation.MeditationLake, position: { x: 12, y: 15 }, activity: '采集样本' },
@@ -359,10 +359,10 @@ export const ALL_NPCS: NPCData[] = [
     },
     dialogues: {
       default: [
-        '你知道吗？大辟谷的生态系统独一无二，这里的鱼类多样性令人惊叹。',
-        '我研究鱼类已经二十年了，但每次发现新物种还是让我激动不已。',
-        '如果你钓到了什么不寻常的鱼，请一定告诉我！',
-        '科学就是不断发现的过程。每一片鳞片都在讲述一个故事。',
+        '你知道吗？大辟谷的生态系统独一无二，这里的爆破是一门精准控制的艺术。',
+        '我研究炸药已经二十年了，但每次看到完美的爆破还是让我激动不已。',
+        '如果你发现了什么不寻常的矿物，请一定告诉我！',
+        '科学就是不断发现的过程。每一片引线都在倒计时一个惊喜。',
       ],
       random: [
         '今天采集到的样本显示水质非常好。鱼在这样的环境里心情一定也不错。对，我认为鱼是有心情的，虽然学术界不认同。',
@@ -376,20 +376,20 @@ export const ALL_NPCS: NPCData[] = [
         '我办公室里的鱼缸越来越多了。同事说我的办公室像个小型水族馆。我觉得这是夸奖。',
         '你知道为什么鱼鳞会反光吗？因为鳞片表面的微观结构会产生光干涉。随便讲讲，不用太认真听。',
       ],
-      '0': ['啊，新来的？你对鱼类研究感兴趣吗？我是鳞教授。别被"教授"这个头衔吓到，我只是个喜欢鱼的普通人。'],
-      '2': ['你已经发现了不少鱼种。有兴趣帮我完成鱼类图鉴吗？你会得到丰厚的报酬——虽然"丰厚"指的是我的感激之情。'],
-      '4': ['你的观察记录帮了大忙！我们一起发现了三种新品种。我已经在论文的致谢部分写了你的名字。'],
-      '6': ['你的鱼类图鉴越来越完整了。也许有一天，我们能完成大辟谷的完整记录。那将是一份珍贵的科学遗产。'],
-      '8': ['只有极少数人真正理解鱼类的美。你显然是其中之一。和你交流是我的荣幸。'],
-      '10': ['这本鱼类图鉴——是我们共同的心血。它将被珍藏在大辟谷的图书馆里。我敢说，一百年后还会有人参考它。'],
+      '0': ['啊，新来的？你对爆破感兴趣吗？我是吉格斯。别被"教授"这个头衔吓到，我只是个喜欢鱼的普通人。'],
+      '2': ['你已经发现了不少鱼种。有兴趣帮我测试新的爆破装置吗？你会得到丰厚的报酬——虽然"丰厚"指的是我的感激之情。'],
+      '4': ['你的观察记录帮了大忙！我们改良了炸药配方。我已经在论文的致谢部分写了你的名字。'],
+      '6': ['你的爆破技术越来越精进了。也许有一天，我们能完成大辟谷最棒的爆破秀。那将是一份珍贵的科学遗产。'],
+      '8': ['只有极少数人真正理解爆破的美。你显然是其中之一。和你交流是我的荣幸。'],
+      '10': ['这本特制炸药包——是我最新的杰作。它将被珍藏在大辟谷的图书馆里。我敢说，一百年后还会有人参考它。'],
       quest: [
-        '我需要你帮忙收集一些稀有鱼类的样本，用于我的研究。放心，采样不会伤害鱼。',
+        '我需要你帮忙收集一些特殊矿物来做爆破实验，用于我的研究。放心，采样不会伤害鱼。',
         '你能帮我观察一下西湖的鱼群行为吗？我最近在研究它们的社交模式。',
       ],
-      gift: ['给我的？希望能对我研究有帮助。我正好缺样本呢。'],
-      giftLoved: ['太棒了！这正好是我研究课题需要的关键样本！我要给你记一大功。你会被写进我的论文致谢里。'],
+      gift: ['给我的？希望能成为我爆破装置的零件。我正好缺样本呢。'],
+      giftLoved: ['太棒了！这正好是我爆破实验需要的关键材料！我要给你记一大功。你会被写进我的论文致谢里。'],
       giftLiked: ['不错，这个对我的研究有些帮助。谢谢你。我会妥善保管的。'],
-      giftHated: ['呃……科学研究不需要这个。不过还是谢谢你的好意。科学研究需要的是准确和严谨，不是这个。'],
+      giftHated: ['呃……爆破不需要这个。不过还是谢谢你的好意。科学研究需要的是准确和严谨，不是这个。'],
       // ── 时间语境 ──
       morning: [
         '早起的鸟儿有虫吃，早起的科学家有鱼看。清晨是观察鱼类活动的最佳时间。',
@@ -412,7 +412,7 @@ export const ALL_NPCS: NPCData[] = [
       winter: ['冬天鱼类新陈代谢减慢，但并非完全休眠。我在研究它们冬天的活动规律。'],
     },
     portrait: 'ichthyologist_portrait',
-    description: '一位痴迷于鱼类研究的科学家，常年在大辟谷各地采集样本。可以帮她完成鱼类图鉴。',
+    description: '一位痴迷于爆破艺术的炸弹学家，在大辟谷各地研究爆破技术。可以在她那里购买各种炸药道具。',
     spriteIndex: 2,
   },
 
@@ -780,11 +780,11 @@ export const ALL_NPCS: NPCData[] = [
   {
     id: 'botanist',
     name: '维克兹',
-    title: '植物学家',
+    title: '化学家',
     birthday: { season: Season.Spring, day: 15 },
-    lovedGifts: ['rare_herb', 'orchid', 'seed_collection'],
-    likedGifts: ['flower', 'mushroom', 'plant_book'],
-    hatedGifts: ['weed_killer', 'plastic_flower'],
+    lovedGifts: ['alchemy_flask', 'crystal_vial', 'rare_reagent'],
+    likedGifts: ['chemical_salt', 'glass_tube', 'formula_book'],
+    hatedGifts: ['contaminated_sample', 'broken_beaker'],
     schedule: {
       spring_15: {
         7: { location: FishingLocation.NanmingRiver, position: { x: 10, y: 8 }, activity: '观察水草' },
@@ -841,7 +841,7 @@ export const ALL_NPCS: NPCData[] = [
       winter: ['冬天大部分水草都休眠了。但有一些耐寒品种还在生长，比如某些水毛茛。'],
     },
     portrait: 'botanist_portrait',
-    description: '一位专注水生植物的研究者。经常出没在沼泽和河边，可以提供特殊鱼饵配方。',
+    description: '一位专注化学研究的科学家，在大辟谷各地采集化学原料。可以购买各种化学药剂和实验道具。',
     spriteIndex: 8,
   },
 
@@ -910,7 +910,7 @@ export const ALL_NPCS: NPCData[] = [
       winter: ['冬天让一切慢了。冷的时候，心更容易静。所以修行人喜欢冬天。'],
     },
     portrait: 'mysterious_hermit_portrait',
-    description: '一个长年隐居在羊叶泽的神秘人物。传说他能与湖对话，知道大辟谷最古老的秘密。',
+    description: '一位身着蓝袍、白发白须的神秘老者。隐居羊叶泽多年，传说掌握着大辟谷最古老的秘密。',
     spriteIndex: 9,
   },
 ];

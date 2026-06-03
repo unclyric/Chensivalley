@@ -237,6 +237,34 @@ export const ALL_SHOP_ITEMS: ShopItem[] = [
     stock: 99,
     restockInterval: 1,
   },
+  // ─── 炸弹学家道具 ──────────────────────────
+  {
+    id: 'special_firecracker',
+    name: '小鞭炮',
+    description: '吉格斯特制小鞭炮，可以吓跑附近的鸟，增加稀有鱼出现的概率。',
+    category: ItemCategory.Special,
+    price: 50,
+    stock: 20,
+    restockInterval: 1,
+  },
+  {
+    id: 'special_smoke_bomb',
+    name: '烟雾弹',
+    description: '投掷后产生烟雾，可以快速跳过2小时游戏时间。',
+    category: ItemCategory.Special,
+    price: 120,
+    stock: 10,
+    restockInterval: 3,
+  },
+  {
+    id: 'special_dynamite',
+    name: '小炸药',
+    description: '吉格斯的小型炸药包，炸开水面可以直接获得3条随机鱼。（后期使用）',
+    category: ItemCategory.Special,
+    price: 300,
+    stock: 5,
+    restockInterval: 7,
+  },
 ];
 
 // ─── Item definitions for inventory ──────────
@@ -291,4 +319,7 @@ export const ITEM_DEFINITIONS: Record<string, ItemDefinition> = {
   weather_charm: { id: 'weather_charm', name: '天气符', description: '改变天气', category: ItemCategory.Special, maxStack: 3, sellPrice: 100, icon: '🌤️' },
   time_charm: { id: 'time_charm', name: '时光符', description: '快进时间', category: ItemCategory.Special, maxStack: 5, sellPrice: 40, icon: '⏰' },
   special_ghost_painting: { id: 'special_ghost_painting', name: '鬼画符', description: '没用处，纯卖', category: ItemCategory.Special, maxStack: 99, sellPrice: 5, icon: '👻' },
+  special_firecracker: { id: 'special_firecracker', name: '小鞭炮', description: '吓跑鸟类，增加稀有鱼概率', category: ItemCategory.Special, maxStack: 20, sellPrice: 10, icon: '🧨' },
+  special_smoke_bomb: { id: 'special_smoke_bomb', name: '烟雾弹', description: '快进2小时', category: ItemCategory.Special, maxStack: 10, sellPrice: 24, icon: '💨' },
+  special_dynamite: { id: 'special_dynamite', name: '小炸药', description: '炸鱼用（后期）', category: ItemCategory.Special, maxStack: 5, sellPrice: 60, icon: '💣' },
 };

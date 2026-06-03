@@ -277,9 +277,17 @@ export class GameScene extends Phaser.Scene {
     this.placeFlowers(flowers);
     this.placeRocks(rocks);
     this.placeLilies(lilies);
-    // Mushrooms near trees, fences along paths
+    // Fences along water edge (barrier) + mushrooms
     const mushrooms: {x:number,y:number}[] = [];
     const fences: {x:number,y:number}[] = [];
+    for (let x = 2; x < MAP_WIDTH - 2; x++) {
+      for (let y = WATER_LEVEL - 1; y <= WATER_LEVEL; y++) {
+        // Place fence on walkable tile adjacent to water
+        if (this.collisionLayer[y]?.[x] === false && this.collisionLayer[y+1]?.[x] === true) {
+          if (x % 4 === 0) fences.push({ x, y });
+        }
+      }
+    }
     for (let x = 1; x < MAP_WIDTH - 1; x++) {
       for (let y = 1; y < WATER_LEVEL - 1; y++) {
         if (this.collisionLayer[y]?.[x] === false && Math.random() < 0.015) mushrooms.push({x,y});
