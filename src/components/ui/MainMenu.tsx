@@ -81,12 +81,18 @@ export const MainMenu: React.FC = () => {
         ))}
       </div>
 
-      {/* Seamless grass ground */}
-      <div className="absolute bottom-0 left-0 right-0 h-[45%]"
-        style={{ background: 'linear-gradient(to top, #1a5a1a 0%, #228b3a 20%, #2d7a2d 40%, #3d8a3d 60%, #4da64d 80%, transparent 100%)' }} />
-      {/* Grass blade texture overlay */}
-      <div className="absolute bottom-0 left-0 right-0 h-[45%] opacity-10"
+      {/* Sky gradient (top to middle) */}
+      <div className="absolute top-0 left-0 right-0 h-[60%]"
+        style={{ background: 'linear-gradient(to bottom, #1a1a3a 0%, #2a2a5a 20%, #3a4a6a 45%, #5a7a8a 70%, #7a9a9a 90%, transparent 100%)' }} />
+      {/* Smooth grass-to-sky transition */}
+      <div className="absolute bottom-0 left-0 right-0 h-[55%]"
+        style={{ background: 'linear-gradient(to top, #1a5a1a 0%, #228b3a 15%, #2d7a2d 30%, #3d8a3d 45%, #4da64d 55%, #5a8a6a 65%, #6a8a7a 75%, transparent 100%)' }} />
+      {/* Grass texture (subtle) */}
+      <div className="absolute bottom-0 left-0 right-0 h-[55%] opacity-8"
         style={{ backgroundImage: 'repeating-linear-gradient(85deg, transparent, transparent 4px, #fff 4px, #fff 5px, transparent 5px, transparent 9px), repeating-linear-gradient(95deg, transparent, transparent 6px, #fff 6px, #fff 7px, transparent 7px, transparent 11px)' }} />
+      {/* Horizon glow line */}
+      <div className="absolute bottom-[55%] left-0 right-0 h-1 opacity-15"
+        style={{ background: 'linear-gradient(to right, transparent 20%, #a0d0a0 40%, #c0e0c0 50%, #a0d0a0 60%, transparent 80%)' }} />
 
       {/* Pixel water shimmer */}
       {bubbles.map((b, i) => (
