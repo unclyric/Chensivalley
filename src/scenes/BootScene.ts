@@ -480,45 +480,66 @@ export class BootScene extends Phaser.Scene {
         g.fillRect(8.5 * sc, 12 * sc, 3 * sc, 3 * sc);
         g.fillStyle(0x151515, 0.35); g.fillRect(5.5 * sc, 12 * sc, 3 * sc, 1);
       },
-      // 2: 吉格斯 - Bomb expert, rugged coat, goggles, dynamite belt
+      // 2: 吉格斯 - Ziggs-style yordle bomber, orange fur, big ears, goggles, manic grin
       (g: Phaser.GameObjects.Graphics) => {
-        g.fillStyle(0x000000, 0.1); g.fillEllipse(8 * sc, 15 * sc + 1, 8 * sc, 3);
-        // Brown leather coat
-        g.fillStyle(0x5a4030); g.fillRect(3 * sc, 7 * sc, 10 * sc, 6 * sc);
-        g.fillStyle(0x7a5a40, 0.5); g.fillRect(4 * sc, 7 * sc, 8 * sc, 3 * sc);
-        g.fillStyle(0x3a2010, 0.3); g.fillRect(6 * sc, 8 * sc, 0.8, 5 * sc);
-        g.fillRect(9 * sc, 8 * sc, 0.8, 5 * sc);
-        // Dynamite belt
-        g.fillStyle(0x6a3010); g.fillRect(4 * sc, 10 * sc, 8 * sc, 1.5 * sc);
+        g.fillStyle(0x000000, 0.1); g.fillEllipse(8 * sc, 15 * sc + 1, 7 * sc, 3);
+        // Short yordle body (smaller proportions)
+        // Orange fur body
+        g.fillStyle(0xd08030); g.fillRect(3 * sc, 7 * sc, 10 * sc, 6 * sc);
+        g.fillStyle(0xe8a040, 0.5); g.fillRect(4 * sc, 7 * sc, 8 * sc, 3 * sc);
+        g.fillStyle(0xb06020, 0.3); g.fillRect(5 * sc, 8 * sc, 0.8, 5 * sc);
+        g.fillRect(10 * sc, 8 * sc, 0.8, 5 * sc);
+        // Brown belt with bombs
+        g.fillStyle(0x5a3020); g.fillRect(3 * sc, 10 * sc, 10 * sc, 1.5 * sc);
+        g.fillStyle(0xd4a853, 0.5); g.fillRect(7 * sc, 10 * sc, 2 * sc, 1.5 * sc); // buckle
         for (let bx = 4; bx < 12; bx += 2) {
           g.fillStyle(0xc04030); g.fillRect(bx * sc, 9 * sc, 1.5 * sc, 2.5 * sc);
-          g.fillStyle(0xf0d040, 0.6); g.fillRect(bx * sc + 0.3 * sc, 8.5 * sc, 0.5 * sc, 0.8 * sc);
+          g.fillStyle(0xf0d040, 0.6); g.fillRect(bx * sc + 0.3 * sc, 8.5 * sc, 0.5 * sc, 0.6 * sc);
         }
-        // Face + singed messy hair
-        g.fillStyle(0xfce4c8); g.fillRect(5 * sc, 2 * sc, 6 * sc, 5 * sc);
-        g.fillStyle(0x4a2a1a); g.fillRect(4 * sc, 0, 8 * sc, 3 * sc);
-        g.fillStyle(0x6a3a2a, 0.3); g.fillRect(3 * sc, 1 * sc, 2 * sc, 4 * sc);
-        g.fillRect(11 * sc, 1 * sc, 2 * sc, 4 * sc);
-        // Singed tips
-        g.fillStyle(0x8a6a2a, 0.3); g.fillRect(3 * sc, 3 * sc, 2 * sc, 1);
-        g.fillRect(11 * sc, 3 * sc, 2 * sc, 1);
+        // Big round face (orange/yellow fur)
+        g.fillStyle(0xf0b040); g.fillRect(4 * sc, 2 * sc, 8 * sc, 6 * sc);
+        g.fillStyle(0xf8c860, 0.4); g.fillRect(5 * sc, 3 * sc, 6 * sc, 3 * sc);
+        g.fillStyle(0xe8a030, 0.3); g.fillRect(4 * sc, 5 * sc, 8 * sc, 3 * sc);
+        // Huge pointy ears (Ziggs signature)
+        g.fillStyle(0xf0b040); g.fillTriangle(3 * sc, 3 * sc, 0, -1 * sc, 6 * sc, 0);
+        g.fillStyle(0xf8c860, 0.4); g.fillTriangle(3 * sc, 2 * sc, 1 * sc, 0, 5 * sc, 0);
+        g.fillStyle(0xf0b040); g.fillTriangle(13 * sc, 3 * sc, 10 * sc, 0, 16 * sc, -1 * sc);
+        g.fillStyle(0xf8c860, 0.4); g.fillTriangle(13 * sc, 2 * sc, 11 * sc, 0, 15 * sc, 0);
+        // Inner ear pink
+        g.fillStyle(0xf0a0a0, 0.5); g.fillTriangle(4 * sc, 2 * sc, 2 * sc, 0, 5 * sc, 0);
+        g.fillStyle(0xf0a0a0, 0.5); g.fillTriangle(12 * sc, 2 * sc, 11 * sc, 0, 14 * sc, 0);
         // Goggles on forehead
-        g.fillStyle(0x555555); g.fillRect(5 * sc, 1 * sc, 6 * sc, 2 * sc);
-        g.fillStyle(0x85c1e9, 0.4); g.fillCircle(6.5 * sc, 2 * sc, 1.5 * sc);
-        g.fillCircle(9.5 * sc, 2 * sc, 1.5 * sc);
-        g.fillStyle(0x777777); g.fillRect(7.5 * sc, 1.5 * sc, 1 * sc, 0.5 * sc);
-        // Eyes
-        g.fillStyle(0xffffff); g.fillRect(6 * sc, 4 * sc, 2.5 * sc, 2 * sc);
-        g.fillRect(9.5 * sc, 4 * sc, 2.5 * sc, 2 * sc);
-        g.fillStyle(0x3a2010); g.fillRect(6.5 * sc, 4 * sc, 1.5 * sc, 2 * sc);
-        g.fillRect(10 * sc, 4 * sc, 1.5 * sc, 2 * sc);
-        g.fillStyle(0x000000); g.fillRect(7 * sc, 4.5 * sc, 1 * sc, 1.5 * sc);
-        g.fillRect(10.5 * sc, 4.5 * sc, 1 * sc, 1.5 * sc);
-        g.fillStyle(0xffffff); g.fillRect(7 * sc, 4 * sc, 0.5 * sc, 0.5 * sc);
-        g.fillRect(10.5 * sc, 4 * sc, 0.5 * sc, 0.5 * sc);
-        // Leather boots
-        g.fillStyle(0x4a3020); g.fillRect(5.5 * sc, 13 * sc, 3 * sc, 2 * sc);
+        g.fillStyle(0x444444); g.fillCircle(6.5 * sc, 2 * sc, 2.5 * sc);
+        g.fillCircle(9.5 * sc, 2 * sc, 2.5 * sc);
+        g.fillStyle(0x666666); g.fillRect(7.5 * sc, 2 * sc, 2 * sc, 0.5 * sc);
+        g.fillStyle(0x85c1e9, 0.35); g.fillCircle(6.5 * sc, 2 * sc, 1.8 * sc);
+        g.fillCircle(9.5 * sc, 2 * sc, 1.8 * sc);
+        g.fillStyle(0xffffff, 0.2); g.fillCircle(6 * sc, 1.5 * sc, 0.8);
+        g.fillCircle(9 * sc, 1.5 * sc, 0.8);
+        // Crazy eyes (wide, energetic)
+        g.fillStyle(0xffffff); g.fillRect(5.5 * sc, 4 * sc, 2.5 * sc, 2.5 * sc);
+        g.fillRect(8.5 * sc, 4 * sc, 2.5 * sc, 2.5 * sc);
+        g.fillStyle(0xf0d040); g.fillRect(6 * sc, 4 * sc, 1.8 * sc, 2.5 * sc); // yellow iris
+        g.fillRect(9 * sc, 4 * sc, 1.8 * sc, 2.5 * sc);
+        g.fillStyle(0x000000); g.fillRect(6.5 * sc, 4.5 * sc, 1.2 * sc, 2 * sc);
+        g.fillRect(9.5 * sc, 4.5 * sc, 1.2 * sc, 2 * sc);
+        g.fillStyle(0xffffff); g.fillRect(6.5 * sc, 4 * sc, 0.6 * sc, 0.6 * sc);
+        g.fillRect(9.5 * sc, 4 * sc, 0.6 * sc, 0.6 * sc);
+        // Manic grin with teeth
+        g.fillStyle(0x000000); g.fillRect(6 * sc, 6.5 * sc, 4 * sc, 1.5 * sc);
+        g.fillStyle(0xffffff); g.fillRect(6.2 * sc, 6.5 * sc, 3.6 * sc, 0.6 * sc); // teeth
+        g.fillStyle(0x000000); g.fillRect(7 * sc, 7 * sc, 0.5 * sc, 1); // tooth gap
+        g.fillRect(8.5 * sc, 7 * sc, 0.5 * sc, 1);
+        // Big round bomb held in hand
+        g.fillStyle(0x3a3a3a); g.fillCircle(1.5 * sc, 9 * sc, 3.5 * sc);
+        g.fillStyle(0x555555, 0.4); g.fillCircle(1.3 * sc, 8.5 * sc, 2.5 * sc);
+        g.fillStyle(0xf0d040, 0.5); g.fillRect(0.8 * sc, 7 * sc, 1.5 * sc, 2 * sc); // fuse
+        g.fillStyle(0xf08030, 0.6); g.fillCircle(1.5 * sc, 6.5 * sc, 1.2 * sc); // spark
+        // Short legs with dark boots
+        g.fillStyle(0x3a3a3a); g.fillRect(5 * sc, 13 * sc, 3 * sc, 2 * sc);
         g.fillRect(8.5 * sc, 13 * sc, 3 * sc, 2 * sc);
+        g.fillStyle(0x555555, 0.3); g.fillRect(5.3 * sc, 13 * sc, 2.5 * sc, 1);
+        g.fillRect(8.8 * sc, 13 * sc, 2.5 * sc, 1);
       },
       // 3: 老聂 - lighthouse keeper, navy uniform, cap, weather-beaten
       (g: Phaser.GameObjects.Graphics) => {
