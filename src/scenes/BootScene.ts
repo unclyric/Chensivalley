@@ -680,104 +680,80 @@ export class BootScene extends Phaser.Scene {
         g.fillStyle(0xe8e8e8); g.fillRect(6 * sc, 13 * sc, 2.5 * sc, 2 * sc);
         g.fillRect(9 * sc, 13 * sc, 2.5 * sc, 2 * sc);
       },
-      // 7: 格雷福斯 - old sailor, striped shirt, white beard, pipe
+      // 7: 格雷福斯 - LoL Graves: brown trench coat, bare chest, cigar, giant shotgun
       (g: Phaser.GameObjects.Graphics) => {
-        g.fillStyle(0x000000, 0.1); g.fillEllipse(8 * sc, 15 * sc + 1, 9 * sc, 3);
-        g.fillStyle(0x2a4a7a); g.fillRect(4 * sc, 6 * sc, 8 * sc, 6 * sc);
-        g.fillStyle(0xf0f0f0); for (let py = 7; py < 11; py += 2) g.fillRect(4 * sc, py * sc, 8 * sc, 1);
-        g.fillStyle(0x6a3010, 0.7); g.fillRect(6 * sc, 6 * sc, 1, 6 * sc);
-        g.fillRect(9 * sc, 6 * sc, 1, 6 * sc);
-        g.fillStyle(0xe8c39e); g.fillRect(5 * sc, 2 * sc, 6 * sc, 5 * sc);
-        g.fillStyle(0xd0a070, 0.3); g.fillRect(5 * sc, 4 * sc, 6 * sc, 3 * sc);
-        g.fillStyle(0xe8e8e8); g.fillRect(4 * sc, 1 * sc, 8 * sc, 2 * sc);
-        g.fillStyle(0xf0f0f0); g.fillRect(5 * sc, 6 * sc, 6 * sc, 3 * sc);
-        g.fillStyle(0xffffff, 0.5); g.fillRect(6 * sc, 6 * sc, 4 * sc, 1);
-        g.fillStyle(0x6a3a1a); g.fillRect(11 * sc, 7 * sc, 3 * sc, 1);
-        g.fillStyle(0x8a5a3a, 0.4); g.fillRect(12 * sc, 7 * sc, 2 * sc, 1);
-        // Sea-blue eyes
-        g.fillStyle(0xffffff); g.fillRect(6.5 * sc, 4 * sc, 2 * sc, 2 * sc);
-        g.fillRect(9.5 * sc, 4 * sc, 2 * sc, 2 * sc);
-        g.fillStyle(0x3068b0); g.fillRect(7 * sc, 4 * sc, 1.5 * sc, 2 * sc);
-        g.fillRect(10 * sc, 4 * sc, 1.5 * sc, 2 * sc);
-        g.fillStyle(0x000000); g.fillRect(7.5 * sc, 4.5 * sc, 1 * sc, 1.5 * sc);
-        g.fillRect(10.5 * sc, 4.5 * sc, 1 * sc, 1.5 * sc);
-        g.fillStyle(0xffffff); g.fillRect(7.5 * sc, 4 * sc, 0.5 * sc, 0.5 * sc);
-        g.fillRect(10.5 * sc, 4 * sc, 0.5 * sc, 0.5 * sc);
-        // Bushy white brows
-        g.fillStyle(0xd0d0d0); g.fillRect(6.5 * sc, 3.5 * sc, 2 * sc, 0.5 * sc);
-        g.fillRect(9.5 * sc, 3.5 * sc, 2 * sc, 0.5 * sc);
-        // Wrinkles
-        g.fillStyle(0xc0a080, 0.2); g.fillRect(6 * sc, 5.5 * sc, 1, 0.5 * sc);
-        g.fillRect(9 * sc, 5.5 * sc, 1, 0.5 * sc);
+        g.fillStyle(0x000000, 0.12); g.fillEllipse(8 * sc, 15 * sc + 1, 9 * sc, 3);
+        g.fillStyle(0x5a3a2a); g.fillRect(3 * sc, 6 * sc, 10 * sc, 7 * sc);
+        g.fillStyle(0x7a5040, 0.4); g.fillRect(4 * sc, 6 * sc, 8 * sc, 3 * sc);
+        g.fillStyle(0x3a1a10, 0.3); g.fillRect(6 * sc, 7 * sc, 0.8, 6 * sc); g.fillRect(9 * sc, 7 * sc, 0.8, 6 * sc);
+        g.fillStyle(0xe8c39e); g.fillRect(5 * sc, 6 * sc, 6 * sc, 3 * sc);
+        g.fillStyle(0xf0d0a0, 0.4); g.fillRect(6 * sc, 6 * sc, 4 * sc, 2 * sc);
+        g.fillStyle(0xe0b080); g.fillRect(5 * sc, 2 * sc, 6 * sc, 5 * sc);
+        g.fillStyle(0xd0a070, 0.4); g.fillRect(5 * sc, 4 * sc, 6 * sc, 3 * sc);
+        g.fillStyle(0x808080, 0.15); g.fillRect(6 * sc, 5.5 * sc, 4 * sc, 1);
+        g.fillStyle(0x1a1a1a); g.fillRect(4 * sc, 0, 8 * sc, 3 * sc);
+        g.fillStyle(0x2a2a2a, 0.3); g.fillRect(5 * sc, 1 * sc, 6 * sc, 1.5 * sc);
+        g.fillStyle(0xffffff); g.fillRect(6 * sc, 3.5 * sc, 2.5 * sc, 2 * sc);
+        g.fillRect(9 * sc, 3.5 * sc, 2.5 * sc, 2 * sc);
+        g.fillStyle(0x4a3020); g.fillRect(6.5 * sc, 3.5 * sc, 1.5 * sc, 2 * sc);
+        g.fillRect(9.5 * sc, 3.5 * sc, 1.5 * sc, 2 * sc);
+        g.fillStyle(0x000000); g.fillRect(7 * sc, 4 * sc, 1 * sc, 1.5 * sc);
+        g.fillRect(10 * sc, 4 * sc, 1 * sc, 1.5 * sc);
+        g.fillStyle(0x1a1a1a); g.fillRect(6 * sc, 3 * sc, 2.5 * sc, 0.5 * sc);
+        g.fillRect(9 * sc, 3 * sc, 2.5 * sc, 0.5 * sc);
+        g.fillStyle(0x8a6a4a); g.fillRect(11 * sc, 5.5 * sc, 3 * sc, 0.8 * sc);
+        g.fillStyle(0xf08030, 0.5); g.fillCircle(13.5 * sc, 5.5 * sc, 0.8);
+        g.fillStyle(0x4a4a4a); g.fillRect(12 * sc, 2 * sc, 3 * sc, 13 * sc);
+        g.fillStyle(0x6a6a6a, 0.3); g.fillRect(12.5 * sc, 2 * sc, 2 * sc, 11 * sc);
+        g.fillStyle(0x3a3a3a); g.fillRect(12 * sc, 1 * sc, 3 * sc, 2 * sc);
+        g.fillStyle(0x3a2010); g.fillRect(5 * sc, 13 * sc, 3.5 * sc, 2 * sc);
+        g.fillRect(8.5 * sc, 13 * sc, 3.5 * sc, 2 * sc);
       },
-      // 8: 维克兹 - Chemist, white lab coat, round glasses, colorful potion
+            // 8: 维克兹 - LoL Vel'Koz: void creature, giant central eye, tentacles
       (g: Phaser.GameObjects.Graphics) => {
-        g.fillStyle(0x000000, 0.1); g.fillEllipse(8 * sc, 15 * sc + 1, 8 * sc, 3);
-        // White lab coat
-        g.fillStyle(0xe0e0e0); g.fillRect(4 * sc, 6 * sc, 8 * sc, 6 * sc);
-        g.fillStyle(0xf8f8f8, 0.4); g.fillRect(5 * sc, 6 * sc, 6 * sc, 3 * sc);
-        // Pocket with pens
-        g.fillStyle(0xcccccc, 0.4); g.fillRect(9 * sc, 7 * sc, 2.5 * sc, 2 * sc);
-        g.fillStyle(0x3060c0); g.fillRect(10 * sc, 7 * sc, 0.4 * sc, 2 * sc);
-        g.fillStyle(0xc03030); g.fillRect(10.8 * sc, 7 * sc, 0.4 * sc, 1.8 * sc);
-        // Chemical stains on coat
-        g.fillStyle(0x40c040, 0.2); g.fillRect(6 * sc, 9 * sc, 1.5, 1);
-        g.fillStyle(0xc0a020, 0.2); g.fillRect(9 * sc, 10 * sc, 1.5, 1);
-        // Face + tidy hair
-        g.fillStyle(0xfce4c8); g.fillRect(5 * sc, 2 * sc, 6 * sc, 5 * sc);
-        g.fillStyle(0x4a3020); g.fillRect(4 * sc, 1 * sc, 8 * sc, 2 * sc);
-        g.fillStyle(0x6a4a30, 0.3); g.fillRect(5 * sc, 1 * sc, 6 * sc, 1);
-        // Round glasses with eyes
-        g.fillStyle(0x444444); g.fillCircle(7.5 * sc, 4.5 * sc, 2 * sc);
-        g.fillCircle(11 * sc, 4.5 * sc, 2 * sc);
-        g.fillStyle(0x666666); g.fillRect(8.5 * sc, 4 * sc, 1 * sc, 1);
-        g.fillStyle(0xffffff); g.fillCircle(7.5 * sc, 4.5 * sc, 1.7 * sc);
-        g.fillCircle(11 * sc, 4.5 * sc, 1.7 * sc);
-        g.fillStyle(0x3a5040); g.fillCircle(7.5 * sc, 4.5 * sc, 1.2 * sc);
-        g.fillCircle(11 * sc, 4.5 * sc, 1.2 * sc);
-        g.fillStyle(0x000000); g.fillCircle(7.8 * sc, 4.8 * sc, 0.8 * sc);
-        g.fillCircle(11.3 * sc, 4.8 * sc, 0.8 * sc);
-        g.fillStyle(0xffffff); g.fillCircle(7.5 * sc, 4.3 * sc, 0.4 * sc);
-        g.fillCircle(11 * sc, 4.3 * sc, 0.4 * sc);
-        // Colorful potion in hand
-        g.fillStyle(0x85c1e9, 0.5); g.fillRoundedRect(1.5 * sc, 7 * sc, 3 * sc, 5 * sc, 2);
-        g.fillStyle(0xc040e0, 0.6); g.fillRect(2 * sc, 8 * sc, 2 * sc, 3.5 * sc);
-        g.fillStyle(0xf0d040, 0.3); g.fillRect(2.5 * sc, 8.5 * sc, 1 * sc, 1 * sc);
-        g.fillStyle(0xe8e0d0, 0.4); g.fillRect(2 * sc, 7 * sc, 2 * sc, 1);
-        // Bubbles from potion
-        g.fillStyle(0xffffff, 0.3); g.fillCircle(2.5 * sc, 6.5 * sc, 0.8);
-        g.fillCircle(3 * sc, 5.5 * sc, 0.6);
-        // Black shoes
-        g.fillStyle(0x2a2a2a); g.fillRect(5.5 * sc, 12 * sc, 3 * sc, 2 * sc);
-        g.fillRect(8.5 * sc, 12 * sc, 3 * sc, 2 * sc);
+        g.fillStyle(0x000000, 0.1); g.fillEllipse(8 * sc, 15 * sc + 1, 6 * sc, 3);
+        g.fillStyle(0x4a2060); g.fillRect(3 * sc, 6 * sc, 10 * sc, 5 * sc);
+        g.fillStyle(0x6a3080, 0.4); g.fillRect(4 * sc, 6 * sc, 8 * sc, 3 * sc);
+        g.fillStyle(0x3a1850, 0.3); g.fillRect(6 * sc, 7 * sc, 1, 4 * sc); g.fillRect(9 * sc, 7 * sc, 1, 4 * sc);
+        g.fillStyle(0x5a2870, 0.5); g.fillRect(4 * sc, 6 * sc, 3 * sc, 2 * sc); g.fillRect(9 * sc, 6 * sc, 3 * sc, 2 * sc);
+        g.fillStyle(0x000000); g.fillEllipse(8 * sc, 6 * sc, 7 * sc, 6 * sc);
+        g.fillStyle(0xf0e0f0); g.fillEllipse(8 * sc, 6 * sc, 6 * sc, 5 * sc);
+        g.fillStyle(0x8040c0); g.fillEllipse(8 * sc, 6 * sc, 4.5 * sc, 4 * sc);
+        g.fillStyle(0xa060e0, 0.4); g.fillEllipse(8 * sc, 5.5 * sc, 3 * sc, 3 * sc);
+        g.fillStyle(0x000000); g.fillEllipse(8 * sc, 6 * sc, 2 * sc, 2.5 * sc);
+        g.fillStyle(0xffffff, 0.7); g.fillCircle(7.5 * sc, 5 * sc, 0.8);
+        g.fillStyle(0xf0e0f0); g.fillEllipse(4.5 * sc, 8 * sc, 2.5 * sc, 2 * sc);
+        g.fillStyle(0x8040c0); g.fillEllipse(4.5 * sc, 8 * sc, 1.8 * sc, 1.5 * sc);
+        g.fillStyle(0x000000); g.fillEllipse(4.5 * sc, 8 * sc, 1 * sc, 1.2 * sc);
+        g.fillStyle(0xf0e0f0); g.fillEllipse(11.5 * sc, 8 * sc, 2.5 * sc, 2 * sc);
+        g.fillStyle(0x8040c0); g.fillEllipse(11.5 * sc, 8 * sc, 1.8 * sc, 1.5 * sc);
+        g.fillStyle(0x000000); g.fillEllipse(11.5 * sc, 8 * sc, 1 * sc, 1.2 * sc);
+        g.fillStyle(0x5a2870); g.fillRect(4 * sc, 10 * sc, 2 * sc, 4 * sc);
+        g.fillRect(7 * sc, 10 * sc, 2 * sc, 5 * sc);
+        g.fillRect(10 * sc, 10 * sc, 2 * sc, 4 * sc);
+        g.fillStyle(0x6a3080, 0.3); g.fillRect(4 * sc, 11 * sc, 2 * sc, 2 * sc);
+        g.fillRect(7 * sc, 11 * sc, 2 * sc, 3 * sc); g.fillRect(10 * sc, 11 * sc, 2 * sc, 2 * sc);
       },
-      // 9: 时光老头 - Blue-robed elder, white hair, white beard
+            // 9: 时光老头 - LoL Zilean: blue robes, floating clock, white beard, staff
       (g: Phaser.GameObjects.Graphics) => {
-        g.fillStyle(0x000000, 0.15); g.fillEllipse(8 * sc, 15 * sc + 1, 10 * sc, 4);
-        // Blue robe
-        g.fillStyle(0x2848a0); g.fillRect(2 * sc, 5 * sc, 12 * sc, 8 * sc);
-        g.fillStyle(0x4068c0, 0.4); g.fillRect(3 * sc, 5 * sc, 10 * sc, 4 * sc);
-        g.fillStyle(0x1a3070, 0.3); g.fillRect(6 * sc, 6 * sc, 1, 7 * sc);
-        g.fillRect(9 * sc, 6 * sc, 1, 7 * sc);
-        // Gold trim on robe
-        g.fillStyle(0xd4a853, 0.5); g.fillRect(3 * sc, 8 * sc, 10 * sc, 0.8 * sc);
-        g.fillStyle(0xd4a853, 0.4); g.fillRect(7 * sc, 9 * sc, 2 * sc, 1);
-        // White hair (full, flowing)
-        g.fillStyle(0xe8e8e8); g.fillRect(3 * sc, 0, 10 * sc, 3 * sc);
-        g.fillRect(2 * sc, 1 * sc, 3 * sc, 4 * sc);
-        g.fillRect(11 * sc, 1 * sc, 3 * sc, 4 * sc);
-        g.fillStyle(0xf8f8f8, 0.5); g.fillRect(5 * sc, 0, 6 * sc, 2 * sc);
-        g.fillRect(3 * sc, 2 * sc, 2 * sc, 2 * sc);
-        g.fillRect(11 * sc, 2 * sc, 2 * sc, 2 * sc);
-        // White beard (long, flowing)
-        g.fillStyle(0xf0f0f0); g.fillRect(5 * sc, 6 * sc, 6 * sc, 6 * sc);
-        g.fillStyle(0xffffff, 0.5); g.fillRect(6 * sc, 6 * sc, 4 * sc, 3 * sc);
-        // Beard strand lines
-        for (let bs = 5; bs < 11; bs += 0.8) g.fillStyle(0xe0e0e0, 0.2), g.fillRect(bs * sc, 7 * sc, 0.4 * sc, 5 * sc);
-        // Face
+        g.fillStyle(0x000000, 0.12); g.fillEllipse(8 * sc, 15 * sc + 1, 9 * sc, 3);
+        g.fillStyle(0x304860); g.fillRect(2 * sc, 5 * sc, 12 * sc, 8 * sc);
+        g.fillStyle(0x486880, 0.4); g.fillRect(3 * sc, 5 * sc, 10 * sc, 4 * sc);
+        g.fillStyle(0x1a2a3a, 0.3); g.fillRect(6 * sc, 6 * sc, 1, 7 * sc); g.fillRect(9 * sc, 6 * sc, 1, 7 * sc);
+        g.fillStyle(0xd4a853, 0.5); g.fillRect(3 * sc, 8 * sc, 10 * sc, 0.6 * sc);
+        g.fillStyle(0xd4a853, 0.35); g.fillRect(7 * sc, 9 * sc, 2 * sc, 0.6 * sc);
+        g.fillStyle(0xd4a853, 0.7); g.fillCircle(8 * sc, 2 * sc, 7 * sc);
+        g.fillStyle(0xc4a040, 0.5); g.fillCircle(8 * sc, 2 * sc, 5.5 * sc);
+        g.fillStyle(0xf0e8d0, 0.4); g.fillCircle(8 * sc, 2 * sc, 4.5 * sc);
+        g.fillStyle(0x4a3020); g.fillRect(7.5 * sc, 0, 1 * sc, 3 * sc);
+        g.fillRect(7 * sc, 1.5 * sc, 2 * sc, 0.6 * sc);
         g.fillStyle(0xfce4c8); g.fillRect(5 * sc, 3 * sc, 6 * sc, 4 * sc);
-        g.fillStyle(0xf0d0b0, 0.3); g.fillRect(5 * sc, 4 * sc, 6 * sc, 3 * sc);
-        // Wise eyes
+        g.fillStyle(0xf0f0f0); g.fillRect(3 * sc, 0, 10 * sc, 2 * sc);
+        g.fillRect(2 * sc, 1 * sc, 3 * sc, 4 * sc); g.fillRect(11 * sc, 1 * sc, 3 * sc, 4 * sc);
+        g.fillStyle(0xffffff, 0.4); g.fillRect(5 * sc, 0, 6 * sc, 1.5 * sc);
+        g.fillStyle(0xf0f0f0); g.fillRect(5 * sc, 6 * sc, 6 * sc, 6 * sc);
+        g.fillStyle(0xffffff, 0.4); g.fillRect(6 * sc, 6 * sc, 4 * sc, 3 * sc);
+        g.fillStyle(0xe0e0e0, 0.2); for (let b = 5; b < 11; b += 0.8) g.fillRect(b * sc, 7 * sc, 0.4 * sc, 5 * sc);
         g.fillStyle(0xffffff); g.fillRect(6 * sc, 4 * sc, 2.5 * sc, 2 * sc);
         g.fillRect(9 * sc, 4 * sc, 2.5 * sc, 2 * sc);
         g.fillStyle(0x4060a0); g.fillRect(6.5 * sc, 4 * sc, 1.5 * sc, 2 * sc);
@@ -786,13 +762,10 @@ export class BootScene extends Phaser.Scene {
         g.fillRect(10 * sc, 4.5 * sc, 1 * sc, 1.5 * sc);
         g.fillStyle(0xffffff); g.fillRect(7 * sc, 4 * sc, 0.5 * sc, 0.5 * sc);
         g.fillRect(10 * sc, 4 * sc, 0.5 * sc, 0.5 * sc);
-        // White eyebrows
         g.fillStyle(0xe0e0e0); g.fillRect(6 * sc, 3.5 * sc, 2.5 * sc, 0.5 * sc);
         g.fillRect(9 * sc, 3.5 * sc, 2.5 * sc, 0.5 * sc);
-        // Wooden staff
         g.fillStyle(0x6a4a1a); g.fillRect(0.5 * sc, 2 * sc, 2 * sc, 13 * sc);
-        g.fillStyle(0x8a6a3a, 0.3); g.fillRect(1 * sc, 2 * sc, 1, 11 * sc);
-        // Sandals
+        g.fillStyle(0xd4a853, 0.5); g.fillCircle(1.5 * sc, 1 * sc, 2 * sc);
         g.fillStyle(0x8a6a3a); g.fillRect(5 * sc, 13 * sc, 3 * sc, 2 * sc);
         g.fillRect(8.5 * sc, 13 * sc, 3 * sc, 2 * sc);
       },
